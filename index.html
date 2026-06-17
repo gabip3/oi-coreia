@@ -1016,6 +1016,20 @@ img,svg{display:block;}
   transform:scale(1.08);
 }
 
+
+/* Match por fluxo: só 5 pares visíveis e troca suave */
+.match-card.fade-out{
+  opacity:0;
+  transform:scale(.94);
+}
+.match-card.fade-in{
+  animation:matchSoftIn .25s ease both;
+}
+@keyframes matchSoftIn{
+  from{opacity:0; transform:translateY(6px) scale(.97);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+
 </style>
 </head>
 <body>
@@ -1640,7 +1654,9 @@ function startMatchSession(themeId){
     themeId,
     themeName: theme.name,
     themeEmoji: theme.emoji,
-    pairs: roundWords,
+    totalGoal: roundWords.length,
+    queue: roundWords.slice(5),
+    pairs: roundWords.slice(0, 5),
     matchedKr: [],
     selectedKr: null,
     selectedPt: null,
@@ -1651,6 +1667,44 @@ function startMatchSession(themeId){
   goTo('match');
 }
 
+
+function makeMatchKrCard(kr){
+  const card = document.createElement('button');
+  card.className = 'match-card kr fade-in';
+  card.dataset.kr = kr;
+  card.innerHTML = `<span>${escapeHtml(kr)}</span><span class="match-card-audio">▶</span>`;
+  card.addEventListener('click', ()=> onSelectKr(kr, card));
+  return card;
+}
+
+function makeMatchPtCard(kr, pt){
+  const card = document.createElement('button');
+  card.className = 'match-card pt fade-in';
+  card.dataset.pt = pt;
+  card.dataset.forKr = kr;
+  card.textContent = pt;
+  card.addEventListener('click', ()=> onSelectPt(pt, kr, card));
+  return card;
+}
+
+function addNextMatchPair(krCard, ptCard){
+  const session = currentMatchSession;
+  if(!session || !session.queue || session.queue.length === 0) return;
+  const nextPair = session.queue.shift();
+  const [newKr, newPt] = nextPair;
+
+  setTimeout(()=>{
+    if(krCard) krCard.classList.add('fade-out');
+    if(ptCard) ptCard.classList.add('fade-out');
+
+    setTimeout(()=>{
+      if(krCard) krCard.replaceWith(makeMatchKrCard(newKr));
+      if(ptCard) ptCard.replaceWith(makeMatchPtCard(newKr, newPt));
+    }, 180);
+  }, 130);
+}
+
+
 function renderMatchScreen(){
   const session = currentMatchSession;
   if(!session){ goTo('home'); return; }
@@ -1658,7 +1712,7 @@ function renderMatchScreen(){
   const el = document.createElement('div');
   el.className = 'screen match-screen';
 
-  const totalPairs = session.pairs.length;
+  const totalPairs = session.totalGoal || session.pairs.length;
   const doneCount = session.matchedKr.length;
   const progressPct = Math.round((doneCount/totalPairs)*100);
 
@@ -1686,24 +1740,11 @@ function renderMatchScreen(){
   const shuffledKr = shuffleArray(session.pairs.map(p=>p[0]));
 
   shuffledKr.forEach(kr=>{
-    const isMatched = session.matchedKr.includes(kr);
-    const card = document.createElement('button');
-    card.className = 'match-card kr' + (isMatched ? ' matched' : '');
-    card.dataset.kr = kr;
-    card.innerHTML = `<span>${kr}</span><span class="match-card-audio">▶</span>`;
-    if(!isMatched) card.addEventListener('click', ()=> onSelectKr(kr, card));
-    colKr.appendChild(card);
+    colKr.appendChild(makeMatchKrCard(kr));
   });
 
   session.pairs.forEach(([kr, pt])=>{
-    const isMatched = session.matchedKr.includes(kr);
-    const card = document.createElement('button');
-    card.className = 'match-card pt' + (isMatched ? ' matched' : '');
-    card.dataset.pt = pt;
-    card.dataset.forKr = kr;
-    card.textContent = pt;
-    if(!isMatched) card.addEventListener('click', ()=> onSelectPt(pt, kr, card));
-    colPt.appendChild(card);
+    colPt.appendChild(makeMatchPtCard(kr, pt));
   });
 
   shuffleDomChildren(colPt);
@@ -1773,9 +1814,13 @@ function handleCorrectMatch(session, krCard, ptCard){
   saveState();
 
   setTimeout(()=>{
-    if(session.matchedKr.length >= session.pairs.length) finishMatchSession();
-    else updateMatchProgressBar();
-  }, 480);
+    updateMatchProgressBar();
+    if(session.matchedKr.length >= (session.totalGoal || session.pairs.length)){
+      finishMatchSession();
+    } else {
+      addNextMatchPair(krCard, ptCard);
+    }
+  }, 260);
 }
 
 function handleWrongMatch(krCard, ptCard){
@@ -1792,8 +1837,8 @@ function updateMatchProgressBar(){
   const session = currentMatchSession;
   const fill = document.querySelector('.match-progress-fill');
   const count = document.querySelector('.match-progress-count');
-  if(fill) fill.style.width = Math.round((session.matchedKr.length/session.pairs.length)*100)+'%';
-  if(count) count.textContent = `${session.matchedKr.length}/${session.pairs.length}`;
+  if(fill) fill.style.width = Math.round((session.matchedKr.length/(session.totalGoal || session.pairs.length))*100)+'%';
+  if(count) count.textContent = `${session.matchedKr.length}/${session.totalGoal || session.pairs.length}`;
 }
 
 function randomPhrase(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
