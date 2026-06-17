@@ -1,0 +1,2342 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FBF6EF">
+<title>Oi Coreia — Aprenda coreano brincando</title>
+<meta name="description" content="Aprenda coreano brincando. Um jogo casual e acolhedor para brasileiros que amam a cultura coreana.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================
+   OI COREIA — Design Tokens
+   ============================================ */
+:root{
+  --cream:#FBF6EF;
+  --cream-deep:#F3EBDD;
+  --white:#FFFFFF;
+  --sakura:#F4B8C4;
+  --sakura-deep:#E8889A;
+  --sage:#A8C3A0;
+  --sage-deep:#7FA377;
+  --peach:#F0A98E;
+  --sky:#9FC9E8;
+  --ink:#3A332E;
+  --ink-soft:#6B6259;
+  --ink-faint:#A39A8F;
+  --gold:#E8B95F;
+
+  --font-display:'Fredoka', sans-serif;
+  --font-body:'Poppins', sans-serif;
+
+  --r-sm:16px;
+  --r-md:24px;
+  --r-lg:32px;
+  --r-xl:40px;
+
+  --shadow-card: 0 4px 16px rgba(58,51,46,0.06), 0 1px 3px rgba(58,51,46,0.04);
+  --shadow-float: 0 12px 32px rgba(58,51,46,0.12), 0 4px 8px rgba(58,51,46,0.06);
+  --shadow-press: 0 2px 8px rgba(58,51,46,0.08);
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family:var(--font-body);
+  background:var(--cream);
+  color:var(--ink);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+button{font-family:inherit; border:none; background:none; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+input{font-family:inherit;}
+img,svg{display:block;}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+}
+
+#app{
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  position:relative;
+  background:var(--cream);
+  display:flex;
+  flex-direction:column;
+}
+
+.screen{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  min-height:100vh;
+  animation:screenIn 0.45s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes screenIn{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);}}
+.screen.hidden{display:none;}
+
+.petals-bg{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:0;
+  max-width:480px;
+  margin:0 auto;
+}
+.petal{
+  position:absolute;
+  top:-40px;
+  font-size:18px;
+  opacity:0.5;
+  animation:fall linear infinite;
+  filter:drop-shadow(0 1px 2px rgba(58,51,46,0.05));
+}
+@keyframes fall{
+  0%{transform:translateY(0) translateX(0) rotate(0deg); opacity:0;}
+  10%{opacity:0.55;}
+  90%{opacity:0.4;}
+  100%{transform:translateY(110vh) translateX(var(--drift,20px)) rotate(360deg); opacity:0;}
+}
+
+.korean{font-family:var(--font-display); font-weight:700; color:var(--ink); line-height:1.25;}
+.eyebrow{
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:13px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+}
+
+.btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-weight:700;
+  font-size:18px;
+  border-radius:999px;
+  padding:18px 32px;
+  transition:transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  box-shadow:var(--shadow-card);
+}
+.btn:active{transform:scale(0.96); box-shadow:var(--shadow-press);}
+.btn-primary{background:linear-gradient(135deg, var(--sakura-deep), var(--peach)); color:var(--white);}
+.btn-secondary{background:var(--white); color:var(--ink); border:2px solid var(--cream-deep);}
+.btn-sage{background:linear-gradient(135deg, var(--sage-deep), var(--sage)); color:var(--white);}
+.btn-block{width:100%;}
+.btn-ghost{background:transparent; color:var(--ink-soft); font-weight:600; padding:12px 20px;}
+
+.card{background:var(--white); border-radius:var(--r-lg); box-shadow:var(--shadow-card);}
+
+.splash{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:40px;
+  position:relative;
+  z-index:1;
+}
+.splash-mark{font-size:64px; margin-bottom:20px; animation:splashFloat 3s ease-in-out infinite;}
+@keyframes splashFloat{0%,100%{transform:translateY(0) rotate(-4deg);} 50%{transform:translateY(-10px) rotate(4deg);}}
+.splash-logo{font-family:var(--font-display); font-size:44px; font-weight:700; color:var(--ink); margin-bottom:10px;}
+.splash-logo span{color:var(--sakura-deep);}
+.splash-sub{font-size:17px; color:var(--ink-soft); font-weight:500; margin-bottom:56px;}
+.splash .btn{margin-top:8px; min-width:220px;}
+
+.onboard{
+  align-items:center;
+  justify-content:center;
+  padding:32px;
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+.onboard-emoji{font-size:56px; margin-bottom:24px;}
+.onboard-title{font-family:var(--font-display); font-size:28px; font-weight:700; margin-bottom:12px; line-height:1.35;}
+.onboard-desc{font-size:16px; color:var(--ink-soft); margin-bottom:36px; line-height:1.5;}
+.onboard-input{
+  width:100%;
+  max-width:320px;
+  padding:18px 24px;
+  border-radius:999px;
+  border:2px solid var(--cream-deep);
+  background:var(--white);
+  font-size:18px;
+  font-weight:600;
+  text-align:center;
+  color:var(--ink);
+  margin-bottom:28px;
+  transition:border-color 0.2s ease;
+}
+.onboard-input:focus{outline:none; border-color:var(--sakura);}
+.onboard-input::placeholder{color:var(--ink-faint); font-weight:500;}
+.onboard .btn{min-width:220px;}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 20px 8px;
+  position:relative;
+  z-index:1;
+}
+.topbar-back{
+  width:42px; height:42px;
+  border-radius:50%;
+  background:var(--white);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--shadow-card);
+  font-size:18px;
+  color:var(--ink-soft);
+}
+.topbar-title{font-family:var(--font-display); font-weight:700; font-size:20px;}
+.topbar-spacer{width:42px;}
+
+.home{padding:8px 20px 100px; position:relative; z-index:1;}
+.home-greet{margin:18px 0 6px;}
+.home-greet-text{font-family:var(--font-display); font-size:26px; font-weight:700; line-height:1.3;}
+.home-greet-sub{font-size:15px; color:var(--ink-soft); margin-top:4px; font-weight:500;}
+.stats-row{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:22px 0;}
+.stat-card{background:var(--white); border-radius:var(--r-md); padding:18px 16px; box-shadow:var(--shadow-card); text-align:center;}
+.stat-emoji{font-size:26px; margin-bottom:6px;}
+.stat-value{font-size:24px; font-weight:800; color:var(--ink);}
+.stat-label{font-size:12px; color:var(--ink-soft); font-weight:600; margin-top:2px;}
+
+.next-dest{
+  background:linear-gradient(135deg, #FFF8F0, var(--white));
+  border-radius:var(--r-lg);
+  padding:20px;
+  box-shadow:var(--shadow-card);
+  margin-bottom:24px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.next-dest-emoji{font-size:38px;}
+.next-dest-label{font-size:12px; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em;}
+.next-dest-name{font-family:var(--font-display); font-size:19px; font-weight:700; margin-top:2px;}
+.next-dest-progress{margin-top:8px; height:8px; background:var(--cream-deep); border-radius:999px; overflow:hidden;}
+.next-dest-progress-fill{height:100%; background:linear-gradient(90deg, var(--sakura), var(--sakura-deep)); border-radius:999px; transition:width 0.6s cubic-bezier(0.16,1,0.3,1);}
+
+.section-label{font-family:var(--font-body); font-weight:700; font-size:15px; color:var(--ink); margin:8px 0 14px;}
+.theme-scroll{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding-bottom:8px;
+  margin:0 -20px;
+  padding-left:20px;
+  padding-right:20px;
+}
+.theme-card{
+  flex:0 0 auto;
+  width:148px;
+  background:var(--white);
+  border-radius:var(--r-md);
+  padding:20px 16px;
+  box-shadow:var(--shadow-card);
+  text-align:center;
+  position:relative;
+  transition:transform 0.15s ease;
+}
+.theme-card:active{transform:scale(0.95);}
+.theme-card.locked{opacity:0.55;}
+.theme-card-emoji{font-size:36px; margin-bottom:10px;}
+.theme-card-name{font-size:14px; font-weight:700; line-height:1.3;}
+.theme-card-meta{font-size:11px; color:var(--ink-soft); margin-top:4px; font-weight:600;}
+.theme-card-lock{position:absolute; top:10px; right:10px; font-size:14px;}
+
+.bottom-nav{
+  position:fixed;
+  bottom:0; left:0; right:0;
+  max-width:480px;
+  margin:0 auto;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(12px);
+  display:flex;
+  justify-content:space-around;
+  padding:10px 8px calc(10px + env(safe-area-inset-bottom));
+  box-shadow:0 -2px 16px rgba(58,51,46,0.07);
+  z-index:10;
+}
+.nav-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  padding:6px 18px;
+  border-radius:16px;
+  color:var(--ink-faint);
+  font-size:11px;
+  font-weight:600;
+  transition:color 0.2s ease;
+}
+.nav-item.active{color:var(--sakura-deep);}
+.nav-item-icon{font-size:21px;}
+
+.themes-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  padding:8px 20px 40px;
+  position:relative;
+  z-index:1;
+}
+.theme-tile{
+  background:var(--white);
+  border-radius:var(--r-lg);
+  padding:24px 16px;
+  text-align:center;
+  box-shadow:var(--shadow-card);
+  position:relative;
+  transition:transform 0.15s ease;
+}
+.theme-tile:active{transform:scale(0.95);}
+.theme-tile.locked{opacity:0.5;}
+.theme-tile-emoji{font-size:42px; margin-bottom:12px;}
+.theme-tile-name{font-family:var(--font-display); font-size:17px; font-weight:700;}
+.theme-tile-count{font-size:12px; color:var(--ink-soft); margin-top:6px; font-weight:600;}
+.theme-tile-lockbadge{
+  margin-top:8px;
+  font-size:11px;
+  font-weight:700;
+  color:var(--sakura-deep);
+  background:#FFF0F3;
+  border-radius:999px;
+  padding:4px 10px;
+  display:inline-block;
+}
+
+/* ============================================
+   TELA MATCH — AJUSTADA
+   ============================================ */
+.match-screen{
+  padding:0 18px 24px;
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  flex:1;
+}
+.match-progress{display:flex; align-items:center; gap:10px; padding:14px 2px 18px;}
+.match-progress-track{flex:1; height:10px; background:var(--cream-deep); border-radius:999px; overflow:hidden;}
+.match-progress-fill{height:100%; background:linear-gradient(90deg, var(--sage), var(--sage-deep)); border-radius:999px; transition:width 0.5s cubic-bezier(0.16,1,0.3,1);}
+.match-progress-count{font-size:13px; font-weight:700; color:var(--ink-soft); white-space:nowrap;}
+.match-close{
+  width:38px; height:38px;
+  border-radius:50%;
+  background:var(--white);
+  box-shadow:var(--shadow-card);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px;
+  color:var(--ink-soft);
+}
+
+.match-board{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  flex:1;
+  align-content:start;
+}
+.match-col{display:flex; flex-direction:column; gap:12px;}
+
+.match-card{
+  background:var(--white);
+  border-radius:26px;
+  padding:16px 12px;
+  box-shadow:var(--shadow-card);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:112px;
+  height:112px;
+  position:relative;
+  transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s ease, background 0.2s ease, opacity 0.3s ease;
+  border:2px solid transparent;
+  overflow:hidden;
+}
+
+.match-card.kr{
+  font-family:var(--font-display);
+  font-size:34px;
+  font-weight:700;
+  gap:10px;
+  line-height:1.05;
+}
+
+.match-card.pt{
+  font-size:17px;
+  font-weight:800;
+  color:var(--ink);
+  line-height:1.22;
+  padding-left:10px;
+  padding-right:10px;
+}
+
+.match-card.kr:nth-child(1){background:#FFF0F4;}
+.match-card.kr:nth-child(2){background:#FFF7D8;}
+.match-card.kr:nth-child(3){background:#EEF7EA;}
+.match-card.kr:nth-child(4){background:#EAF5FF;}
+.match-card.kr:nth-child(5){background:#F3ECFF;}
+
+.match-card:active:not(.matched):not(.disabled){transform:scale(0.94);}
+.match-card.selected{
+  border-color:var(--sakura-deep);
+  box-shadow:var(--shadow-float);
+  background:#FFF7F9;
+}
+.match-card.matched{
+  background:var(--sage);
+  border-color:var(--sage-deep);
+  color:var(--white);
+  opacity:0;
+  pointer-events:none;
+  transform:scale(0.85);
+}
+.match-card.wrong{animation:shakeCard 0.4s ease;}
+@keyframes shakeCard{0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);}}
+
+.match-card-audio{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:linear-gradient(135deg, var(--sakura-deep), var(--peach));
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  font-family:var(--font-body);
+  font-weight:800;
+  line-height:1;
+  box-shadow:0 4px 10px rgba(232,136,154,0.25);
+  flex-shrink:0;
+}
+
+.match-feedback{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(0.8);
+  background:var(--white);
+  padding:16px 22px;
+  border-radius:24px;
+  box-shadow:var(--shadow-float);
+  font-size:16px;
+  font-weight:700;
+  color:var(--ink);
+  opacity:0;
+  pointer-events:none;
+  z-index:50;
+  transition:opacity 0.25s ease, transform 0.25s ease;
+  max-width:calc(100vw - 40px);
+  width:auto;
+  white-space:normal;
+  text-align:center;
+  line-height:1.35;
+}
+.match-feedback.show{opacity:1; transform:translate(-50%,-50%) scale(1);}
+
+.burst-petal{
+  position:fixed;
+  font-size:20px;
+  pointer-events:none;
+  z-index:49;
+  animation:burstOut 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes burstOut{0%{transform:translate(0,0) scale(0.6) rotate(0deg); opacity:1;} 100%{transform:translate(var(--bx,0px), var(--by,-80px)) scale(1.1) rotate(180deg); opacity:0;}}
+
+.complete-screen{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:32px;
+  position:relative;
+  z-index:1;
+}
+.complete-emoji{font-size:72px; margin-bottom:18px; animation:completePop 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes completePop{0%{transform:scale(0); opacity:0;} 60%{transform:scale(1.15);} 100%{transform:scale(1); opacity:1;}}
+.complete-title{font-family:var(--font-display); font-size:26px; font-weight:700; margin-bottom:10px;}
+.complete-desc{font-size:16px; color:var(--ink-soft); margin-bottom:28px; line-height:1.5;}
+.complete-flowers{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-family:var(--font-display);
+  font-size:22px;
+  font-weight:700;
+  color:var(--sakura-deep);
+  background:#FFF0F3;
+  padding:14px 26px;
+  border-radius:999px;
+  margin-bottom:32px;
+}
+.complete-words{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:32px; max-width:340px;}
+.complete-word-chip{
+  background:var(--white);
+  border-radius:999px;
+  padding:8px 16px;
+  font-size:13px;
+  font-weight:600;
+  box-shadow:var(--shadow-card);
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.complete-word-chip .kr{font-family:var(--font-display); font-weight:700;}
+.complete .btn{min-width:240px;}
+.complete-unlock-banner{
+  background:linear-gradient(135deg, var(--gold), var(--peach));
+  color:var(--white);
+  padding:16px 22px;
+  border-radius:var(--r-md);
+  font-weight:700;
+  margin-bottom:24px;
+  box-shadow:var(--shadow-card);
+}
+
+.profile{padding:8px 20px 100px; position:relative; z-index:1;}
+.profile-header{text-align:center; padding:24px 0 8px;}
+.profile-avatar{
+  width:84px; height:84px;
+  border-radius:50%;
+  background:linear-gradient(135deg, var(--sakura), var(--peach));
+  display:flex; align-items:center; justify-content:center;
+  font-size:36px;
+  margin:0 auto 14px;
+  box-shadow:var(--shadow-card);
+}
+.profile-name{font-family:var(--font-display); font-size:24px; font-weight:700;}
+.profile-since{font-size:13px; color:var(--ink-soft); margin-top:4px; font-weight:500;}
+.profile-stats{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:24px 0;}
+.profile-stat{background:var(--white); border-radius:var(--r-md); padding:16px 8px; text-align:center; box-shadow:var(--shadow-card);}
+.profile-stat-value{font-size:20px; font-weight:800;}
+.profile-stat-label{font-size:10.5px; color:var(--ink-soft); font-weight:600; margin-top:3px; line-height:1.3;}
+
+.collection-list{display:flex; flex-direction:column; gap:10px;}
+.collection-row{background:var(--white); border-radius:var(--r-md); padding:16px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow-card);}
+.collection-row.locked{opacity:0.5;}
+.collection-emoji{font-size:26px;}
+.collection-info{flex:1;}
+.collection-name{font-weight:700; font-size:14px;}
+.collection-progress-text{font-size:12px; color:var(--ink-soft); margin-top:2px; font-weight:500;}
+.collection-bar{width:60px; height:6px; background:var(--cream-deep); border-radius:999px; overflow:hidden;}
+.collection-bar-fill{height:100%; background:var(--sage-deep); border-radius:999px;}
+
+.settings{padding:8px 20px 100px; position:relative; z-index:1;}
+.settings-group{background:var(--white); border-radius:var(--r-md); box-shadow:var(--shadow-card); margin-bottom:18px; overflow:hidden;}
+.settings-row{display:flex; align-items:center; justify-content:space-between; padding:18px 18px; border-bottom:1px solid var(--cream-deep);}
+.settings-row:last-child{border-bottom:none;}
+.settings-row-label{font-size:15px; font-weight:600;}
+.settings-row-desc{font-size:12px; color:var(--ink-soft); margin-top:2px; font-weight:500;}
+
+.toggle{
+  width:50px; height:30px;
+  border-radius:999px;
+  background:var(--cream-deep);
+  position:relative;
+  transition:background 0.2s ease;
+  flex-shrink:0;
+}
+.toggle.on{background:var(--sage-deep);}
+.toggle-knob{
+  width:24px; height:24px;
+  border-radius:50%;
+  background:var(--white);
+  position:absolute;
+  top:3px; left:3px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.15);
+  transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+.toggle.on .toggle-knob{transform:translateX(20px);}
+.danger-text{color:var(--peach); font-weight:700;}
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(58,51,46,0.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  padding:24px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.25s ease;
+}
+.modal-overlay.show{opacity:1; pointer-events:auto;}
+.modal-box{
+  background:var(--white);
+  border-radius:var(--r-lg);
+  padding:28px 24px;
+  max-width:340px;
+  width:100%;
+  text-align:center;
+  transform:scale(0.9);
+  transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.modal-overlay.show .modal-box{transform:scale(1);}
+.modal-title{font-family:var(--font-display); font-size:19px; font-weight:700; margin-bottom:8px;}
+.modal-desc{font-size:14px; color:var(--ink-soft); margin-bottom:22px; line-height:1.5;}
+.modal-actions{display:flex; gap:10px;}
+.modal-actions .btn{flex:1; font-size:15px; padding:14px;}
+
+.toast{
+  position:fixed;
+  bottom:100px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--ink);
+  color:var(--white);
+  padding:12px 22px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:600;
+  z-index:60;
+  opacity:0;
+  transition:opacity 0.3s ease, transform 0.3s ease;
+  pointer-events:none;
+  max-width:90%;
+  text-align:center;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+.empty-state{text-align:center; padding:60px 30px; color:var(--ink-soft);}
+.empty-state-emoji{font-size:44px; margin-bottom:14px;}
+.empty-state-text{font-size:14px; font-weight:500;}
+::-webkit-scrollbar{width:0; height:0;}
+
+/* QUICK GAME STYLES */
+.quick-screen{padding:20px 20px 100px;position:relative;z-index:1;}
+.quick-hero{text-align:center;margin:10px 0 18px;}
+.quick-title{font-family:var(--font-display);font-size:34px;}
+.quick-sub{color:var(--ink-soft);margin-top:6px;}
+.quick-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0;}
+.quick-stat,.quick-start-card,.quick-question,.quick-gameover{background:var(--white);border-radius:var(--r-lg);box-shadow:var(--shadow-card);}
+.quick-stat{text-align:center;padding:16px;}
+.quick-stat-value{font-size:26px;font-weight:800}
+.quick-stat-label{font-size:12px;color:var(--ink-soft)}
+.quick-timer{height:14px;background:var(--cream-deep);border-radius:999px;overflow:hidden;margin:10px 0 18px}
+.quick-timer-fill{height:100%;background:linear-gradient(90deg,var(--sakura),var(--peach));transition:width .08s linear}
+.quick-question{text-align:center;padding:26px 20px;margin-bottom:18px}
+.quick-question-label{font-size:13px;color:var(--ink-soft);font-weight:700}
+.quick-korean{font-family:var(--font-display);font-size:54px;margin-top:8px}
+.quick-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.quick-option{background:var(--white);border-radius:24px;padding:18px 12px;font-weight:700;box-shadow:var(--shadow-card);font-size:16px;min-height:72px}
+.quick-option.correct{background:#dff3df}
+.quick-option.wrong{background:#ffe2e2}
+.quick-start-card,.quick-gameover{text-align:center;padding:28px 22px}
+.quick-start-emoji,.quick-gameover-emoji{font-size:56px;margin-bottom:12px}
+.quick-start-title,.quick-gameover-title{font-family:var(--font-display);font-size:24px;margin-bottom:8px}
+.quick-gameover-score{font-size:64px;font-weight:800;margin:10px 0}
+
+
+/* ============================================
+   MATCH INFINITO
+   ============================================ */
+.infinite-screen{
+  padding:8px 18px 100px;
+  position:relative;
+  z-index:1;
+}
+.infinite-hero{
+  margin:14px 0 14px;
+  text-align:center;
+}
+.infinite-title{
+  font-family:var(--font-display);
+  font-size:30px;
+  font-weight:700;
+  line-height:1.15;
+}
+.infinite-sub{
+  color:var(--ink-soft);
+  font-size:14px;
+  font-weight:600;
+  margin-top:6px;
+}
+.level-grid{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin-top:20px;
+}
+.level-card{
+  background:var(--white);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow-card);
+  padding:20px;
+  text-align:left;
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+.level-emoji{font-size:34px; width:44px; text-align:center;}
+.level-name{font-family:var(--font-display); font-size:22px; font-weight:700;}
+.level-desc{font-size:13px; color:var(--ink-soft); font-weight:600; margin-top:3px; line-height:1.35;}
+.infinite-top{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 0 12px;
+}
+.infinite-close{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:var(--white);
+  box-shadow:var(--shadow-card);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  color:var(--ink-soft);
+  flex-shrink:0;
+}
+.infinite-scorebar{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.infinite-pill{
+  background:var(--white);
+  border-radius:999px;
+  box-shadow:var(--shadow-card);
+  padding:8px 6px;
+  text-align:center;
+}
+.infinite-pill-value{
+  font-size:17px;
+  font-weight:900;
+  color:var(--ink);
+}
+.infinite-pill-label{
+  font-size:9px;
+  color:var(--ink-faint);
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.infinite-board{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  align-items:start;
+}
+.infinite-col{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.infinite-card{
+  min-height:82px;
+  border-radius:26px;
+  padding:14px 10px;
+  background:var(--white);
+  box-shadow:var(--shadow-card);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border:2px solid transparent;
+  font-weight:800;
+  line-height:1.15;
+  transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease, background .16s ease, opacity .2s ease;
+}
+.infinite-card.kr{
+  font-family:var(--font-display);
+  font-size:28px;
+  flex-direction:column;
+  gap:6px;
+}
+.infinite-card.pt{
+  font-size:15.5px;
+}
+.infinite-card.kr:nth-child(1){background:#FFF0F4;}
+.infinite-card.kr:nth-child(2){background:#FFF7D8;}
+.infinite-card.kr:nth-child(3){background:#EEF7EA;}
+.infinite-card.kr:nth-child(4){background:#EAF5FF;}
+.infinite-card.kr:nth-child(5){background:#F3ECFF;}
+.infinite-card.selected{
+  border-color:var(--sakura-deep);
+  box-shadow:var(--shadow-float);
+  transform:scale(1.03);
+}
+.infinite-card.correct{
+  background:var(--sage);
+  color:white;
+  border-color:var(--sage-deep);
+}
+.infinite-card.wrong{
+  animation:shakeCard .4s ease;
+  background:#FFE5EA;
+  border-color:var(--sakura-deep);
+}
+.infinite-small-audio{
+  font-family:var(--font-body);
+  font-size:11px;
+  color:var(--sakura-deep);
+  font-weight:900;
+}
+.infinite-actions{
+  margin-top:16px;
+  display:flex;
+  gap:10px;
+}
+.infinite-actions .btn{
+  font-size:14px;
+  padding:14px 18px;
+}
+.quick-question-label{
+  display:none !important;
+}
+.quick-korean{
+  margin-top:0 !important;
+}
+.quick-option{
+  min-height:78px;
+  border:2px solid transparent;
+}
+.quick-option:nth-child(1){background:#FFF0F4;}
+.quick-option:nth-child(2){background:#FFF7D8;}
+.quick-option:nth-child(3){background:#EEF7EA;}
+.quick-option:nth-child(4){background:#EAF5FF;}
+.quick-option:nth-child(5){background:#F3ECFF;}
+.quick-option:nth-child(6){background:#FFF3EA;}
+
+
+/* ============================================
+   TREINAR + NAVEGAÇÃO ENXUTA + FADE SUAVE
+   ============================================ */
+.bottom-nav{
+  justify-content:space-evenly;
+}
+.nav-item{
+  padding:6px 22px;
+}
+.train-screen{
+  padding:8px 20px 100px;
+  position:relative;
+  z-index:1;
+}
+.train-card{
+  width:100%;
+  background:var(--white);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow-card);
+  padding:20px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  text-align:left;
+  margin-bottom:14px;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.train-card:active{
+  transform:scale(.97);
+  box-shadow:var(--shadow-press);
+}
+.train-card-icon{
+  width:54px;
+  height:54px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  flex-shrink:0;
+}
+.train-card:nth-of-type(1) .train-card-icon{background:#FFF0F4;}
+.train-card:nth-of-type(2) .train-card-icon{background:#FFF7D8;}
+.train-card:nth-of-type(3) .train-card-icon{background:#EEF7EA;}
+.train-card-title{
+  font-family:var(--font-display);
+  font-size:22px;
+  font-weight:700;
+  color:var(--ink);
+  line-height:1.15;
+}
+.train-card-desc{
+  font-size:13px;
+  color:var(--ink-soft);
+  font-weight:600;
+  line-height:1.35;
+  margin-top:4px;
+}
+.train-card-arrow{
+  margin-left:auto;
+  font-size:26px;
+  color:var(--ink-faint);
+}
+.infinite-card{
+  will-change:opacity, transform;
+}
+.infinite-card.fade-out{
+  opacity:0;
+  transform:scale(.94);
+}
+.infinite-card.fade-in{
+  animation:softCardIn .28s ease both;
+}
+@keyframes softCardIn{
+  from{opacity:0; transform:translateY(6px) scale(.97);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+.infinite-card.correct{
+  animation:softCorrect .22s ease both;
+}
+@keyframes softCorrect{
+  from{transform:scale(1);}
+  to{transform:scale(.98);}
+}
+
+</style>
+</head>
+<body>
+
+<div class="petals-bg" id="petalsBg"></div>
+
+<div id="app">
+  <!-- Telas serão injetadas aqui via JS -->
+</div>
+
+<script>
+// ============================================
+// OI COREIA — Banco de Palavras
+// 108 palavras organizadas em 9 temas
+// ============================================
+const THEMES = [
+  { id:'cafe', emoji:'☕', name:'Café em Seul', unlockFlowers:0,
+    words:[['커피','Café'],['우유','Leite'],['물','Água'],['차','Chá'],['빵','Pão'],['설탕','Açúcar'],['얼음','Gelo'],['컵','Copo'],['케이크','Bolo'],['디저트','Sobremesa'],['따뜻해요','Está quente'],['차가워요','Está frio']] },
+  { id:'doramas', emoji:'🎬', name:'Doramas', unlockFlowers:50,
+    words:[['사랑','Amor'],['친구','Amigo'],['진짜','Sério'],['괜찮아요','Tudo bem'],['미안해요','Desculpa'],['보고싶어요','Estou com saudade'],['행복해요','Estou feliz'],['슬퍼요','Estou triste'],['기다려요','Espere'],['거짓말','Mentira'],['비밀','Segredo'],['약속','Promessa']] },
+  { id:'kakao', emoji:'📱', name:'KakaoTalk', unlockFlowers:100,
+    words:[['안녕하세요','Olá'],['감사합니다','Obrigado'],['네','Sim'],['아니요','Não'],['잘 지내요?','Tudo bem?'],['뭐해요?','O que está fazendo?'],['알겠어요','Entendi'],['잠깐만요','Só um momento'],['전화해요','Ligue para mim'],['답장해요','Responda'],['사진','Foto'],['이모티콘','Emoji']] },
+  { id:'viagem', emoji:'✈️', name:'Viagem', unlockFlowers:0,
+    words:[['공항','Aeroporto'],['비행기','Avião'],['호텔','Hotel'],['화장실','Banheiro'],['지하철','Metrô'],['택시','Táxi'],['여권','Passaporte'],['지도','Mapa'],['길','Caminho'],['표','Bilhete'],['버스','Ônibus'],['역','Estação']] },
+  { id:'comida', emoji:'🍜', name:'Comida Coreana', unlockFlowers:0,
+    words:[['김치','Kimchi'],['밥','Arroz'],['라면','Lámen'],['고기','Carne'],['치킨','Frango'],['떡볶이','Tteokbokki'],['맛있어요','Está gostoso'],['배고파요','Estou com fome'],['배불러요','Estou cheio'],['맵다','Picante'],['달다','Doce'],['짜다','Salgado']] },
+  { id:'romance', emoji:'💌', name:'Romance', unlockFlowers:0,
+    words:[['좋아해요','Eu gosto de você'],['예뻐요','Você é bonita'],['귀여워요','É fofo(a)'],['데이트','Encontro romântico'],['손','Mão'],['마음','Coração/sentimento'],['보고 싶다','Tenho saudade'],['항상','Sempre'],['영원히','Para sempre'],['선물','Presente'],['편지','Carta'],['포옹','Abraço']] },
+  { id:'kpop', emoji:'🎵', name:'K-pop', unlockFlowers:0,
+    words:[['노래','Música'],['춤','Dança'],['가수','Cantor(a)'],['무대','Palco'],['팬','Fã'],['콘서트','Show'],['앨범','Álbum'],['멤버','Membro'],['최고예요','É o melhor'],['응원해요','Estou apoiando'],['데뷔','Debute'],['연습생','Trainee']] },
+  { id:'busan', emoji:'🏖️', name:'Busan', unlockFlowers:150,
+    words:[['바다','Mar'],['해변','Praia'],['모래','Areia'],['파도','Onda'],['시장','Mercado'],['생선','Peixe'],['등대','Farol'],['배','Navio'],['수영','Natação'],['더워요','Está calor'],['경치','Paisagem'],['축제','Festival']] },
+  { id:'jeju', emoji:'🍊', name:'Jeju', unlockFlowers:200,
+    words:[['섬','Ilha'],['꽃','Flor'],['벚꽃','Flor de cerejeira'],['산','Montanha'],['하늘','Céu'],['바람','Vento'],['자연','Natureza'],['귤','Tangerina'],['돌','Pedra'],['평화로워요','É tranquilo'],['아름다워요','É lindo'],['휴가','Férias']] },
+];
+
+// Frases de feedback
+const PHRASES_CORRECT = [
+  'Agora você já consegue pedir café em Seul. ☕',
+  'Mais uma palavra desbloqueada para os doramas. 🎬',
+  'A Coreia ficou um pouquinho mais perto. 🌸',
+  'Você sobreviveria a uma conversa no KakaoTalk. 📱',
+  'Seu voo para Seul avançou alguns quilômetros. ✈️',
+  'Mais perto de entender aquela música sem legenda. 🎵',
+  'Seu futuro amigo coreano ficaria orgulhoso. 💌',
+  'Jeju está te esperando. 🍊'
+];
+const PHRASE_WRONG = 'Quase! 🌸';
+
+
+const HOME_QUOTES = [
+  "Cuidado. Doramas podem causar aprendizado involuntário 🎬",
+  "Uma palavra por vez e daqui a pouco você está no KakaoTalk 📱",
+  "Respire fundo. O Hangul não morde 😌",
+  "Seu futuro amigo coreano ficaria orgulhoso ✨",
+  "Mais uma palavra e você já pode sobreviver em Seul ☕",
+  "Aprender coreano conta como exercício cerebral 🧠",
+  "Você está oficialmente colecionando palavras 🌷",
+  "Hoje você sabe mais coreano que ontem 🌸"
+];
+
+function randomHomeQuote(){
+  return HOME_QUOTES[Math.floor(Math.random()*HOME_QUOTES.length)];
+}
+
+
+const STORAGE_KEY = 'oicoreia_state_v1';
+
+function defaultState(){
+  return {
+    name: '',
+    onboarded: false,
+    flowers: 0,
+    learnedWords: [],
+    themeProgress: {},
+    soundOn: true,
+    createdAt: Date.now(),
+    lastSession: null,
+  };
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultState(), parsed);
+  }catch(e){
+    console.warn('Não foi possível ler o progresso salvo, iniciando do zero.', e);
+    return defaultState();
+  }
+}
+
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){
+    console.warn('Não foi possível salvar o progresso.', e);
+  }
+}
+
+let state = loadState();
+
+function totalWordsLearned(){ return state.learnedWords.length; }
+function isThemeUnlocked(theme){ return state.flowers >= theme.unlockFlowers; }
+function themeLearnedCount(themeId){
+  const theme = THEMES.find(t => t.id === themeId);
+  if(!theme) return 0;
+  return theme.words.filter(([kr]) => state.learnedWords.includes(themeId+'::'+kr)).length;
+}
+function nextLockedTheme(){ return THEMES.find(t => !isThemeUnlocked(t)) || null; }
+function markWordLearned(themeId, kr){
+  const key = themeId+'::'+kr;
+  if(!state.learnedWords.includes(key)) state.learnedWords.push(key);
+}
+function addFlowers(n){ state.flowers += n; }
+
+let koreanVoice = null;
+function pickKoreanVoice(){
+  if(!('speechSynthesis' in window)) return;
+  const voices = window.speechSynthesis.getVoices();
+  koreanVoice = voices.find(v => v.lang === 'ko-KR') || voices.find(v => v.lang && v.lang.startsWith('ko')) || null;
+}
+if('speechSynthesis' in window){
+  pickKoreanVoice();
+  window.speechSynthesis.onvoiceschanged = pickKoreanVoice;
+}
+
+function speakKorean(text){
+  if(!state.soundOn) return;
+  if(!('speechSynthesis' in window)){
+    showToast('Seu navegador não suporta áudio de voz.');
+    return;
+  }
+  try{
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'ko-KR';
+    if(koreanVoice) utter.voice = koreanVoice;
+    utter.rate = 0.85;
+    window.speechSynthesis.speak(utter);
+  }catch(e){
+    console.warn('Erro ao reproduzir áudio', e);
+  }
+}
+
+function spawnPetalsBg(){
+  const bg = document.getElementById('petalsBg');
+  bg.innerHTML = '';
+  const emojis = ['🌸','🌸','🌸','🌷'];
+  for(let i=0;i<7;i++){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.left = (Math.random()*94)+'%';
+    p.style.fontSize = (14 + Math.random()*12)+'px';
+    p.style.setProperty('--drift', (Math.random()*60-30)+'px');
+    p.style.animationDuration = (14 + Math.random()*10)+'s';
+    p.style.animationDelay = (Math.random()*14)+'s';
+    bg.appendChild(p);
+  }
+}
+
+let toastTimer = null;
+function showToast(msg){
+  let toast = document.getElementById('toastEl');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'toastEl';
+    toast.className = 'toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> toast.classList.remove('show'), 2200);
+}
+
+const app = document.getElementById('app');
+let currentMatchSession = null;
+
+function render(){
+  saveState();
+  const finalRoute = state.onboarded ? (window.__route || 'home') : (window.__route || 'splash');
+  app.innerHTML = '';
+  switch(finalRoute){
+    case 'splash': renderSplash(); break;
+    case 'onboard': renderOnboard(); break;
+    case 'home': renderHome(); break;
+    case 'train': renderTrainScreen(); break;
+    case 'themes': renderThemesScreen(); break;
+    case 'quickgame': renderQuickGame(); break;
+    case 'infinite': renderInfiniteMatch(); break;
+    case 'match': renderMatchScreen(); break;
+    case 'complete': renderCompleteScreen(); break;
+    case 'profile': renderProfile(); break;
+    case 'settings': renderSettings(); break;
+    default: renderHome();
+  }
+}
+
+function goTo(route, params){
+  if(route !== 'quickgame') stopQuickTimer();
+  window.__route = route;
+  window.__routeParams = params || {};
+  render();
+  window.scrollTo(0,0);
+}
+
+function renderSplash(){
+  const el = document.createElement('div');
+  el.className = 'screen splash';
+  el.innerHTML = `
+    <div class="splash-mark">🌸</div>
+    <div class="splash-logo">Oi <span>Coreia</span></div>
+    <div class="splash-sub">Aprenda coreano brincando.</div>
+    <button class="btn btn-primary" id="btnStart">Começar</button>
+  `;
+  app.appendChild(el);
+  el.querySelector('#btnStart').addEventListener('click', ()=> goTo('onboard'));
+}
+
+function renderOnboard(){
+  const el = document.createElement('div');
+  el.className = 'screen onboard';
+
+  if(!state.name){
+    el.innerHTML = `
+      <div class="onboard-emoji">👋</div>
+      <div class="onboard-title">Qual é o seu nome?</div>
+      <div class="onboard-desc korean" style="margin-bottom:20px;">이름이 뭐예요?</div>
+      <input type="text" class="onboard-input" id="nameInput" placeholder="Digite seu nome" maxlength="20" autocomplete="off">
+      <button class="btn btn-primary" id="btnNameNext">Continuar</button>
+    `;
+    app.appendChild(el);
+    const input = el.querySelector('#nameInput');
+    setTimeout(()=> input.focus(), 350);
+    const submit = ()=>{
+      const val = input.value.trim();
+      if(!val){
+        input.style.borderColor = 'var(--peach)';
+        return;
+      }
+      state.name = val;
+      saveState();
+      render();
+    };
+    el.querySelector('#btnNameNext').addEventListener('click', submit);
+    input.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') submit(); });
+  } else {
+    el.innerHTML = `
+      <div class="onboard-emoji">🌸</div>
+      <div class="onboard-title">안녕하세요, ${escapeHtml(state.name)} 🌸</div>
+      <div class="onboard-desc">Vamos aprender suas primeiras<br>palavras em coreano?</div>
+      <button class="btn btn-primary" id="btnOnboardDone">Começar</button>
+    `;
+    app.appendChild(el);
+    el.querySelector('#btnOnboardDone').addEventListener('click', ()=>{
+      state.onboarded = true;
+      saveState();
+      goTo('home');
+    });
+  }
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function bottomNavHtml(active){
+  const items = [
+    {id:'home', icon:'🏠', label:'Início'},
+    {id:'train', icon:'🎯', label:'Treinar'},
+    {id:'settings', icon:'🌸', label:'Ajustes'},
+  ];
+  return `<div class="bottom-nav">${items.map(it => `
+    <button class="nav-item ${active===it.id?'active':''}" data-nav="${it.id}">
+      <span class="nav-item-icon">${it.icon}</span>
+      <span>${it.label}</span>
+    </button>
+  `).join('')}</div>`;
+}
+
+function attachBottomNav(el){
+  el.querySelectorAll('[data-nav]').forEach(btn=>{
+    btn.addEventListener('click', ()=> goTo(btn.dataset.nav));
+  });
+}
+
+function renderHome(){
+  const el = document.createElement('div');
+  el.className = 'screen home';
+
+  const dest = nextLockedTheme();
+  const learned = totalWordsLearned();
+
+  let destHtml = '';
+  if(dest){
+    const progressPct = Math.min(100, Math.round((state.flowers/dest.unlockFlowers)*100));
+    destHtml = `
+      <div class="next-dest" id="nextDestCard">
+        <div class="next-dest-emoji">${dest.emoji}</div>
+        <div style="flex:1">
+          <div class="next-dest-label">Próximo destino</div>
+          <div class="next-dest-name">${dest.name}</div>
+          <div class="next-dest-progress">
+            <div class="next-dest-progress-fill" style="width:${progressPct}%"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    destHtml = `
+      <div class="next-dest" id="nextDestCard">
+        <div class="next-dest-emoji">🏆</div>
+        <div style="flex:1">
+          <div class="next-dest-label">Jornada</div>
+          <div class="next-dest-name">Você desbloqueou a Coreia toda!</div>
+        </div>
+      </div>
+    `;
+  }
+
+  el.innerHTML = `
+    <div class="home-greet">
+      <div class="home-greet-text">안녕하세요, ${escapeHtml(state.name)} 🌸</div>
+      <div class="home-greet-sub">Continue sua jornada pela Coreia.</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-emoji">📚</div>
+        <div class="stat-value">${learned}</div>
+        <div class="stat-label">Palavras aprendidas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-emoji">🌸</div>
+        <div class="stat-value">${state.flowers}</div>
+        <div class="stat-label">Flores coletadas</div>
+      </div>
+    </div>
+
+    ${destHtml}
+
+    <div class="next-dest" style="align-items:flex-start;">
+      <div class="next-dest-emoji">💬</div>
+      <div style="flex:1">
+        <div class="next-dest-label">Frase do dia</div>
+        <div class="next-dest-name" style="font-size:17px;">${randomHomeQuote()}</div>
+      </div>
+    </div>
+    <button class="next-dest" id="goTrainCard" style="width:100%; text-align:left; border:none; font-family:inherit;">
+      <div class="next-dest-emoji">🎯</div>
+      <div style="flex:1">
+        <div class="next-dest-label">Treinar agora</div>
+        <div class="next-dest-name">Viagem, rápido ou match infinito</div>
+      </div>
+    </button>
+
+    <div class="section-label">Continue pelos destinos</div>
+    <div class="theme-scroll" id="themeScroll"></div>
+
+    ${bottomNavHtml('home')}
+  `;
+  app.appendChild(el);
+
+  const scroll = el.querySelector('#themeScroll');
+  THEMES.forEach(theme=>{
+    const unlocked = isThemeUnlocked(theme);
+    const count = themeLearnedCount(theme.id);
+    const card = document.createElement('button');
+    card.className = 'theme-card' + (unlocked ? '' : ' locked');
+    card.innerHTML = `
+      ${!unlocked ? `<div class="theme-card-lock">🔒</div>` : ''}
+      <div class="theme-card-emoji">${theme.emoji}</div>
+      <div class="theme-card-name">${theme.name}</div>
+      <div class="theme-card-meta">${unlocked ? count+'/'+theme.words.length+' palavras' : theme.unlockFlowers+' 🌸 para abrir'}</div>
+    `;
+    card.addEventListener('click', ()=>{
+      if(unlocked) startMatchSession(theme.id);
+      else showToast(`Colete ${theme.unlockFlowers - state.flowers} flores 🌸 a mais para desbloquear ${theme.name}.`);
+    });
+    scroll.appendChild(card);
+  });
+
+  if(dest) el.querySelector('#nextDestCard').addEventListener('click', ()=> goTo('themes'));
+  const goTrainCard = el.querySelector('#goTrainCard');
+  if(goTrainCard) goTrainCard.addEventListener('click', ()=> goTo('train'));
+  attachBottomNav(el);
+}
+
+
+function renderTrainScreen(){
+  const el = document.createElement('div');
+  el.className = 'screen train-screen';
+  el.innerHTML = `
+    <div class="home-greet">
+      <div class="home-greet-text">Treinar coreano 🎯</div>
+      <div class="home-greet-sub">Escolha como quer praticar hoje.</div>
+    </div>
+
+    <button class="train-card" id="trainTrip">
+      <div class="train-card-icon">✈️</div>
+      <div>
+        <div class="train-card-title">Viagem pela Coreia</div>
+        <div class="train-card-desc">Treine por destinos e desbloqueie novas coleções.</div>
+      </div>
+      <div class="train-card-arrow">›</div>
+    </button>
+
+    <button class="train-card" id="trainQuick">
+      <div class="train-card-icon">⚡</div>
+      <div>
+        <div class="train-card-title">Jogo Rápido</div>
+        <div class="train-card-desc">6 opções e 10 segundos para acertar a tradução.</div>
+      </div>
+      <div class="train-card-arrow">›</div>
+    </button>
+
+    <button class="train-card" id="trainInfinite">
+      <div class="train-card-icon">♾️</div>
+      <div>
+        <div class="train-card-title">Match Infinito</div>
+        <div class="train-card-desc">5 pares na tela, sem fim, até você parar.</div>
+      </div>
+      <div class="train-card-arrow">›</div>
+    </button>
+
+    <div class="next-dest" style="margin-top:20px;">
+      <div class="next-dest-emoji">🌸</div>
+      <div style="flex:1">
+        <div class="next-dest-label">Seu progresso</div>
+        <div class="next-dest-name">${totalWordsLearned()} palavras • ${state.flowers} flores</div>
+      </div>
+    </div>
+
+    ${bottomNavHtml('train')}
+  `;
+  app.appendChild(el);
+  el.querySelector('#trainTrip').addEventListener('click', ()=> goTo('themes'));
+  el.querySelector('#trainQuick').addEventListener('click', ()=> goTo('quickgame'));
+  el.querySelector('#trainInfinite').addEventListener('click', ()=> goTo('infinite'));
+  attachBottomNav(el);
+}
+
+function renderThemesScreen(){
+  const el = document.createElement('div');
+  el.className = 'screen';
+  el.innerHTML = `
+    <div class="topbar">
+      <button class="topbar-back" id="backBtn">←</button>
+      <div class="topbar-title">Viagem pela Coreia</div>
+      <div class="topbar-spacer"></div>
+    </div>
+    <div class="themes-grid" id="themesGrid"></div>
+    ${bottomNavHtml('train')}
+  `;
+  app.appendChild(el);
+  el.querySelector('#backBtn').addEventListener('click', ()=> goTo('home'));
+
+  const grid = el.querySelector('#themesGrid');
+  THEMES.forEach(theme=>{
+    const unlocked = isThemeUnlocked(theme);
+    const count = themeLearnedCount(theme.id);
+    const tile = document.createElement('button');
+    tile.className = 'theme-tile' + (unlocked ? '' : ' locked');
+    tile.innerHTML = `
+      <div class="theme-tile-emoji">${theme.emoji}</div>
+      <div class="theme-tile-name">${theme.name}</div>
+      <div class="theme-tile-count">${unlocked ? count+'/'+theme.words.length+' palavras' : '🔒 Bloqueado'}</div>
+      ${!unlocked ? `<div class="theme-tile-lockbadge">${theme.unlockFlowers} 🌸</div>` : ''}
+    `;
+    tile.addEventListener('click', ()=>{
+      if(unlocked) startMatchSession(theme.id);
+      else showToast(`Colete ${theme.unlockFlowers - state.flowers} flores 🌸 a mais para desbloquear ${theme.name}.`);
+    });
+    grid.appendChild(tile);
+  });
+
+  attachBottomNav(el);
+}
+
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+const ROUND_SIZE = 5;
+
+function startMatchSession(themeId){
+  const theme = THEMES.find(t=>t.id===themeId);
+  if(!theme) return;
+
+  const notLearned = theme.words.filter(([kr]) => !state.learnedWords.includes(themeId+'::'+kr));
+  const learnedOnes = theme.words.filter(([kr]) => state.learnedWords.includes(themeId+'::'+kr));
+  let pool = shuffleArray(notLearned).concat(shuffleArray(learnedOnes));
+  const roundWords = pool.slice(0, Math.min(ROUND_SIZE, theme.words.length));
+
+  currentMatchSession = {
+    themeId,
+    themeName: theme.name,
+    themeEmoji: theme.emoji,
+    pairs: roundWords,
+    matchedKr: [],
+    selectedKr: null,
+    selectedPt: null,
+    flowersEarned: 0,
+    wordsLearnedThisRound: [],
+  };
+
+  goTo('match');
+}
+
+function renderMatchScreen(){
+  const session = currentMatchSession;
+  if(!session){ goTo('home'); return; }
+
+  const el = document.createElement('div');
+  el.className = 'screen match-screen';
+
+  const totalPairs = session.pairs.length;
+  const doneCount = session.matchedKr.length;
+  const progressPct = Math.round((doneCount/totalPairs)*100);
+
+  el.innerHTML = `
+    <div class="match-progress">
+      <button class="match-close" id="matchClose">✕</button>
+      <div class="match-progress-track"><div class="match-progress-fill" style="width:${progressPct}%"></div></div>
+      <div class="match-progress-count">${doneCount}/${totalPairs}</div>
+    </div>
+    <div class="match-board">
+      <div class="match-col" id="colKr"></div>
+      <div class="match-col" id="colPt"></div>
+    </div>
+  `;
+  app.appendChild(el);
+
+  el.querySelector('#matchClose').addEventListener('click', ()=>{
+    currentMatchSession = null;
+    goTo('home');
+  });
+
+  const colKr = el.querySelector('#colKr');
+  const colPt = el.querySelector('#colPt');
+
+  const shuffledKr = shuffleArray(session.pairs.map(p=>p[0]));
+
+  shuffledKr.forEach(kr=>{
+    const isMatched = session.matchedKr.includes(kr);
+    const card = document.createElement('button');
+    card.className = 'match-card kr' + (isMatched ? ' matched' : '');
+    card.dataset.kr = kr;
+    card.innerHTML = `<span>${kr}</span><span class="match-card-audio">▶</span>`;
+    if(!isMatched) card.addEventListener('click', ()=> onSelectKr(kr, card));
+    colKr.appendChild(card);
+  });
+
+  session.pairs.forEach(([kr, pt])=>{
+    const isMatched = session.matchedKr.includes(kr);
+    const card = document.createElement('button');
+    card.className = 'match-card pt' + (isMatched ? ' matched' : '');
+    card.dataset.pt = pt;
+    card.dataset.forKr = kr;
+    card.textContent = pt;
+    if(!isMatched) card.addEventListener('click', ()=> onSelectPt(pt, kr, card));
+    colPt.appendChild(card);
+  });
+
+  shuffleDomChildren(colPt);
+}
+
+function shuffleDomChildren(container){
+  const children = Array.from(container.children);
+  shuffleArray(children).forEach(c => container.appendChild(c));
+}
+
+function onSelectKr(kr, cardEl){
+  const session = currentMatchSession;
+  if(!session) return;
+  document.querySelectorAll('.match-card.kr.selected').forEach(c=>c.classList.remove('selected'));
+  cardEl.classList.add('selected');
+  session.selectedKr = kr;
+  speakKorean(kr);
+  tryResolveMatch();
+}
+
+function onSelectPt(pt, forKr, cardEl){
+  const session = currentMatchSession;
+  if(!session) return;
+  document.querySelectorAll('.match-card.pt.selected').forEach(c=>c.classList.remove('selected'));
+  cardEl.classList.add('selected');
+  session.selectedPt = pt;
+  session.selectedPtForKr = forKr;
+  tryResolveMatch();
+}
+
+function tryResolveMatch(){
+  const session = currentMatchSession;
+  if(!session.selectedKr || !session.selectedPt) return;
+
+  const correctPair = session.pairs.find(p => p[0] === session.selectedKr);
+  const isCorrect = correctPair && correctPair[1] === session.selectedPt;
+
+  const krCard = document.querySelector(`.match-card.kr[data-kr="${cssEscape(session.selectedKr)}"]`);
+  const ptCard = document.querySelector(`.match-card.pt.selected`);
+
+  if(isCorrect) handleCorrectMatch(session, krCard, ptCard);
+  else handleWrongMatch(krCard, ptCard);
+
+  session.selectedKr = null;
+  session.selectedPt = null;
+}
+
+function cssEscape(str){
+  if(window.CSS && CSS.escape) return CSS.escape(str);
+  return str.replace(/[^a-zA-Z0-9_\u00A0-\uFFFF-]/g, '\\$&');
+}
+
+function handleCorrectMatch(session, krCard, ptCard){
+  const kr = session.selectedKr;
+  session.matchedKr.push(kr);
+  markWordLearned(session.themeId, kr);
+  if(!session.wordsLearnedThisRound.includes(kr)) session.wordsLearnedThisRound.push(kr);
+
+  burstPetalsFrom(krCard);
+  showMatchFeedback(randomPhrase(PHRASES_CORRECT));
+
+  if(krCard) krCard.classList.add('matched');
+  if(ptCard) ptCard.classList.add('matched');
+
+  addFlowers(2);
+  session.flowersEarned += 2;
+  saveState();
+
+  setTimeout(()=>{
+    if(session.matchedKr.length >= session.pairs.length) finishMatchSession();
+    else updateMatchProgressBar();
+  }, 480);
+}
+
+function handleWrongMatch(krCard, ptCard){
+  showMatchFeedback(PHRASE_WRONG);
+  [krCard, ptCard].forEach(c=>{
+    if(!c) return;
+    c.classList.remove('selected');
+    c.classList.add('wrong');
+    setTimeout(()=> c.classList.remove('wrong'), 420);
+  });
+}
+
+function updateMatchProgressBar(){
+  const session = currentMatchSession;
+  const fill = document.querySelector('.match-progress-fill');
+  const count = document.querySelector('.match-progress-count');
+  if(fill) fill.style.width = Math.round((session.matchedKr.length/session.pairs.length)*100)+'%';
+  if(count) count.textContent = `${session.matchedKr.length}/${session.pairs.length}`;
+}
+
+function randomPhrase(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+let feedbackTimer = null;
+function showMatchFeedback(text){
+  let fb = document.querySelector('.match-feedback');
+  if(!fb){
+    fb = document.createElement('div');
+    fb.className = 'match-feedback';
+    document.body.appendChild(fb);
+  }
+  fb.textContent = text;
+  fb.classList.add('show');
+  clearTimeout(feedbackTimer);
+  feedbackTimer = setTimeout(()=> fb.classList.remove('show'), 1300);
+}
+
+function burstPetalsFrom(el){
+  if(!el) return;
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top + rect.height/2;
+  const emojis = ['🌸','✨','🌷'];
+  for(let i=0;i<6;i++){
+    const p = document.createElement('div');
+    p.className = 'burst-petal';
+    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.left = cx+'px';
+    p.style.top = cy+'px';
+    const angle = (Math.random()*Math.PI*2);
+    const dist = 50 + Math.random()*50;
+    p.style.setProperty('--bx', (Math.cos(angle)*dist)+'px');
+    p.style.setProperty('--by', (Math.sin(angle)*dist - 40)+'px');
+    document.body.appendChild(p);
+    setTimeout(()=> p.remove(), 750);
+  }
+}
+
+function finishMatchSession(){ goTo('complete'); }
+
+
+// ============================================
+// JOGO RÁPIDO — modo arcade sem flores
+// ============================================
+let quickGame = null;
+let quickTimer = null;
+
+function allWordsFlat(){
+  const items = [];
+  THEMES.forEach(theme=>{
+    theme.words.forEach(([kr, pt])=>{
+      items.push({kr, pt, themeId:theme.id, themeName:theme.name, emoji:theme.emoji});
+    });
+  });
+  return items;
+}
+
+function startQuickGame(){
+  quickGame = {
+    active:true,
+    score:0,
+    round:0,
+    timeLimit:10000,
+    timeLeft:10000,
+    current:null,
+    options:[],
+    best:Number(localStorage.getItem('oicoreia_quick_best') || 0)
+  };
+  nextQuickQuestion();
+}
+
+function stopQuickTimer(){
+  if(quickTimer){
+    clearInterval(quickTimer);
+    quickTimer = null;
+  }
+}
+
+function nextQuickQuestion(){
+  stopQuickTimer();
+  if(!quickGame) return;
+
+  const pool = allWordsFlat();
+  const current = pool[Math.floor(Math.random()*pool.length)];
+  const wrongs = shuffleArray(pool.filter(item => item.pt !== current.pt)).slice(0,5);
+  const options = shuffleArray([current, ...wrongs]);
+
+  quickGame.current = current;
+  quickGame.options = options;
+  quickGame.round += 1;
+  quickGame.timeLimit = 10000;
+  quickGame.timeLeft = quickGame.timeLimit;
+
+  window.__route = 'quickgame';
+  render();
+
+  const startedAt = Date.now();
+  quickTimer = setInterval(()=>{
+    if(!quickGame || !quickGame.active){
+      stopQuickTimer();
+      return;
+    }
+    quickGame.timeLeft = Math.max(0, quickGame.timeLimit - (Date.now() - startedAt));
+    const fill = document.querySelector('.quick-timer-fill');
+    if(fill){
+      fill.style.width = Math.max(0, (quickGame.timeLeft / quickGame.timeLimit) * 100) + '%';
+    }
+    if(quickGame.timeLeft <= 0){
+      finishQuickGame();
+    }
+  }, 80);
+}
+
+function finishQuickGame(){
+  stopQuickTimer();
+  if(!quickGame) return;
+  quickGame.active = false;
+  const best = Number(localStorage.getItem('oicoreia_quick_best') || 0);
+  if(quickGame.score > best){
+    localStorage.setItem('oicoreia_quick_best', String(quickGame.score));
+    quickGame.best = quickGame.score;
+  } else {
+    quickGame.best = best;
+  }
+  render();
+}
+
+function chooseQuickOption(pt, btn){
+  if(!quickGame || !quickGame.active) return;
+  const correct = quickGame.current && pt === quickGame.current.pt;
+
+  if(correct){
+    if(btn) btn.classList.add('correct');
+    quickGame.score += 1;
+    speakKorean(quickGame.current.kr);
+    setTimeout(()=> nextQuickQuestion(), 180);
+  } else {
+    if(btn) btn.classList.add('wrong');
+    document.querySelectorAll('.quick-option').forEach(option=>{
+      if(option.dataset.pt === quickGame.current.pt) option.classList.add('correct');
+    });
+    setTimeout(()=> finishQuickGame(), 450);
+  }
+}
+
+function renderQuickGame(){
+  if(!quickGame){
+    quickGame = {
+      active:false,
+      score:0,
+      round:0,
+      timeLimit:10000,
+      timeLeft:10000,
+      current:null,
+      options:[],
+      best:Number(localStorage.getItem('oicoreia_quick_best') || 0)
+    };
+  }
+
+  const el = document.createElement('div');
+  el.className = 'screen quick-screen';
+
+  if(!quickGame.active && quickGame.round === 0){
+    el.innerHTML = `
+      <div class="home-greet">
+        <div class="home-greet-text">Jogo rápido ⚡</div>
+        <div class="home-greet-sub">10 segundos. Só você, o coreano e seis opções.</div>
+      </div>
+
+      <div class="quick-start-card">
+        <div class="quick-start-emoji">🎮</div>
+        <div class="quick-start-title">Quanto tempo você aguenta?</div>
+        <div class="quick-start-text">Uma palavra em coreano aparece. Escolha a tradução certa entre 6 opções em até 10 segundos.</div>
+        <button class="btn btn-primary btn-block" id="quickStartBtn">Começar rodada</button>
+      </div>
+
+      <div class="quick-stats">
+        <div class="quick-stat">
+          <div class="quick-stat-value">${quickGame.best}</div>
+          <div class="quick-stat-label">Recorde</div>
+        </div>
+        <div class="quick-stat">
+          <div class="quick-stat-value">6</div>
+          <div class="quick-stat-label">Opções</div>
+        </div>
+        <div class="quick-stat">
+          <div class="quick-stat-value">⚡</div>
+          <div class="quick-stat-label">Arcade</div>
+        </div>
+      </div>
+
+      ${bottomNavHtml('train')}
+    `;
+    app.appendChild(el);
+    el.querySelector('#quickStartBtn').addEventListener('click', startQuickGame);
+    attachBottomNav(el);
+    return;
+  }
+
+  if(!quickGame.active){
+    el.innerHTML = `
+      <div class="home-greet">
+        <div class="home-greet-text">Fim da rodada 🌸</div>
+        <div class="home-greet-sub">Nada mal para quem só ia jogar rapidinho.</div>
+      </div>
+
+      <div class="quick-gameover">
+        <div class="quick-gameover-emoji">${quickGame.score >= quickGame.best ? '🏆' : '✨'}</div>
+        <div class="quick-gameover-title">${quickGame.score >= quickGame.best ? 'Novo recorde!' : 'Rodada encerrada'}</div>
+        <div class="quick-gameover-score">${quickGame.score}</div>
+        <div class="quick-gameover-text">Seu melhor resultado: <b>${quickGame.best}</b><br>Quer tentar só mais uma?</div>
+        <button class="btn btn-primary btn-block" id="quickAgainBtn">Jogar de novo</button>
+      </div>
+
+      ${bottomNavHtml('train')}
+    `;
+    app.appendChild(el);
+    el.querySelector('#quickAgainBtn').addEventListener('click', startQuickGame);
+    attachBottomNav(el);
+    return;
+  }
+
+  const timePct = Math.max(0, (quickGame.timeLeft / quickGame.timeLimit) * 100);
+  el.innerHTML = `
+    <div class="quick-hero">
+      <div class="quick-eyebrow">Modo arcade</div>
+      <div class="quick-title">Jogo rápido</div>
+      <div class="quick-sub">Escolha a tradução antes do tempo acabar.</div>
+    </div>
+
+    <div class="quick-stats">
+      <div class="quick-stat">
+        <div class="quick-stat-value">${quickGame.score}</div>
+        <div class="quick-stat-label">Pontos</div>
+      </div>
+      <div class="quick-stat">
+        <div class="quick-stat-value">${quickGame.round}</div>
+        <div class="quick-stat-label">Rodada</div>
+      </div>
+      <div class="quick-stat">
+        <div class="quick-stat-value">${(quickGame.timeLimit/1000).toFixed(1)}s</div>
+        <div class="quick-stat-label">Tempo</div>
+      </div>
+    </div>
+
+    <div class="quick-timer"><div class="quick-timer-fill" style="width:${timePct}%"></div></div>
+
+    <div class="quick-question">
+      <div class="quick-question-label"></div>
+      <div class="quick-korean">${quickGame.current.kr}</div>
+    </div>
+
+    <div class="quick-options">
+      ${quickGame.options.map(opt=>`
+        <button class="quick-option" data-pt="${escapeHtml(opt.pt)}">${escapeHtml(opt.pt)}</button>
+      `).join('')}
+    </div>
+
+    ${bottomNavHtml('train')}
+  `;
+  app.appendChild(el);
+
+  el.querySelectorAll('.quick-option').forEach(btn=>{
+    btn.addEventListener('click', ()=> chooseQuickOption(btn.dataset.pt, btn));
+  });
+  attachBottomNav(el);
+}
+
+
+
+// ============================================
+// MATCH INFINITO — estilo Duolingo
+// ============================================
+let infiniteGame = null;
+
+function getWordsByLevel(level){
+  const all = allWordsFlat();
+  if(level === 'beginner'){
+    return all.filter(w => w.kr.length <= 5 && w.pt.length <= 18);
+  }
+  if(level === 'intermediate'){
+    return all.filter(w => w.kr.length <= 9);
+  }
+  return all;
+}
+
+function startInfiniteMatch(level){
+  const pool = shuffleArray(getWordsByLevel(level || 'beginner'));
+  infiniteGame = {
+    active:true,
+    level:level || 'beginner',
+    pool,
+    index:0,
+    pairs:[],
+    selectedKr:null,
+    selectedPt:null,
+    hits:0,
+    misses:0,
+    combo:0,
+    best:Number(localStorage.getItem('oicoreia_infinite_best') || 0)
+  };
+  for(let i=0;i<5;i++) addInfinitePair();
+  goTo('infinite');
+}
+
+function addInfinitePair(){
+  if(!infiniteGame) return;
+  if(infiniteGame.index >= infiniteGame.pool.length){
+    infiniteGame.pool = shuffleArray(getWordsByLevel(infiniteGame.level));
+    infiniteGame.index = 0;
+  }
+  const next = infiniteGame.pool[infiniteGame.index++];
+  if(next && !infiniteGame.pairs.some(p => p.kr === next.kr)){
+    infiniteGame.pairs.push(next);
+  } else if(next){
+    addInfinitePair();
+  }
+}
+
+function renderInfiniteMatch(){
+  const el = document.createElement('div');
+  el.className = 'screen infinite-screen';
+
+  if(!infiniteGame || !infiniteGame.active){
+    el.innerHTML = `
+      <div class="infinite-hero">
+        <div class="infinite-title">Match Infinito 🎯</div>
+        <div class="infinite-sub">Escolha seu nível e combine coreano com português sem parar.</div>
+      </div>
+
+      <div class="level-grid">
+        <button class="level-card" data-level="beginner">
+          <div class="level-emoji">🌱</div>
+          <div>
+            <div class="level-name">Iniciante</div>
+            <div class="level-desc">Palavras curtas e úteis para começar sem sofrer.</div>
+          </div>
+        </button>
+        <button class="level-card" data-level="intermediate">
+          <div class="level-emoji">🌿</div>
+          <div>
+            <div class="level-name">Intermediário</div>
+            <div class="level-desc">Palavras maiores e frases comuns de dorama, viagem e KakaoTalk.</div>
+          </div>
+        </button>
+        <button class="level-card" data-level="advanced">
+          <div class="level-emoji">🌳</div>
+          <div>
+            <div class="level-name">Avançado</div>
+            <div class="level-desc">Tudo misturado. Se vira em Seul, querido(a).</div>
+          </div>
+        </button>
+      </div>
+
+      ${bottomNavHtml('train')}
+    `;
+    app.appendChild(el);
+    el.querySelectorAll('[data-level]').forEach(btn=>{
+      btn.addEventListener('click', ()=> startInfiniteMatch(btn.dataset.level));
+    });
+    attachBottomNav(el);
+    return;
+  }
+
+  const krItems = shuffleArray(infiniteGame.pairs);
+  const ptItems = shuffleArray(infiniteGame.pairs);
+
+  el.innerHTML = `
+    <div class="infinite-top">
+      <button class="infinite-close" id="infiniteClose">✕</button>
+      <div class="infinite-scorebar">
+        <div class="infinite-pill">
+          <div class="infinite-pill-value">${infiniteGame.hits}</div>
+          <div class="infinite-pill-label">Acertos</div>
+        </div>
+        <div class="infinite-pill">
+          <div class="infinite-pill-value">${infiniteGame.combo}</div>
+          <div class="infinite-pill-label">Combo</div>
+        </div>
+        <div class="infinite-pill">
+          <div class="infinite-pill-value">${"❤️".repeat(Math.max(0,infiniteGame.lives))}</div>
+          <div class="infinite-pill-label">Vidas</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="infinite-board">
+      <div class="infinite-col">
+        ${krItems.map(item=>`
+          <button class="infinite-card kr" data-kr="${escapeHtml(item.kr)}">
+            <span>${escapeHtml(item.kr)}</span>
+            <span class="infinite-small-audio">▶ ouvir</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="infinite-col">
+        ${ptItems.map(item=>`
+          <button class="infinite-card pt" data-pt="${escapeHtml(item.pt)}" data-for-kr="${escapeHtml(item.kr)}">
+            ${escapeHtml(item.pt)}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="infinite-actions">
+      <button class="btn btn-secondary btn-block" id="changeLevelBtn">Trocar nível</button>
+    </div>
+
+    ${bottomNavHtml('train')}
+  `;
+  app.appendChild(el);
+
+  el.querySelector('#infiniteClose').addEventListener('click', ()=>{
+    infiniteGame.active = false;
+    goTo('home');
+  });
+  el.querySelector('#changeLevelBtn').addEventListener('click', ()=>{
+    infiniteGame = null;
+    render();
+  });
+  el.querySelectorAll('.infinite-card.kr').forEach(btn=>{
+    btn.addEventListener('click', ()=> selectInfiniteKr(btn.dataset.kr, btn));
+  });
+  el.querySelectorAll('.infinite-card.pt').forEach(btn=>{
+    btn.addEventListener('click', ()=> selectInfinitePt(btn.dataset.pt, btn.dataset.forKr, btn));
+  });
+  attachBottomNav(el);
+}
+
+function selectInfiniteKr(kr, btn){
+  if(!infiniteGame) return;
+  document.querySelectorAll('.infinite-card.kr.selected').forEach(c=>c.classList.remove('selected'));
+  btn.classList.add('selected');
+  infiniteGame.selectedKr = kr;
+  speakKorean(kr);
+  resolveInfinite();
+}
+
+function selectInfinitePt(pt, forKr, btn){
+  if(!infiniteGame) return;
+  document.querySelectorAll('.infinite-card.pt.selected').forEach(c=>c.classList.remove('selected'));
+  btn.classList.add('selected');
+  infiniteGame.selectedPt = pt;
+  infiniteGame.selectedPtForKr = forKr;
+  resolveInfinite();
+}
+
+function updateInfiniteStats(){
+  if(!infiniteGame) return;
+  const values = document.querySelectorAll('.infinite-pill-value');
+  if(values[0]) values[0].textContent = infiniteGame.hits;
+  if(values[1]) values[1].textContent = infiniteGame.combo;
+  if(values[2]) values[2].textContent = '❤️'.repeat(Math.max(0,infiniteGame.lives));
+}
+
+function attachInfiniteCardEvents(root=document){
+  root.querySelectorAll('.infinite-card.kr').forEach(btn=>{
+    btn.onclick = ()=> selectInfiniteKr(btn.dataset.kr, btn);
+  });
+  root.querySelectorAll('.infinite-card.pt').forEach(btn=>{
+    btn.onclick = ()=> selectInfinitePt(btn.dataset.pt, btn.dataset.forKr, btn);
+  });
+}
+
+function makeInfiniteKrCard(item){
+  const btn = document.createElement('button');
+  btn.className = 'infinite-card kr fade-in';
+  btn.dataset.kr = item.kr;
+  btn.innerHTML = `<span>${escapeHtml(item.kr)}</span><span class="infinite-small-audio">▶ ouvir</span>`;
+  btn.onclick = ()=> selectInfiniteKr(btn.dataset.kr, btn);
+  return btn;
+}
+
+function makeInfinitePtCard(item){
+  const btn = document.createElement('button');
+  btn.className = 'infinite-card pt fade-in';
+  btn.dataset.pt = item.pt;
+  btn.dataset.forKr = item.kr;
+  btn.textContent = item.pt;
+  btn.onclick = ()=> selectInfinitePt(btn.dataset.pt, btn.dataset.forKr, btn);
+  return btn;
+}
+
+function resolveInfinite(){
+  if(!infiniteGame || !infiniteGame.selectedKr || !infiniteGame.selectedPt) return;
+
+  const isCorrect = infiniteGame.selectedKr === infiniteGame.selectedPtForKr;
+  const kr = infiniteGame.selectedKr;
+  const pt = infiniteGame.selectedPt;
+  const krCard = document.querySelector(`.infinite-card.kr[data-kr="${cssEscape(kr)}"]`);
+  const ptCard = document.querySelector(`.infinite-card.pt[data-pt="${cssEscape(pt)}"]`);
+
+  if(isCorrect){
+    if(krCard) krCard.classList.add('correct');
+    if(ptCard) ptCard.classList.add('correct');
+
+    infiniteGame.hits += 1;
+    infiniteGame.combo += 1;
+    if(infiniteGame.hits > infiniteGame.best){
+      infiniteGame.best = infiniteGame.hits;
+      localStorage.setItem('oicoreia_infinite_best', String(infiniteGame.best));
+    }
+    updateInfiniteStats();
+
+    infiniteGame.pairs = infiniteGame.pairs.filter(p => p.kr !== kr);
+    addInfinitePair();
+    const newPair = infiniteGame.pairs[infiniteGame.pairs.length - 1];
+
+    infiniteGame.selectedKr = null;
+    infiniteGame.selectedPt = null;
+
+    setTimeout(()=>{
+      if(krCard) krCard.classList.add('fade-out');
+      if(ptCard) ptCard.classList.add('fade-out');
+
+      setTimeout(()=>{
+        if(krCard && newPair){
+          const newKr = makeInfiniteKrCard(newPair);
+          krCard.replaceWith(newKr);
+        }
+        if(ptCard && newPair){
+          const newPt = makeInfinitePtCard(newPair);
+          ptCard.replaceWith(newPt);
+        }
+      }, 180);
+    }, 140);
+
+  } else {
+    infiniteGame.misses += 1;
+    infiniteGame.combo = 0;
+    infiniteGame.lives -= 1;
+    updateInfiniteStats();
+
+    if(infiniteGame.lives <= 0){ setTimeout(()=>{ alert('Fim de jogo!\n\nAcertos: '+infiniteGame.hits); infiniteGame=null; goTo('infinite'); },500); return; }
+
+    if(krCard) krCard.classList.add('wrong');
+    if(ptCard) ptCard.classList.add('wrong');
+
+    setTimeout(()=>{
+      document.querySelectorAll('.infinite-card.selected,.infinite-card.wrong').forEach(c=>{
+        c.classList.remove('selected','wrong');
+      });
+      infiniteGame.selectedKr = null;
+      infiniteGame.selectedPt = null;
+    }, 420);
+  }
+}
+
+function renderCompleteScreen(){
+  const session = currentMatchSession;
+  if(!session){ goTo('home'); return; }
+
+  const el = document.createElement('div');
+  el.className = 'screen complete-screen complete';
+
+  const justUnlocked = THEMES.filter(t => t.unlockFlowers > 0 &&
+    state.flowers >= t.unlockFlowers &&
+    (state.flowers - session.flowersEarned) < t.unlockFlowers
+  );
+
+  const wordsChips = session.wordsLearnedThisRound.map(kr=>{
+    const pair = session.pairs.find(p=>p[0]===kr);
+    return `<div class="complete-word-chip"><span class="kr">${kr}</span><span>${pair ? pair[1] : ''}</span></div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="complete-emoji">🌸</div>
+    <div class="complete-title">Hoje você aprendeu<br>${session.wordsLearnedThisRound.length} palavras novas.</div>
+    <div class="complete-desc">${session.themeEmoji} ${escapeHtml(session.themeName)}</div>
+
+    ${justUnlocked.map(t => `<div class="complete-unlock-banner">${t.name} foi desbloqueada! ${t.emoji}</div>`).join('')}
+
+    <div class="complete-flowers">+${session.flowersEarned} 🌸</div>
+
+    <div class="complete-words">${wordsChips}</div>
+
+    <button class="btn btn-primary btn-block" id="btnContinue">Continuar</button>
+    <button class="btn btn-ghost" id="btnPlayAgain">Jogar essa rodada de novo</button>
+  `;
+  app.appendChild(el);
+
+  el.querySelector('#btnContinue').addEventListener('click', ()=>{
+    currentMatchSession = null;
+    goTo('home');
+  });
+  el.querySelector('#btnPlayAgain').addEventListener('click', ()=>{
+    const themeId = session.themeId;
+    currentMatchSession = null;
+    startMatchSession(themeId);
+  });
+}
+
+function renderProfile(){
+  const el = document.createElement('div');
+  el.className = 'screen profile';
+
+  const learned = totalWordsLearned();
+  const unlockedThemes = THEMES.filter(isThemeUnlocked).length;
+  const sinceDate = new Date(state.createdAt);
+  const sinceStr = sinceDate.toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+
+  el.innerHTML = `
+    <div class="profile-header">
+      <div class="profile-avatar">🌷</div>
+      <div class="profile-name">${escapeHtml(state.name)}</div>
+      <div class="profile-since">Aprendendo coreano desde ${sinceStr}</div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="profile-stat"><div class="profile-stat-value">${learned}</div><div class="profile-stat-label">Palavras<br>aprendidas</div></div>
+      <div class="profile-stat"><div class="profile-stat-value">${state.flowers}</div><div class="profile-stat-label">Flores<br>coletadas</div></div>
+      <div class="profile-stat"><div class="profile-stat-value">${unlockedThemes}/${THEMES.length}</div><div class="profile-stat-label">Destinos<br>abertos</div></div>
+    </div>
+
+    <div class="section-label">Suas coleções</div>
+    <div class="collection-list" id="collectionList"></div>
+
+    ${bottomNavHtml('profile')}
+  `;
+  app.appendChild(el);
+
+  const list = el.querySelector('#collectionList');
+  THEMES.forEach(theme=>{
+    const unlocked = isThemeUnlocked(theme);
+    const count = themeLearnedCount(theme.id);
+    const pct = Math.round((count/theme.words.length)*100);
+    const row = document.createElement('div');
+    row.className = 'collection-row' + (unlocked ? '' : ' locked');
+    row.innerHTML = `
+      <div class="collection-emoji">${theme.emoji}</div>
+      <div class="collection-info">
+        <div class="collection-name">${theme.name}</div>
+        <div class="collection-progress-text">${unlocked ? count+'/'+theme.words.length+' palavras' : 'Bloqueado · '+theme.unlockFlowers+' 🌸'}</div>
+      </div>
+      <div class="collection-bar"><div class="collection-bar-fill" style="width:${unlocked ? pct : 0}%"></div></div>
+    `;
+    list.appendChild(row);
+  });
+
+  attachBottomNav(el);
+}
+
+function renderSettings(){
+  const el = document.createElement('div');
+  el.className = 'screen settings';
+
+  el.innerHTML = `
+    <div class="topbar" style="padding-left:0; padding-right:0;">
+      <div></div>
+      <div class="topbar-title">Ajustes</div>
+      <div></div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Som e pronúncia</div>
+          <div class="settings-row-desc">Ouvir as palavras em coreano</div>
+        </div>
+        <button class="toggle ${state.soundOn ? 'on' : ''}" id="toggleSound"><div class="toggle-knob"></div></button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-row" id="rowChangeName" style="cursor:pointer;">
+        <div>
+          <div class="settings-row-label">Alterar nome</div>
+          <div class="settings-row-desc">Atualmente: ${escapeHtml(state.name)}</div>
+        </div>
+        <span>✏️</span>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-row" id="rowReset" style="cursor:pointer;">
+        <div>
+          <div class="settings-row-label danger-text">Reiniciar progresso</div>
+          <div class="settings-row-desc">Apaga todas as palavras, flores e temas desbloqueados</div>
+        </div>
+        <span>🗑️</span>
+      </div>
+    </div>
+
+    <div style="text-align:center; padding:20px 0; color:var(--ink-faint); font-size:12px; font-weight:500;">
+      Oi Coreia · seus dados ficam salvos apenas neste dispositivo 🌸
+    </div>
+
+    ${bottomNavHtml('settings')}
+  `;
+  app.appendChild(el);
+
+  el.querySelector('#toggleSound').addEventListener('click', (e)=>{
+    state.soundOn = !state.soundOn;
+    saveState();
+    e.currentTarget.classList.toggle('on', state.soundOn);
+    if(state.soundOn) speakKorean('안녕하세요');
+  });
+
+  el.querySelector('#rowChangeName').addEventListener('click', ()=> openRenameModal());
+  el.querySelector('#rowReset').addEventListener('click', ()=> openResetModal());
+
+  attachBottomNav(el);
+}
+
+function openRenameModal(){
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <div class="modal-title">Alterar nome</div>
+      <input type="text" class="onboard-input" id="renameInput" value="${escapeHtml(state.name)}" maxlength="20" style="margin-bottom:18px;">
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="cancelRename">Cancelar</button>
+        <button class="btn btn-primary" id="confirmRename">Salvar</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(()=> overlay.classList.add('show'));
+  const close = ()=>{ overlay.classList.remove('show'); setTimeout(()=>overlay.remove(), 250); };
+  overlay.querySelector('#cancelRename').addEventListener('click', close);
+  overlay.querySelector('#confirmRename').addEventListener('click', ()=>{
+    const val = overlay.querySelector('#renameInput').value.trim();
+    if(val){
+      state.name = val;
+      saveState();
+      close();
+      render();
+    }
+  });
+}
+
+function openResetModal(){
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <div class="modal-title">Reiniciar progresso?</div>
+      <div class="modal-desc">Isso vai apagar todas as palavras aprendidas, flores e temas desbloqueados. Essa ação não pode ser desfeita.</div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="cancelReset">Cancelar</button>
+        <button class="btn btn-primary" id="confirmReset" style="background:linear-gradient(135deg, var(--peach), var(--sakura-deep));">Reiniciar</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(()=> overlay.classList.add('show'));
+  const close = ()=>{ overlay.classList.remove('show'); setTimeout(()=>overlay.remove(), 250); };
+  overlay.querySelector('#cancelReset').addEventListener('click', close);
+  overlay.querySelector('#confirmReset').addEventListener('click', ()=>{
+    const keepName = state.name;
+    state = defaultState();
+    state.name = keepName;
+    state.onboarded = true;
+    saveState();
+    close();
+    showToast('Seu progresso foi reiniciado.');
+    goTo('home');
+  });
+}
+
+function init(){
+  spawnPetalsBg();
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
