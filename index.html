@@ -907,6 +907,29 @@ img,svg{display:block;}
   to{transform:scale(.98);}
 }
 
+
+/* ============================================
+   VIDAS + GAME OVER MATCH INFINITO
+   ============================================ */
+.infinite-lives{font-size:16px;letter-spacing:1px;white-space:nowrap;}
+.infinite-life-lost{animation:lifeShake .35s ease;}
+@keyframes lifeShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.infinite-error-toast{
+  position:fixed;left:50%;top:18%;transform:translateX(-50%) translateY(-8px);
+  background:#fff;color:var(--ink);box-shadow:var(--shadow-float);border-radius:999px;
+  padding:12px 18px;font-weight:900;z-index:80;opacity:0;pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+}
+.infinite-error-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.infinite-gameover{
+  background:var(--white);border-radius:var(--r-lg);box-shadow:var(--shadow-float);
+  padding:30px 22px;text-align:center;margin-top:18px;
+}
+.infinite-gameover-emoji{font-size:58px;margin-bottom:10px;}
+.infinite-gameover-title{font-family:var(--font-display);font-size:30px;font-weight:700;}
+.infinite-gameover-text{color:var(--ink-soft);font-weight:700;line-height:1.55;margin:12px 0 24px;}
+.infinite-gameover-score{font-size:58px;font-weight:900;color:var(--sakura-deep);line-height:1;margin:12px 0;}
+
 </style>
 </head>
 <body>
@@ -1160,8 +1183,8 @@ function renderOnboard(){
     el.innerHTML = `
       <div class="onboard-emoji">🌸</div>
       <div class="onboard-title">안녕하세요, ${escapeHtml(state.name)} 🌸</div>
-      <div class="onboard-desc">Vamos aprender suas primeiras<br>palavras em coreano?</div>
-      <button class="btn btn-primary" id="btnOnboardDone">Começar</button>
+      <div class="onboard-desc">Vamos treinar coreano<br>do seu jeito?</div>
+      <button class="btn btn-primary" id="btnOnboardDone">Começar treino</button>
     `;
     app.appendChild(el);
     el.querySelector('#btnOnboardDone').addEventListener('click', ()=>{
@@ -1869,7 +1892,11 @@ function startInfiniteMatch(level){
     hits:0,
     misses:0,
     combo:0,
-    best:Number(localStorage.getItem('oicoreia_infinite_best') || 0)
+    maxCombo:0,
+    lives:3,
+    gameOver:false,
+    best:Number(localStorage.getItem('oicoreia_infinite_best') || 0),
+    bestCombo:Number(localStorage.getItem('oicoreia_infinite_best_combo') || 0)
   };
   for(let i=0;i<5;i++) addInfinitePair();
   goTo('infinite');
@@ -1889,9 +1916,74 @@ function addInfinitePair(){
   }
 }
 
+
+function renderLives(lives){
+  const full = Math.max(0, lives || 0);
+  return '❤️'.repeat(full) + '🤍'.repeat(Math.max(0, 3 - full));
+}
+
+function showInfiniteErrorToast(text){
+  let toast = document.getElementById('infiniteErrorToast');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'infiniteErrorToast';
+    toast.className = 'infinite-error-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(window.__infiniteErrorTimer);
+  window.__infiniteErrorTimer = setTimeout(()=>toast.classList.remove('show'), 900);
+}
+
+function finishInfiniteGame(){
+  if(!infiniteGame) return;
+  infiniteGame.active = false;
+  infiniteGame.gameOver = true;
+  if(infiniteGame.hits > Number(localStorage.getItem('oicoreia_infinite_best') || 0)){
+    localStorage.setItem('oicoreia_infinite_best', String(infiniteGame.hits));
+  }
+  if((infiniteGame.maxCombo || 0) > Number(localStorage.getItem('oicoreia_infinite_best_combo') || 0)){
+    localStorage.setItem('oicoreia_infinite_best_combo', String(infiniteGame.maxCombo || 0));
+  }
+  render();
+}
+
+
 function renderInfiniteMatch(){
   const el = document.createElement('div');
   el.className = 'screen infinite-screen';
+
+  if(infiniteGame && infiniteGame.gameOver){
+    const finalScore = infiniteGame.hits || 0;
+    const finalCombo = infiniteGame.maxCombo || 0;
+    const best = Number(localStorage.getItem('oicoreia_infinite_best') || finalScore);
+    const bestCombo = Number(localStorage.getItem('oicoreia_infinite_best_combo') || finalCombo);
+    el.innerHTML = `
+      <div class="infinite-hero">
+        <div class="infinite-title">Fim de jogo 🌸</div>
+        <div class="infinite-sub">Suas vidas acabaram.</div>
+      </div>
+      <div class="infinite-gameover">
+        <div class="infinite-gameover-emoji">🏆</div>
+        <div class="infinite-gameover-title">Você acertou</div>
+        <div class="infinite-gameover-score">${finalScore}</div>
+        <div class="infinite-gameover-text">
+          Maior combo desta rodada: <b>${finalCombo}</b><br>
+          Recorde: <b>${best}</b> acertos<br>
+          Melhor combo: <b>${bestCombo}</b>
+        </div>
+        <button class="btn btn-primary btn-block" id="playInfiniteAgain">Jogar novamente</button>
+        <button class="btn btn-ghost" id="backToTrain">Voltar para Treinar</button>
+      </div>
+      ${bottomNavHtml('train')}
+    `;
+    app.appendChild(el);
+    el.querySelector('#playInfiniteAgain').addEventListener('click', ()=> startInfiniteMatch(infiniteGame.level || 'beginner'));
+    el.querySelector('#backToTrain').addEventListener('click', ()=> { infiniteGame = null; goTo('train'); });
+    attachBottomNav(el);
+    return;
+  }
 
   if(!infiniteGame || !infiniteGame.active){
     el.innerHTML = `
@@ -1942,15 +2034,15 @@ function renderInfiniteMatch(){
       <button class="infinite-close" id="infiniteClose">✕</button>
       <div class="infinite-scorebar">
         <div class="infinite-pill">
-          <div class="infinite-pill-value">${infiniteGame.hits}</div>
+          <div class="infinite-pill-value" id="infHits">${infiniteGame.hits}</div>
           <div class="infinite-pill-label">Acertos</div>
         </div>
         <div class="infinite-pill">
-          <div class="infinite-pill-value">${infiniteGame.combo}</div>
+          <div class="infinite-pill-value" id="infCombo">${infiniteGame.combo}</div>
           <div class="infinite-pill-label">Combo</div>
         </div>
-        <div class="infinite-pill">
-          <div class="infinite-pill-value">${"❤️".repeat(Math.max(0,infiniteGame.lives))}</div>
+        <div class="infinite-pill" id="infLivesPill">
+          <div class="infinite-pill-value infinite-lives" id="infLives">${renderLives(infiniteGame.lives)}</div>
           <div class="infinite-pill-label">Vidas</div>
         </div>
       </div>
@@ -2019,10 +2111,12 @@ function selectInfinitePt(pt, forKr, btn){
 
 function updateInfiniteStats(){
   if(!infiniteGame) return;
-  const values = document.querySelectorAll('.infinite-pill-value');
-  if(values[0]) values[0].textContent = infiniteGame.hits;
-  if(values[1]) values[1].textContent = infiniteGame.combo;
-  if(values[2]) values[2].textContent = '❤️'.repeat(Math.max(0,infiniteGame.lives));
+  const hits = document.getElementById('infHits');
+  const combo = document.getElementById('infCombo');
+  const lives = document.getElementById('infLives');
+  if(hits) hits.textContent = infiniteGame.hits;
+  if(combo) combo.textContent = infiniteGame.combo;
+  if(lives) lives.textContent = renderLives(infiniteGame.lives);
 }
 
 function attachInfiniteCardEvents(root=document){
@@ -2068,6 +2162,11 @@ function resolveInfinite(){
 
     infiniteGame.hits += 1;
     infiniteGame.combo += 1;
+    infiniteGame.maxCombo = Math.max(infiniteGame.maxCombo || 0, infiniteGame.combo);
+    if(infiniteGame.combo > (infiniteGame.bestCombo || 0)){
+      infiniteGame.bestCombo = infiniteGame.combo;
+      localStorage.setItem('oicoreia_infinite_best_combo', String(infiniteGame.bestCombo));
+    }
     if(infiniteGame.hits > infiniteGame.best){
       infiniteGame.best = infiniteGame.hits;
       localStorage.setItem('oicoreia_infinite_best', String(infiniteGame.best));
@@ -2100,13 +2199,25 @@ function resolveInfinite(){
   } else {
     infiniteGame.misses += 1;
     infiniteGame.combo = 0;
-    infiniteGame.lives -= 1;
+    infiniteGame.lives = Math.max(0, (infiniteGame.lives || 0) - 1);
     updateInfiniteStats();
 
-    if(infiniteGame.lives <= 0){ setTimeout(()=>{ alert('Fim de jogo!\n\nAcertos: '+infiniteGame.hits); infiniteGame=null; goTo('infinite'); },500); return; }
+    showInfiniteErrorToast(infiniteGame.lives > 0 ? `Ops! ${infiniteGame.lives} vida(s) restantes` : 'Fim de jogo!');
+
+    const livesPill = document.getElementById('infLivesPill');
+    if(livesPill){
+      livesPill.classList.remove('infinite-life-lost');
+      void livesPill.offsetWidth;
+      livesPill.classList.add('infinite-life-lost');
+    }
 
     if(krCard) krCard.classList.add('wrong');
     if(ptCard) ptCard.classList.add('wrong');
+
+    if(infiniteGame.lives <= 0){
+      setTimeout(()=> finishInfiniteGame(), 650);
+      return;
+    }
 
     setTimeout(()=>{
       document.querySelectorAll('.infinite-card.selected,.infinite-card.wrong').forEach(c=>{
