@@ -983,6 +983,39 @@ img,svg{display:block;}
   flex-shrink:0;
 }
 
+
+/* Toggle do Modo Dorameiro na tela Treinar */
+.dorama-mode-card{
+  width:100%;
+  background:linear-gradient(135deg,#FFF0F4,var(--white));
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow-card);
+  padding:18px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin:16px 0 18px;
+  text-align:left;
+}
+.dorama-mode-title{
+  font-family:var(--font-display);
+  font-size:22px;
+  font-weight:700;
+  color:var(--ink);
+  line-height:1.1;
+}
+.dorama-mode-desc{
+  font-size:13px;
+  color:var(--ink-soft);
+  font-weight:600;
+  line-height:1.35;
+  margin-top:4px;
+}
+.dorama-mode-card .toggle{
+  transform:scale(1.08);
+}
+
 </style>
 </head>
 <body>
@@ -1474,8 +1507,15 @@ function renderTrainScreen(){
     <div class="home-greet">
       <div class="home-greet-text">Treinar coreano 🎯</div>
       <div class="home-greet-sub">Escolha como quer praticar hoje.</div>
-      ${state.doramaMode ? '<div class="dorama-badge">🎬 Modo Dorameiro ativado</div>' : ''}
     </div>
+
+    <button class="dorama-mode-card" id="toggleDoramaTrain">
+      <div>
+        <div class="dorama-mode-title">🎬 Eu amo doramas</div>
+        <div class="dorama-mode-desc">${state.doramaMode ? 'Modo Dorameiro ativado: treine com seus doramas favoritos.' : 'Ative para liberar frases de Pousando no Amor, Vincenzo e outros.'}</div>
+      </div>
+      <div class="toggle ${state.doramaMode ? 'on' : ''}"><div class="toggle-knob"></div></div>
+    </button>
 
     <button class="train-card" id="trainTrip">
       <div class="train-card-icon">✈️</div>
@@ -1527,6 +1567,11 @@ function renderTrainScreen(){
     ${bottomNavHtml('train')}
   `;
   app.appendChild(el);
+  el.querySelector('#toggleDoramaTrain').addEventListener('click', ()=>{
+    state.doramaMode = !state.doramaMode;
+    saveState();
+    render();
+  });
   el.querySelector('#trainTrip').addEventListener('click', ()=> goTo('themes'));
   el.querySelector('#trainQuick').addEventListener('click', ()=> goTo('quickgame'));
   el.querySelector('#trainInfinite').addEventListener('click', ()=> goTo('infinite'));
@@ -2502,26 +2547,6 @@ function renderSettings(){
       </div>
     </div>
 
-
-    <div class="settings-group">
-      <div class="settings-row">
-        <div>
-          <div class="settings-row-label">🎬 Eu amo doramas</div>
-          <div class="settings-row-desc">Ativa pacotes de frases dos seus doramas favoritos</div>
-        </div>
-        <button class="toggle ${state.doramaMode ? 'on' : ''}" id="toggleDorama"><div class="toggle-knob"></div></button>
-      </div>
-      ${state.doramaMode ? DORAMA_PACKS.map(pack => `
-        <div class="settings-row dorama-fav-row" data-dorama-fav="${pack.id}" style="cursor:pointer;">
-          <div>
-            <div class="settings-row-label">${pack.emoji} ${pack.name}</div>
-            <div class="settings-row-desc">${pack.words.length} palavras e frases</div>
-          </div>
-          <div class="setting-check">${(state.doramaFavorites || {})[pack.id] !== false ? '✓' : ''}</div>
-        </div>
-      `).join('') : ''}
-    </div>
-
     <div class="settings-group">
       <div class="settings-row" id="rowChangeName" style="cursor:pointer;">
         <div>
@@ -2556,15 +2581,6 @@ function renderSettings(){
     e.currentTarget.classList.toggle('on', state.soundOn);
     if(state.soundOn) speakKorean('안녕하세요');
   });
-
-  const toggleDorama = el.querySelector('#toggleDorama');
-  if(toggleDorama){
-    toggleDorama.addEventListener('click', (e)=>{
-      state.doramaMode = !state.doramaMode;
-      saveState();
-      render();
-    });
-  }
 
   el.querySelectorAll('[data-dorama-fav]').forEach(row=>{
     row.addEventListener('click', ()=>{
