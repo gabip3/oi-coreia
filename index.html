@@ -930,6 +930,59 @@ img,svg{display:block;}
 .infinite-gameover-text{color:var(--ink-soft);font-weight:700;line-height:1.55;margin:12px 0 24px;}
 .infinite-gameover-score{font-size:58px;font-weight:900;color:var(--sakura-deep);line-height:1;margin:12px 0;}
 
+
+/* ============================================
+   MODO DORAMEIRO
+   ============================================ */
+.dorama-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#FFF0F4;
+  color:var(--sakura-deep);
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  margin-top:8px;
+}
+.dorama-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin:12px 0 18px;
+}
+.dorama-pick{
+  background:var(--white);
+  border-radius:22px;
+  box-shadow:var(--shadow-card);
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:800;
+  text-align:left;
+}
+.dorama-pick span:first-child{font-size:24px;}
+.dorama-pick small{
+  display:block;
+  color:var(--ink-soft);
+  font-size:11px;
+  font-weight:700;
+  margin-top:2px;
+}
+.setting-check{
+  width:26px;
+  height:26px;
+  border-radius:9px;
+  background:#FFF0F4;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  flex-shrink:0;
+}
+
 </style>
 </head>
 <body>
@@ -966,6 +1019,87 @@ const THEMES = [
     words:[['섬','Ilha'],['꽃','Flor'],['벚꽃','Flor de cerejeira'],['산','Montanha'],['하늘','Céu'],['바람','Vento'],['자연','Natureza'],['귤','Tangerina'],['돌','Pedra'],['평화로워요','É tranquilo'],['아름다워요','É lindo'],['휴가','Férias']] },
 ];
 
+
+
+// ============================================
+// MODO DORAMEIRO — pacotes inspirados em doramas favoritos
+// Conteúdo educativo: frases comuns e vocabulário inspirado no clima dos doramas,
+// sem copiar diálogos longos, legendas oficiais ou roteiro.
+// ============================================
+const DORAMA_PACKS = [
+  { id:'cloy', emoji:'🕯️', name:'Pousando no Amor', unlockFlowers:0, dorama:true,
+    words:[
+      ['괜찮아요','Está tudo bem'],['걱정하지 마세요','Não se preocupe'],['조심하세요','Tome cuidado'],['보고 싶었어요','Eu senti sua falta'],
+      ['기다리고 있었어요','Eu estava esperando'],['어디예요?','Onde você está?'],['길을 잃었어요','Me perdi'],['따라오세요','Me siga'],
+      ['제가 갈게요','Eu vou até você'],['무서워하지 마세요','Não tenha medo'],['혼자 아니에요','Você não está sozinho(a)'],['제가 지켜줄게요','Eu vou te proteger'],
+      ['믿어도 돼요','Você pode confiar'],['가지 마세요','Não vá embora'],['다시 만나요','Vamos nos encontrar de novo'],['약속해요','Prometa'],
+      ['기억할게요','Eu vou lembrar'],['기다릴게요','Eu vou esperar'],['정말 고마워요','Muito obrigado(a) de verdade'],['마음이 아파요','Meu coração dói'],
+      ['괜찮을 거예요','Vai ficar tudo bem'],['집에 가고 싶어요','Quero ir para casa'],['여기가 어디예요?','Onde é aqui?'],['도와주세요','Por favor, me ajude'],
+      ['불을 켜요','Acenda a luz'],['촛불','Vela'],['길','Caminho'],['밤','Noite'],['눈','Neve'],['군인','Soldado'],
+      ['국경','Fronteira'],['마을','Vila'],['기차','Trem'],['사랑','Amor'],['운명','Destino'],['우연','Coincidência'],
+      ['선물','Presente'],['작별','Despedida'],['재회','Reencontro'],['비밀','Segredo']
+    ]},
+  { id:'vincenzo', emoji:'⚖️', name:'Vincenzo', unlockFlowers:0, dorama:true,
+    words:[
+      ['변호사','Advogado(a)'],['재판','Julgamento'],['증거','Evidência'],['복수','Vingança'],['계획','Plano'],['비밀','Segredo'],
+      ['돈','Dinheiro'],['회사','Empresa'],['대표','Diretor(a)'],['계약','Contrato'],['위험해요','É perigoso'],['조심해요','Tome cuidado'],
+      ['믿지 마세요','Não confie'],['거짓말이에요','É mentira'],['제가 처리할게요','Eu vou resolver'],['기다려요','Espere'],
+      ['문제가 생겼어요','Aconteceu um problema'],['증인이 있어요','Há uma testemunha'],['도망가요','Fuja'],['경찰','Polícia'],
+      ['검사','Promotor(a)'],['판사','Juiz/Juíza'],['법','Lei'],['정의','Justiça'],['악당','Vilão'],['협박','Ameaça'],
+      ['거래','Negócio/Acordo'],['배신','Traição'],['동료','Colega'],['작전','Operação']
+    ]},
+  { id:'alchemy', emoji:'✨', name:'Alquimia das Almas', unlockFlowers:0, dorama:true,
+    words:[
+      ['영혼','Alma'],['마법','Magia'],['운명','Destino'],['스승','Mestre'],['제자','Discípulo(a)'],['힘','Força/Poder'],
+      ['검','Espada'],['전투','Batalha'],['약속','Promessa'],['기억','Memória'],['비밀','Segredo'],['왕국','Reino'],
+      ['살아있어요','Está vivo(a)'],['돌아왔어요','Voltou'],['믿어요','Eu acredito'],['포기하지 마세요','Não desista'],
+      ['위험합니다','É perigoso'],['도와줄게요','Vou te ajudar'],['지켜야 해요','Preciso proteger'],['마음을 숨겨요','Esconda o coração'],
+      ['진실','Verdade'],['거짓','Mentira'],['그림자','Sombra'],['빛','Luz'],['하늘','Céu'],['물','Água'],
+      ['불','Fogo'],['바람','Vento'],['검술','Esgrima'],['궁궐','Palácio']
+    ]},
+  { id:'woowoo', emoji:'🐳', name:'Advogada Extraordinária', unlockFlowers:0, dorama:true,
+    words:[
+      ['변호사','Advogada(o)'],['사건','Caso'],['의뢰인','Cliente'],['회사','Empresa'],['회의','Reunião'],['동료','Colega'],
+      ['법원','Tribunal'],['판결','Sentença'],['질문','Pergunta'],['대답','Resposta'],['고래','Baleia'],['친구','Amigo(a)'],
+      ['괜찮아요','Tudo bem'],['천천히 말해 주세요','Fale devagar, por favor'],['이해했어요','Entendi'],['다시 말해 주세요','Repita, por favor'],
+      ['도와드릴게요','Vou ajudar'],['걱정하지 마세요','Não se preocupe'],['증거가 필요해요','Precisamos de evidência'],['사실입니다','É verdade'],
+      ['규칙','Regra'],['존중','Respeito'],['용기','Coragem'],['마음','Coração/Sentimento'],['점심','Almoço'],['김밥','Kimbap'],
+      ['출근','Ir ao trabalho'],['퇴근','Sair do trabalho'],['상사','Chefe'],['문서','Documento']
+    ]},
+  { id:'kingland', emoji:'👑', name:'Sorriso Real', unlockFlowers:0, dorama:true,
+    words:[
+      ['호텔','Hotel'],['손님','Hóspede'],['직원','Funcionário(a)'],['서비스','Serviço'],['미소','Sorriso'],['예약','Reserva'],
+      ['방','Quarto'],['열쇠','Chave'],['대표님','Diretor(a)'],['회의','Reunião'],['근무','Trabalho/Turno'],['휴가','Férias'],
+      ['어서 오세요','Bem-vindo(a)'],['도와드릴까요?','Posso ajudar?'],['감사합니다','Obrigado(a)'],['죄송합니다','Desculpe'],
+      ['괜찮으세요?','Você está bem?'],['오늘 예뻐요','Você está bonita hoje'],['같이 갈까요?','Vamos juntos?'],['기다릴게요','Vou esperar'],
+      ['고급','Luxo'],['친절','Gentileza'],['선물','Presente'],['데이트','Encontro'],['사장','Presidente/Chefe'],['팀장','Líder de equipe'],
+      ['엘리베이터','Elevador'],['로비','Lobby'],['아침 식사','Café da manhã'],['커피','Café']
+    ]},
+  { id:'business', emoji:'💍', name:'Pretendente Surpresa', unlockFlowers:0, dorama:true,
+    words:[
+      ['소개팅','Encontro às cegas'],['회사','Empresa'],['사장님','Chefe/Presidente'],['직원','Funcionário(a)'],['비밀','Segredo'],['계약','Contrato'],
+      ['데이트','Encontro'],['거짓말','Mentira'],['친구','Amigo(a)'],['음식','Comida'],['라면','Lámen'],['치킨','Frango'],
+      ['놀랐어요','Fiquei surpreso(a)'],['정말요?','Sério?'],['어떡해요?','O que eu faço?'],['들켰어요','Fui descoberto(a)'],
+      ['미안해요','Desculpa'],['좋아해요','Eu gosto de você'],['사귀어요','Estamos namorando'],['결혼','Casamento'],
+      ['전화','Telefone'],['문자','Mensagem'],['사진','Foto'],['가족','Família'],['할아버지','Avô'],['식당','Restaurante'],
+      ['요리','Culinária'],['회의','Reunião'],['출근','Ir ao trabalho'],['퇴근','Sair do trabalho']
+    ]}
+];
+
+function activeDoramaPacks(){
+  const favs = state.doramaFavorites || {};
+  return DORAMA_PACKS.filter(pack => favs[pack.id] !== false);
+}
+
+function visibleThemeList(){
+  return state.doramaMode ? THEMES.concat(activeDoramaPacks()) : THEMES;
+}
+
+function findThemeById(themeId){
+  return THEMES.concat(DORAMA_PACKS).find(t => t.id === themeId);
+}
+
+
 // Frases de feedback
 const PHRASES_CORRECT = [
   'Agora você já consegue pedir café em Seul. ☕',
@@ -986,7 +1120,7 @@ const HOME_QUOTES = [
   "Respire fundo. O Hangul não morde 😌",
   "Seu futuro amigo coreano ficaria orgulhoso ✨",
   "Mais uma palavra e você já pode sobreviver em Seul ☕",
-  "Aprender coreano conta como exercício cerebral 🧠",
+  "Treinar coreano conta como exercício cerebral 🧠",
   "Você está oficialmente colecionando palavras 🌷",
   "Hoje você sabe mais coreano que ontem 🌸"
 ];
@@ -1006,6 +1140,15 @@ function defaultState(){
     learnedWords: [],
     themeProgress: {},
     soundOn: true,
+    doramaMode: false,
+    doramaFavorites: {
+      cloy:true,
+      vincenzo:true,
+      alchemy:true,
+      woowoo:true,
+      kingland:true,
+      business:true
+    },
     createdAt: Date.now(),
     lastSession: null,
   };
@@ -1036,7 +1179,7 @@ let state = loadState();
 function totalWordsLearned(){ return state.learnedWords.length; }
 function isThemeUnlocked(theme){ return state.flowers >= theme.unlockFlowers; }
 function themeLearnedCount(themeId){
-  const theme = THEMES.find(t => t.id === themeId);
+  const theme = findThemeById(themeId);
   if(!theme) return 0;
   return theme.words.filter(([kr]) => state.learnedWords.includes(themeId+'::'+kr)).length;
 }
@@ -1299,7 +1442,7 @@ function renderHome(){
   app.appendChild(el);
 
   const scroll = el.querySelector('#themeScroll');
-  THEMES.forEach(theme=>{
+  visibleThemeList().forEach(theme=>{
     const unlocked = isThemeUnlocked(theme);
     const count = themeLearnedCount(theme.id);
     const card = document.createElement('button');
@@ -1331,6 +1474,7 @@ function renderTrainScreen(){
     <div class="home-greet">
       <div class="home-greet-text">Treinar coreano 🎯</div>
       <div class="home-greet-sub">Escolha como quer praticar hoje.</div>
+      ${state.doramaMode ? '<div class="dorama-badge">🎬 Modo Dorameiro ativado</div>' : ''}
     </div>
 
     <button class="train-card" id="trainTrip">
@@ -1355,10 +1499,22 @@ function renderTrainScreen(){
       <div class="train-card-icon">♾️</div>
       <div>
         <div class="train-card-title">Match Infinito</div>
-        <div class="train-card-desc">5 pares na tela, sem fim, até você parar.</div>
+        <div class="train-card-desc">5 pares na tela, 3 vidas e recorde.</div>
       </div>
       <div class="train-card-arrow">›</div>
     </button>
+
+    ${state.doramaMode ? `
+      <div class="section-label">Doramas favoritos</div>
+      <div class="dorama-list">
+        ${activeDoramaPacks().map(pack => `
+          <button class="dorama-pick" data-dorama="${pack.id}">
+            <span>${pack.emoji}</span>
+            <div>${pack.name}<small>${pack.words.length} palavras e frases</small></div>
+          </button>
+        `).join('')}
+      </div>
+    ` : ''}
 
     <div class="next-dest" style="margin-top:20px;">
       <div class="next-dest-emoji">🌸</div>
@@ -1374,6 +1530,9 @@ function renderTrainScreen(){
   el.querySelector('#trainTrip').addEventListener('click', ()=> goTo('themes'));
   el.querySelector('#trainQuick').addEventListener('click', ()=> goTo('quickgame'));
   el.querySelector('#trainInfinite').addEventListener('click', ()=> goTo('infinite'));
+  el.querySelectorAll('[data-dorama]').forEach(btn=>{
+    btn.addEventListener('click', ()=> startMatchSession(btn.dataset.dorama));
+  });
   attachBottomNav(el);
 }
 
@@ -1393,7 +1552,7 @@ function renderThemesScreen(){
   el.querySelector('#backBtn').addEventListener('click', ()=> goTo('home'));
 
   const grid = el.querySelector('#themesGrid');
-  THEMES.forEach(theme=>{
+  visibleThemeList().forEach(theme=>{
     const unlocked = isThemeUnlocked(theme);
     const count = themeLearnedCount(theme.id);
     const tile = document.createElement('button');
@@ -1423,15 +1582,13 @@ function shuffleArray(arr){
   return a;
 }
 
-const ROUND_SIZE = 5;
+const ROUND_SIZE = 20;
 
 function startMatchSession(themeId){
-  const theme = THEMES.find(t=>t.id===themeId);
+  const theme = findThemeById(themeId);
   if(!theme) return;
 
-  const notLearned = theme.words.filter(([kr]) => !state.learnedWords.includes(themeId+'::'+kr));
-  const learnedOnes = theme.words.filter(([kr]) => state.learnedWords.includes(themeId+'::'+kr));
-  let pool = shuffleArray(notLearned).concat(shuffleArray(learnedOnes));
+  const pool = shuffleArray(theme.words);
   const roundWords = pool.slice(0, Math.min(ROUND_SIZE, theme.words.length));
 
   currentMatchSession = {
@@ -1642,9 +1799,9 @@ let quickTimer = null;
 
 function allWordsFlat(){
   const items = [];
-  THEMES.forEach(theme=>{
+  visibleThemeList().forEach(theme=>{
     theme.words.forEach(([kr, pt])=>{
-      items.push({kr, pt, themeId:theme.id, themeName:theme.name, emoji:theme.emoji});
+      items.push({kr, pt, themeId:theme.id, themeName:theme.name, emoji:theme.emoji, dorama:!!theme.dorama});
     });
   });
   return items;
@@ -2248,8 +2405,8 @@ function renderCompleteScreen(){
 
   el.innerHTML = `
     <div class="complete-emoji">🌸</div>
-    <div class="complete-title">Hoje você aprendeu<br>${session.wordsLearnedThisRound.length} palavras novas.</div>
-    <div class="complete-desc">${session.themeEmoji} ${escapeHtml(session.themeName)}</div>
+    <div class="complete-title">Treino concluído ✨</div>
+    <div class="complete-desc">${session.themeEmoji} ${escapeHtml(session.themeName)}<br>${session.wordsLearnedThisRound.length} palavras revisadas</div>
 
     ${justUnlocked.map(t => `<div class="complete-unlock-banner">${t.name} foi desbloqueada! ${t.emoji}</div>`).join('')}
 
@@ -2258,13 +2415,14 @@ function renderCompleteScreen(){
     <div class="complete-words">${wordsChips}</div>
 
     <button class="btn btn-primary btn-block" id="btnContinue">Continuar</button>
-    <button class="btn btn-ghost" id="btnPlayAgain">Jogar essa rodada de novo</button>
+    <button class="btn btn-ghost" id="btnPlayAgain">Próxima rodada</button>
   `;
   app.appendChild(el);
 
   el.querySelector('#btnContinue').addEventListener('click', ()=>{
+    const themeId = session.themeId;
     currentMatchSession = null;
-    goTo('home');
+    startMatchSession(themeId);
   });
   el.querySelector('#btnPlayAgain').addEventListener('click', ()=>{
     const themeId = session.themeId;
@@ -2344,6 +2502,26 @@ function renderSettings(){
       </div>
     </div>
 
+
+    <div class="settings-group">
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">🎬 Eu amo doramas</div>
+          <div class="settings-row-desc">Ativa pacotes de frases dos seus doramas favoritos</div>
+        </div>
+        <button class="toggle ${state.doramaMode ? 'on' : ''}" id="toggleDorama"><div class="toggle-knob"></div></button>
+      </div>
+      ${state.doramaMode ? DORAMA_PACKS.map(pack => `
+        <div class="settings-row dorama-fav-row" data-dorama-fav="${pack.id}" style="cursor:pointer;">
+          <div>
+            <div class="settings-row-label">${pack.emoji} ${pack.name}</div>
+            <div class="settings-row-desc">${pack.words.length} palavras e frases</div>
+          </div>
+          <div class="setting-check">${(state.doramaFavorites || {})[pack.id] !== false ? '✓' : ''}</div>
+        </div>
+      `).join('') : ''}
+    </div>
+
     <div class="settings-group">
       <div class="settings-row" id="rowChangeName" style="cursor:pointer;">
         <div>
@@ -2377,6 +2555,25 @@ function renderSettings(){
     saveState();
     e.currentTarget.classList.toggle('on', state.soundOn);
     if(state.soundOn) speakKorean('안녕하세요');
+  });
+
+  const toggleDorama = el.querySelector('#toggleDorama');
+  if(toggleDorama){
+    toggleDorama.addEventListener('click', (e)=>{
+      state.doramaMode = !state.doramaMode;
+      saveState();
+      render();
+    });
+  }
+
+  el.querySelectorAll('[data-dorama-fav]').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const id = row.dataset.doramaFav;
+      state.doramaFavorites = state.doramaFavorites || {};
+      state.doramaFavorites[id] = state.doramaFavorites[id] === false ? true : false;
+      saveState();
+      render();
+    });
   });
 
   el.querySelector('#rowChangeName').addEventListener('click', ()=> openRenameModal());
