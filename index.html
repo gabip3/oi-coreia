@@ -650,7 +650,25 @@ img,svg{display:block;}
 .quick-timer-fill{height:100%;background:linear-gradient(90deg,var(--sakura),var(--peach));transition:width .08s linear}
 .quick-question{text-align:center;padding:26px 20px;margin-bottom:18px}
 .quick-question-label{font-size:13px;color:var(--ink-soft);font-weight:700}
-.quick-korean{font-family:var(--font-display);font-size:54px;margin-top:8px}
+.quick-korean{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:54px;
+  margin-top:8px;
+  line-height:1.15;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  line-break:strict;
+  hyphens:none;
+  text-wrap:balance;
+  padding:0 8px;
+}
+/* Mesma tipografia adaptativa do Match: o tamanho da fonte se ajusta ao comprimento
+   do texto pra nunca quebrar sílabas Hangul no meio (ex: "요" isolado numa linha). */
+.quick-korean.kr-short{font-size:54px;}
+.quick-korean.kr-medium{font-size:44px;}
+.quick-korean.kr-long{font-size:36px;}
+.quick-korean.kr-phrase{font-size:28px; line-height:1.25;}
 .quick-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .quick-option{background:var(--white);border-radius:24px;padding:18px 12px;font-weight:700;box-shadow:var(--shadow-card);font-size:16px;min-height:72px}
 .quick-option.correct{background:#dff3df}
@@ -776,10 +794,24 @@ img,svg{display:block;}
 }
 .infinite-card.kr{
   font-family:var(--font-display);
+  font-weight:700;
   font-size:28px;
   flex-direction:column;
   gap:6px;
+  line-height:1.15;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  line-break:strict;
+  hyphens:none;
+  text-wrap:balance;
+  padding-left:6px;
+  padding-right:6px;
 }
+/* Mesma tipografia adaptativa do Match normal, evitando quebra feia de sílabas Hangul. */
+.infinite-card.kr.kr-short{font-size:30px;}
+.infinite-card.kr.kr-medium{font-size:26px;}
+.infinite-card.kr.kr-long{font-size:21px;}
+.infinite-card.kr.kr-phrase{font-size:16px; line-height:1.2;}
 .infinite-card.pt{
   font-size:15.5px;
 }
@@ -904,13 +936,14 @@ img,svg{display:block;}
 }
 .infinite-card.fade-out{
   opacity:0;
-  transform:scale(.94);
+  transform:scale(.92);
+  transition:opacity 0.12s ease, transform 0.12s ease;
 }
 .infinite-card.fade-in{
-  animation:softCardIn .28s ease both;
+  animation:softCardIn .16s ease both;
 }
 @keyframes softCardIn{
-  from{opacity:0; transform:translateY(6px) scale(.97);}
+  from{opacity:0; transform:translateY(4px) scale(.97);}
   to{opacity:1; transform:translateY(0) scale(1);}
 }
 .infinite-card.correct{
@@ -1030,17 +1063,166 @@ img,svg{display:block;}
   transform:scale(1.08);
 }
 
+/* ============================================
+   OI COREIA PLUS — selo, banner e tela de upgrade
+   ============================================ */
+.plus-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-size:11px;
+  font-weight:800;
+  color:#7A5A12;
+  background:linear-gradient(135deg,#FCE7B8,var(--gold));
+  border-radius:999px;
+  padding:4px 10px;
+  white-space:nowrap;
+}
 
-/* Match por fluxo: só 5 pares visíveis e troca suave */
+/* Flor de cerejeira dourada — toque especial discreto pra quem já é Plus,
+   visível ao lado do nome na Home. Mesmo emoji de sempre, só com um brilho dourado sutil. */
+.plus-flower{
+  display:inline-block;
+  filter: sepia(0.55) saturate(2.4) hue-rotate(2deg) brightness(1.08);
+  animation: plusFlowerGlow 3s ease-in-out infinite;
+}
+@keyframes plusFlowerGlow{
+  0%, 100%{ filter: sepia(0.55) saturate(2.4) hue-rotate(2deg) brightness(1.08); }
+  50%{ filter: sepia(0.7) saturate(2.8) hue-rotate(2deg) brightness(1.18); }
+}
+
+.theme-card .plus-badge, .theme-tile .plus-badge{
+  position:absolute;
+  top:10px; right:10px;
+}
+.dorama-pick{ position:relative; }
+.dorama-pick.plus-locked{ opacity:0.85; }
+.dorama-pick .plus-badge{ margin-left:auto; flex-shrink:0; }
+
+.plus-banner{
+  width:100%;
+  background:linear-gradient(135deg,#FFF4DC,var(--white));
+  border:1.5px solid #F4DFA0;
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow-card);
+  padding:16px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0 0 18px;
+  text-align:left;
+}
+.plus-banner-emoji{ font-size:26px; }
+.plus-banner-title{ font-weight:800; font-size:15px; color:var(--ink); }
+.plus-banner-desc{ font-size:12px; color:var(--ink-soft); font-weight:600; margin-top:2px; line-height:1.35; }
+.plus-banner-arrow{ font-size:22px; color:var(--ink-faint); }
+
+.plus-screen{ padding:0 20px 40px; }
+.plus-hero{
+  text-align:center;
+  padding:18px 8px 8px;
+}
+.plus-hero-emoji{ font-size:48px; margin-bottom:8px; }
+.plus-hero-title{
+  font-family:var(--font-display);
+  font-size:28px;
+  font-weight:700;
+  color:var(--ink);
+}
+.plus-hero-sub{
+  font-size:14px;
+  color:var(--ink-soft);
+  font-weight:600;
+  margin-top:6px;
+  line-height:1.4;
+}
+
+.plus-features{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin:24px 0;
+}
+.plus-feature-row{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  background:var(--white);
+  border-radius:var(--r-md);
+  box-shadow:var(--shadow-card);
+  padding:16px;
+}
+.plus-feature-emoji{ font-size:26px; flex-shrink:0; }
+.plus-feature-title{ font-weight:800; font-size:15px; color:var(--ink); }
+.plus-feature-desc{ font-size:12.5px; color:var(--ink-soft); font-weight:500; margin-top:3px; line-height:1.45; }
+
+.plus-price-card{
+  background:linear-gradient(160deg,#FFFBF0,var(--white));
+  border:1.5px solid #F4DFA0;
+  border-radius:var(--r-xl);
+  box-shadow:var(--shadow-card);
+  padding:26px 22px;
+  text-align:center;
+  margin-top:8px;
+}
+.plus-price-tag{
+  font-size:12px;
+  font-weight:700;
+  color:#9A7418;
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+}
+.plus-price-value{
+  font-family:var(--font-display);
+  font-size:40px;
+  font-weight:700;
+  color:var(--ink);
+  margin:8px 0 4px;
+}
+.plus-price-note{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  font-weight:600;
+  margin-bottom:20px;
+}
+.plus-mock-note{
+  font-size:11px;
+  color:var(--ink-faint);
+  font-weight:500;
+  margin-top:12px;
+}
+
+.plus-owned-wrap{
+  text-align:center;
+  padding:60px 24px;
+}
+.plus-owned-emoji{ font-size:56px; margin-bottom:14px; }
+.plus-owned-title{
+  font-family:var(--font-display);
+  font-size:24px;
+  font-weight:700;
+  margin-bottom:8px;
+}
+.plus-owned-desc{
+  font-size:14px;
+  color:var(--ink-soft);
+  font-weight:500;
+  line-height:1.5;
+  margin-bottom:28px;
+}
+
+
+/* Match por fluxo: só 5 pares visíveis e troca suave — rápida, estilo Match Madness */
 .match-card.fade-out{
   opacity:0;
-  transform:scale(.94);
+  transform:scale(.92);
+  transition:opacity 0.12s ease, transform 0.12s ease;
 }
 .match-card.fade-in{
-  animation:matchSoftIn .25s ease both;
+  animation:matchSoftIn .16s ease both;
 }
 @keyframes matchSoftIn{
-  from{opacity:0; transform:translateY(6px) scale(.97);}
+  from{opacity:0; transform:translateY(4px) scale(.97);}
   to{opacity:1; transform:translateY(0) scale(1);}
 }
 
@@ -1062,6 +1244,8 @@ img,svg{display:block;}
 const THEMES = [
   { id:'cafe', emoji:'☕', name:'Café em Seul', unlockFlowers:0,
     words:[['커피','Café'],['우유','Leite'],['물','Água'],['차','Chá'],['빵','Pão'],['설탕','Açúcar'],['얼음','Gelo'],['컵','Copo'],['케이크','Bolo'],['디저트','Sobremesa'],['따뜻해요','Está quente'],['차가워요','Está frio'],['카페','Cafeteria'],['메뉴','Cardápio'],['주문할게요','Vou pedir'],['포장이요','Para levar'],['여기서 먹을게요','Vou comer aqui'],['얼마예요?','Quanto custa?'],['카드','Cartão'],['현금','Dinheiro'],['영수증','Recibo'],['빨대','Canudo'],['휴지','Guardanapo'],['자리','Lugar/Mesa'],['창가','Perto da janela'],['콘센트','Tomada elétrica'],['와이파이','Wi-fi'],['비밀번호','Senha'],['샌드위치','Sanduíche'],['크루아상','Croissant'],['머핀','Muffin'],['쿠키','Cookie'],['시럽','Calda/Xarope'],['휘핑크림','Chantilly'],['아이스','Gelado'],['뜨거운 것','Quente (coisa)'],['한 잔 더 주세요','Mais uma xícara, por favor'],['맛있어요','Está gostoso'],['달아요','É doce'],['써요','É amargo'],['진해요','É forte (sabor)'],['연해요','É suave/fraco'],['리필','Refil'],['테이크아웃','Para viagem'],['앉아도 돼요?','Posso me sentar?']] },
+  { id:'faith', emoji:'✝️', name:'Fé', unlockFlowers:0,
+    words:[['하나님','Deus'],['예수님','Jesus'],['성경','Bíblia'],['교회','Igreja'],['목사님','Pastor'],['전도사님','Evangelista/Obreiro'],['집사님','Diácono(a)'],['장로님','Presbítero/Ancião'],['성도','Membro da igreja/Fiel'],['예배','Culto'],['찬양','Louvor'],['기도','Oração'],['기도해요','Vou orar'],['아멘','Amém'],['할렐루야','Aleluia'],['축복','Bênção'],['은혜','Graça'],['믿음','Fé'],['소망','Esperança'],['사랑','Amor'],['십자가','Cruz'],['천국','Céu/Reino dos céus'],['죄','Pecado'],['용서','Perdão'],['구원','Salvação'],['부활','Ressurreição'],['성령','Espírito Santo'],['천사','Anjo'],['말씀','Palavra (de Deus)'],['설교','Sermão/Prédica'],['주일','Domingo (dia do Senhor)'],['주일학교','Escola dominical'],['헌금','Oferta/Dízimo'],['찬송가','Hino'],['성가대','Coral da igreja'],['세례','Batismo'],['목장','Pequeno grupo/Célula'],['셀모임','Reunião de célula'],['새벽기도','Oração da madrugada'],['금식','Jejum'],['전도','Evangelismo'],['선교','Missão'],['선교사','Missionário(a)'],['하나님 감사합니다','Graças a Deus'],['하나님이 사랑하세요','Deus te ama'],['함께 기도해요','Vamos orar juntos'],['주님','Senhor (referindo-se a Deus)'],['평화','Paz'],['형제','Irmão (na fé)'],['자매','Irmã (na fé)']] },
   { id:'doramas', emoji:'🎬', name:'Doramas', unlockFlowers:50,
     words:[['사랑','Amor'],['친구','Amigo'],['진짜','Sério'],['괜찮아요','Tudo bem'],['미안해요','Desculpa'],['보고싶어요','Estou com saudade'],['행복해요','Estou feliz'],['슬퍼요','Estou triste'],['기다려요','Espere'],['거짓말','Mentira'],['비밀','Segredo'],['약속','Promessa']] },
   { id:'kakao', emoji:'📱', name:'KakaoTalk', unlockFlowers:100,
@@ -1072,6 +1256,8 @@ const THEMES = [
     words:[['김치','Kimchi'],['밥','Arroz'],['라면','Lámen'],['고기','Carne'],['치킨','Frango'],['떡볶이','Tteokbokki'],['맛있어요','Está gostoso'],['배고파요','Estou com fome'],['배불러요','Estou cheio'],['맵다','Picante'],['달다','Doce'],['짜다','Salgado'],['삼겹살','Barriga de porco grelhada'],['불고기','Bulgogi'],['비빔밥','Bibimbap'],['김밥','Kimbap'],['순두부','Sundubu (tofu macio)'],['된장찌개','Sopa de pasta de soja'],['찌개','Sopa/Ensopado'],['반찬','Acompanhamentos'],['젓가락','Hashi/Pauzinhos'],['숟가락','Colher'],['그릇','Tigela'],['식당','Restaurante'],['메뉴판','Cardápio'],['주문','Pedido'],['포장','Para levar'],['배달','Entrega'],['음료','Bebida'],['소주','Soju'],['맥주','Cerveja'],['건배','Saúde! (brinde)'],['더 주세요','Mais, por favor'],['이거 뭐예요?','O que é isso?'],['추천해 주세요','Recomende algo, por favor'],['맛이 어때요?','Como está o sabor?'],['싱겁다','Sem sal/Sem gosto'],['느끼하다','Gorduroso/Pesado'],['신선해요','É fresco'],['배달 왔어요','A entrega chegou'],['계산할게요','Vou pagar a conta'],['잘 먹었습니다','Comi muito bem (agradecimento)']] },
   { id:'romance', emoji:'💌', name:'Romance', unlockFlowers:0,
     words:[['좋아해요','Eu gosto de você'],['예뻐요','Você é bonita'],['귀여워요','É fofo(a)'],['데이트','Encontro romântico'],['손','Mão'],['마음','Coração/sentimento'],['보고 싶다','Tenho saudade'],['항상','Sempre'],['영원히','Para sempre'],['선물','Presente'],['편지','Carta'],['포옹','Abraço'],['사랑해요','Eu te amo'],['짝사랑','Amor não correspondido'],['첫사랑','Primeiro amor'],['소개팅','Encontro às cegas'],['남자친구','Namorado'],['여자친구','Namorada'],['사귀어요','Estamos namorando'],['헤어졌어요','Terminamos'],['그리워요','Sinto sua falta'],['설레요','Estou ansioso(a)/com borboletas no estômago'],['키스','Beijo'],['손잡아요','Vamos de mãos dadas'],['웨딩','Casamento'],['프로포즈','Pedido de casamento'],['반지','Anel'],['기념일','Aniversário (de namoro)'],['고백','Declaração de amor'],['짝꿍','Parceiro(a)/Cupido'],['운명','Destino'],['소울메이트','Alma gêmea'],['질투','Ciúmes'],['믿음','Confiança'],['거리','Distância'],['장거리 연애','Namoro a distância'],['행복해요','Estou feliz'],['설레는 마음','Coração ansioso'],['평생','A vida toda'],['당신만 보여요','Só vejo você'],['함께 있고 싶어요','Quero estar com você'],['보고 있어도 보고 싶어요','Mesmo te vendo, sinto saudade']] },
+  { id:'romanceplus', emoji:'💕', name:'Romance Plus', unlockFlowers:0, plus:true,
+    words:[['자기야','Querido(a) (chamando o parceiro)'],['여보','Querido(a) (entre casados)'],['내 사랑','Meu amor'],['잘 자요, 내 꿈 꿔요','Durma bem, sonhe comigo'],['좋은 아침이에요, 사랑해요','Bom dia, eu te amo'],['오늘도 보고 싶었어요','Hoje também senti sua falta'],['당신 생각만 해요','Só penso em você'],['목소리 듣고 싶어요','Quero ouvir sua voz'],['안아주고 싶어요','Quero te abraçar'],['집에 잘 들어갔어요?','Você chegou bem em casa?'],['밥 먹었어요?','Você já comeu?'],['오늘 하루 어땠어요?','Como foi seu dia hoje?'],['많이 보고 싶어요','Sinto muita sua falta'],['언제 만날 수 있어요?','Quando podemos nos encontrar?'],['시간이 안 가요','O tempo não passa (de saudade)'],['당신 없이 못 살아요','Não consigo viver sem você'],['빨리 만나고 싶어요','Quero te encontrar rápido'],['하루가 너무 길어요','O dia está demorando demais'],['우리 사이가 뭐예요?','O que somos um do outro?'],['진지하게 만나고 싶어요','Quero namorar com seriedade'],['오해가 있었어요','Houve um mal-entendido'],['화났어요?','Você está com raiva?'],['삐졌어요?','Você ficou de mau humor?'],['미안해요, 내가 잘못했어요','Desculpa, eu errei'],['우리 얘기 좀 해요','Vamos conversar um pouco'],['다시 잘 지내요','Vamos nos dar bem de novo'],['화해해요','Vamos fazer as pazes'],['더 노력할게요','Vou me esforçar mais'],['솔직하게 말할게요','Vou falar com sinceridade'],['믿어 주세요','Por favor, confie em mim'],['결혼하자','Vamos nos casar'],['평생 함께해요','Vamos ficar juntos para a vida toda'],['신혼여행','Lua de mel'],['청첩장','Convite de casamento'],['혼인신고','Registro de casamento'],['신랑','Noivo'],['신부','Noiva'],['주례','Celebrante do casamento'],['예식장','Salão de cerimônias'],['아이를 갖고 싶어요','Quero ter filhos'],['시댁','Família do marido'],['처가','Família da esposa'],['장인어른','Pai da esposa (sogro)'],['장모님','Mãe da esposa (sogra)'],['시아버지','Pai do marido (sogro)'],['시어머니','Mãe do marido (sogra)'],['며느리','Nora'],['사위','Genro'],['인사드릴게요','Vou me apresentar (à família)'],['허락해 주세요','Por favor, dê sua permissão/bênção']] },
   { id:'kpop', emoji:'🎵', name:'K-pop', unlockFlowers:0,
     words:[['노래','Música'],['춤','Dança'],['가수','Cantor(a)'],['무대','Palco'],['팬','Fã'],['콘서트','Show'],['앨범','Álbum'],['멤버','Membro'],['최고예요','É o melhor'],['응원해요','Estou apoiando'],['데뷔','Debute'],['연습생','Trainee'],['아이돌','Idol'],['그룹','Grupo'],['솔로','Solo'],['리더','Líder'],['메인보컬','Vocalista principal'],['래퍼','Rapper'],['댄서','Dançarino(a)'],['비주얼','Visual/Rosto do grupo'],['뮤직비디오','Videoclipe'],['타이틀곡','Faixa-título'],['후렴','Refrão'],['안무','Coreografia'],['팬미팅','Encontro com fãs'],['팬싸','Fan sign (autógrafo)'],['응원봉','Lightstick'],['굿즈','Produtos oficiais (goods)'],['음원','Faixa digital/Streaming'],['차트','Paradas musicais'],['1위','Primeiro lugar'],['컴백','Retorno (comeback)'],['활동','Atividades promocionais'],['스케줄','Agenda/Cronograma'],['공항패션','Moda de aeroporto'],['소속사','Agência/Gravadora'],['오디션','Audição'],['연습실','Sala de prática'],['무대 매너','Postura no palco'],['떼창','Cantar junto (fãs)']] },
   { id:'busan', emoji:'🏖️', name:'Busan', unlockFlowers:150,
@@ -1100,7 +1286,7 @@ const DORAMA_PACKS = [
       ['국경','Fronteira'],['마을','Vila'],['기차','Trem'],['사랑','Amor'],['운명','Destino'],['우연','Coincidência'],
       ['선물','Presente'],['작별','Despedida'],['재회','Reencontro'],['비밀','Segredo']
     ]},
-  { id:'vincenzo', emoji:'⚖️', name:'Vincenzo', unlockFlowers:0, dorama:true,
+  { id:'vincenzo', emoji:'⚖️', name:'Vincenzo', unlockFlowers:0, dorama:true, plus:true,
     words:[
       ['변호사','Advogado(a)'],['재판','Julgamento'],['증거','Evidência'],['복수','Vingança'],['계획','Plano'],['비밀','Segredo'],
       ['돈','Dinheiro'],['회사','Empresa'],['대표','Diretor(a)'],['계약','Contrato'],['위험해요','É perigoso'],['조심해요','Tome cuidado'],
@@ -1109,7 +1295,7 @@ const DORAMA_PACKS = [
       ['검사','Promotor(a)'],['판사','Juiz/Juíza'],['법','Lei'],['정의','Justiça'],['악당','Vilão'],['협박','Ameaça'],
       ['거래','Negócio/Acordo'],['배신','Traição'],['동료','Colega'],['작전','Operação']
     ]},
-  { id:'alchemy', emoji:'✨', name:'Alquimia das Almas', unlockFlowers:0, dorama:true,
+  { id:'alchemy', emoji:'✨', name:'Alquimia das Almas', unlockFlowers:0, dorama:true, plus:true,
     words:[
       ['영혼','Alma'],['마법','Magia'],['운명','Destino'],['스승','Mestre'],['제자','Discípulo(a)'],['힘','Força/Poder'],
       ['검','Espada'],['전투','Batalha'],['약속','Promessa'],['기억','Memória'],['비밀','Segredo'],['왕국','Reino'],
@@ -1127,7 +1313,7 @@ const DORAMA_PACKS = [
       ['규칙','Regra'],['존중','Respeito'],['용기','Coragem'],['마음','Coração/Sentimento'],['점심','Almoço'],['김밥','Kimbap'],
       ['출근','Ir ao trabalho'],['퇴근','Sair do trabalho'],['상사','Chefe'],['문서','Documento']
     ]},
-  { id:'kingland', emoji:'👑', name:'Sorriso Real', unlockFlowers:0, dorama:true,
+  { id:'kingland', emoji:'👑', name:'Sorriso Real', unlockFlowers:0, dorama:true, plus:true,
     words:[
       ['호텔','Hotel'],['손님','Hóspede'],['직원','Funcionário(a)'],['서비스','Serviço'],['미소','Sorriso'],['예약','Reserva'],
       ['방','Quarto'],['열쇠','Chave'],['대표님','Diretor(a)'],['회의','Reunião'],['근무','Trabalho/Turno'],['휴가','Férias'],
@@ -1136,7 +1322,7 @@ const DORAMA_PACKS = [
       ['고급','Luxo'],['친절','Gentileza'],['선물','Presente'],['데이트','Encontro'],['사장','Presidente/Chefe'],['팀장','Líder de equipe'],
       ['엘리베이터','Elevador'],['로비','Lobby'],['아침 식사','Café da manhã'],['커피','Café']
     ]},
-  { id:'business', emoji:'💍', name:'Pretendente Surpresa', unlockFlowers:0, dorama:true,
+  { id:'business', emoji:'💍', name:'Pretendente Surpresa', unlockFlowers:0, dorama:true, plus:true,
     words:[
       ['소개팅','Encontro às cegas'],['회사','Empresa'],['사장님','Chefe/Presidente'],['직원','Funcionário(a)'],['비밀','Segredo'],['계약','Contrato'],
       ['데이트','Encontro'],['거짓말','Mentira'],['친구','Amigo(a)'],['음식','Comida'],['라면','Lámen'],['치킨','Frango'],
@@ -1194,6 +1380,11 @@ const PHRASES_BY_THEME = {
     'Mais uma palavra pra um dorama de romance. 💌',
     'Isso vai ser útil numa cena de declaração. 💌',
   ],
+  romanceplus: [
+    'Mais uma frase pra uma conversa de casal de verdade. 💕',
+    'Isso vai direto pro grupo da família coreana. 💕',
+    'Seu coreano de casamento está ficando completo. 💕',
+  ],
   kpop: [
     'Mais perto de entender aquela música sem legenda. 🎵',
     'Agora você pega mais uma palavra do refrão. 🎵',
@@ -1230,6 +1421,11 @@ const PHRASES_BY_THEME = {
   business: [
     'Mais uma situação de Pretendente Surpresa dominada. 💍',
     'Esse mal-entendido ficaria menos engraçado pra você agora. 💍',
+  ],
+  faith: [
+    'Mais uma palavra pra entender o culto em coreano. ✝️',
+    'Isso vai ajudar na próxima reunião de célula. ✝️',
+    'Seu coreano de igreja está cada vez mais forte. ✝️',
   ],
 };
 const PHRASES_GENERIC = [
@@ -1280,6 +1476,7 @@ function defaultState(){
       kingland:true,
       business:true
     },
+    isPlus: false, // Oi Coreia Plus — pagamento único, sem assinatura. Ver PLUS_INFO mais abaixo.
     createdAt: Date.now(),
     lastSession: null,
   };
@@ -1314,12 +1511,27 @@ function themeLearnedCount(themeId){
   if(!theme) return 0;
   return theme.words.filter(([kr]) => state.learnedWords.includes(themeId+'::'+kr)).length;
 }
-function nextLockedTheme(){ return THEMES.find(t => !isThemeUnlocked(t)) || null; }
+function nextLockedTheme(){ return THEMES.find(t => !isThemeUnlocked(t) && !t.plus) || null; }
 function markWordLearned(themeId, kr){
   const key = themeId+'::'+kr;
   if(!state.learnedWords.includes(key)) state.learnedWords.push(key);
 }
 function addFlowers(n){ state.flowers += n; }
+
+// ============================================
+// OI COREIA PLUS — gating de conteúdo pago
+// Pagamento único vitalício, sem assinatura. state.isPlus é a fonte de verdade local.
+// IMPORTANTE: hoje isPlus é ativado por um botão de simulação (ver renderPlusScreen).
+// Numa versão publicada de verdade, troque activatePlusMock() pela confirmação real
+// de compra (Google Play Billing / App Store / Stripe) antes de setar state.isPlus=true.
+// ============================================
+function isPlusLocked(item){
+  return !!(item && item.plus && !state.isPlus);
+}
+function isThemeAccessible(theme){
+  // Acessível só se desbloqueado por flores E (não é conteúdo Plus OU já é assinante Plus).
+  return isThemeUnlocked(theme) && !isPlusLocked(theme);
+}
 
 let koreanVoice = null;
 function pickKoreanVoice(){
@@ -1394,6 +1606,7 @@ function render(){
     case 'onboard': renderOnboard(); break;
     case 'home': renderHome(); break;
     case 'train': renderTrainScreen(); break;
+    case 'plus': renderPlusScreen(); break;
     case 'themes': renderThemesScreen(); break;
     case 'quickgame': renderQuickGame(); break;
     case 'infinite': renderInfiniteMatch(); break;
@@ -1531,7 +1744,7 @@ function renderHome(){
 
   el.innerHTML = `
     <div class="home-greet">
-      <div class="home-greet-text">안녕하세요, ${escapeHtml(state.name)} 🌸</div>
+      <div class="home-greet-text">안녕하세요, ${escapeHtml(state.name)} <span class="${state.isPlus ? 'plus-flower' : ''}">🌸</span></div>
       <div class="home-greet-sub">Continue sua jornada pela Coreia.</div>
     </div>
 
@@ -1574,18 +1787,21 @@ function renderHome(){
 
   const scroll = el.querySelector('#themeScroll');
   visibleThemeList().forEach(theme=>{
-    const unlocked = isThemeUnlocked(theme);
+    const flowerLocked = !isThemeUnlocked(theme);
+    const plusLocked = isPlusLocked(theme);
+    const accessible = !flowerLocked && !plusLocked;
     const count = themeLearnedCount(theme.id);
     const card = document.createElement('button');
-    card.className = 'theme-card' + (unlocked ? '' : ' locked');
+    card.className = 'theme-card' + (accessible ? '' : ' locked');
     card.innerHTML = `
-      ${!unlocked ? `<div class="theme-card-lock">🔒</div>` : ''}
+      ${plusLocked ? `<div class="plus-badge">✨ Plus</div>` : (flowerLocked ? `<div class="theme-card-lock">🔒</div>` : '')}
       <div class="theme-card-emoji">${theme.emoji}</div>
       <div class="theme-card-name">${theme.name}</div>
-      <div class="theme-card-meta">${unlocked ? count+'/'+theme.words.length+' palavras' : theme.unlockFlowers+' 🌸 para abrir'}</div>
+      <div class="theme-card-meta">${accessible ? count+'/'+theme.words.length+' palavras' : (plusLocked ? 'Conteúdo Plus' : theme.unlockFlowers+' 🌸 para abrir')}</div>
     `;
     card.addEventListener('click', ()=>{
-      if(unlocked) startMatchSession(theme.id);
+      if(accessible) startMatchSession(theme.id);
+      else if(plusLocked) goTo('plus', {from:'home'});
       else showToast(`Colete ${theme.unlockFlowers - state.flowers} flores 🌸 a mais para desbloquear ${theme.name}.`);
     });
     scroll.appendChild(card);
@@ -1615,6 +1831,17 @@ function renderTrainScreen(){
       <div class="toggle ${state.doramaMode ? 'on' : ''}"><div class="toggle-knob"></div></div>
     </button>
 
+    ${!state.isPlus ? `
+    <button class="plus-banner" id="goPlusBanner">
+      <div class="plus-banner-emoji">✨</div>
+      <div style="flex:1">
+        <div class="plus-banner-title">Conheça o Oi Coreia Plus</div>
+        <div class="plus-banner-desc">Mais doramas, mais frases reais, mais vocabulário. Pagamento único.</div>
+      </div>
+      <div class="plus-banner-arrow">›</div>
+    </button>
+    ` : ''}
+
     <button class="train-card" id="trainTrip">
       <div class="train-card-icon">✈️</div>
       <div>
@@ -1628,7 +1855,7 @@ function renderTrainScreen(){
       <div class="train-card-icon">⚡</div>
       <div>
         <div class="train-card-title">Jogo Rápido</div>
-        <div class="train-card-desc">6 opções e 10 segundos para acertar a tradução.</div>
+        <div class="train-card-desc">4 opções e 10 segundos para acertar a tradução.</div>
       </div>
       <div class="train-card-arrow">›</div>
     </button>
@@ -1646,9 +1873,10 @@ function renderTrainScreen(){
       <div class="section-label">Doramas favoritos</div>
       <div class="dorama-list">
         ${activeDoramaPacks().map(pack => `
-          <button class="dorama-pick" data-dorama="${pack.id}">
+          <button class="dorama-pick ${isPlusLocked(pack) ? 'plus-locked' : ''}" data-dorama="${pack.id}">
             <span>${pack.emoji}</span>
             <div>${pack.name}<small>${pack.words.length} palavras e frases</small></div>
+            ${isPlusLocked(pack) ? `<span class="plus-badge">✨ Plus</span>` : ''}
           </button>
         `).join('')}
       </div>
@@ -1673,10 +1901,98 @@ function renderTrainScreen(){
   el.querySelector('#trainTrip').addEventListener('click', ()=> goTo('themes'));
   el.querySelector('#trainQuick').addEventListener('click', ()=> goTo('quickgame'));
   el.querySelector('#trainInfinite').addEventListener('click', ()=> goTo('infinite'));
+  const goPlusBanner = el.querySelector('#goPlusBanner');
+  if(goPlusBanner) goPlusBanner.addEventListener('click', ()=> goTo('plus'));
   el.querySelectorAll('[data-dorama]').forEach(btn=>{
     btn.addEventListener('click', ()=> startMatchSession(btn.dataset.dorama));
   });
   attachBottomNav(el);
+}
+
+// ============================================
+// TELA: OI COREIA PLUS
+// Pagamento único vitalício. Sem assinatura, sem mensalidade, sem plano anual.
+// ============================================
+const PLUS_PRICE_LABEL = 'R$ 9,99';
+
+const PLUS_FEATURES = [
+  { emoji:'🎬', title:'Mais doramas', desc:'Vincenzo, Alquimia das Almas, Sorriso Real, Pretendente Surpresa e todos os futuros doramas.' },
+  { emoji:'💕', title:'Relacionamentos', desc:'Namoro, mensagens fofas, saudade, casamento, família e conversas reais de casal.' },
+  { emoji:'💬', title:'Conversação real', desc:'Frases naturais do dia a dia, do jeito que se fala de verdade.' },
+  { emoji:'📚', title:'Vocabulário expandido', desc:'100 palavras grátis por tema. Mais de 300 no Plus.' },
+];
+
+function renderPlusScreen(){
+  const el = document.createElement('div');
+  el.className = 'screen plus-screen';
+  const backRoute = (window.__routeParams && window.__routeParams.from) || 'train';
+
+  if(state.isPlus){
+    el.innerHTML = `
+      <div class="topbar">
+        <button class="topbar-back" id="backBtn">←</button>
+        <div class="topbar-title">Oi Coreia Plus</div>
+        <div class="topbar-spacer"></div>
+      </div>
+      <div class="plus-owned-wrap">
+        <div class="plus-owned-emoji">✨</div>
+        <div class="plus-owned-title">Você já é Plus</div>
+        <div class="plus-owned-desc">Pagamento único, acesso vitalício. Obrigada por apoiar o Oi Coreia 🌸</div>
+        <button class="btn btn-secondary" id="backHomeFromPlus">Voltar</button>
+      </div>
+    `;
+    app.appendChild(el);
+    el.querySelector('#backBtn').addEventListener('click', ()=> goTo(backRoute));
+    el.querySelector('#backHomeFromPlus').addEventListener('click', ()=> goTo(backRoute));
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="topbar">
+      <button class="topbar-back" id="backBtn">←</button>
+      <div class="topbar-title"></div>
+      <div class="topbar-spacer"></div>
+    </div>
+
+    <div class="plus-hero">
+      <div class="plus-hero-emoji">✨</div>
+      <div class="plus-hero-title">Oi Coreia Plus</div>
+      <div class="plus-hero-sub">Mais doramas. Mais frases reais. Mais vocabulário.</div>
+    </div>
+
+    <div class="plus-features">
+      ${PLUS_FEATURES.map(f => `
+        <div class="plus-feature-row">
+          <div class="plus-feature-emoji">${f.emoji}</div>
+          <div>
+            <div class="plus-feature-title">${f.title}</div>
+            <div class="plus-feature-desc">${f.desc}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="plus-price-card">
+      <div class="plus-price-tag">Pagamento único · sem assinatura</div>
+      <div class="plus-price-value">${PLUS_PRICE_LABEL}</div>
+      <div class="plus-price-note">Sem mensalidade. Sem plano anual. Acesso vitalício.</div>
+      <button class="btn btn-primary btn-block" id="btnUnlockPlus">Desbloquear Plus</button>
+      <div class="plus-mock-note">Modo de demonstração — nenhum pagamento real é processado aqui.</div>
+    </div>
+  `;
+  app.appendChild(el);
+  el.querySelector('#backBtn').addEventListener('click', ()=> goTo(backRoute));
+  el.querySelector('#btnUnlockPlus').addEventListener('click', ()=> activatePlusMock(backRoute));
+}
+
+// Ativa o Plus localmente, sem nenhuma transação financeira real.
+// Ponto de troca: substitua esta função pela confirmação de compra real
+// (Google Play Billing / App Store / Stripe) antes de gravar state.isPlus = true.
+function activatePlusMock(backRoute){
+  state.isPlus = true;
+  saveState();
+  showToast('✨ Plus desbloqueado! (modo de demonstração)');
+  render();
 }
 
 function renderThemesScreen(){
@@ -1696,18 +2012,22 @@ function renderThemesScreen(){
 
   const grid = el.querySelector('#themesGrid');
   visibleThemeList().forEach(theme=>{
-    const unlocked = isThemeUnlocked(theme);
+    const flowerLocked = !isThemeUnlocked(theme);
+    const plusLocked = isPlusLocked(theme);
+    const accessible = !flowerLocked && !plusLocked;
     const count = themeLearnedCount(theme.id);
     const tile = document.createElement('button');
-    tile.className = 'theme-tile' + (unlocked ? '' : ' locked');
+    tile.className = 'theme-tile' + (accessible ? '' : ' locked');
     tile.innerHTML = `
+      ${plusLocked ? `<div class="plus-badge">✨ Plus</div>` : ''}
       <div class="theme-tile-emoji">${theme.emoji}</div>
       <div class="theme-tile-name">${theme.name}</div>
-      <div class="theme-tile-count">${unlocked ? count+'/'+theme.words.length+' palavras' : '🔒 Bloqueado'}</div>
-      ${!unlocked ? `<div class="theme-tile-lockbadge">${theme.unlockFlowers} 🌸</div>` : ''}
+      <div class="theme-tile-count">${accessible ? count+'/'+theme.words.length+' palavras' : (plusLocked ? 'Conteúdo Plus' : '🔒 Bloqueado')}</div>
+      ${flowerLocked && !plusLocked ? `<div class="theme-tile-lockbadge">${theme.unlockFlowers} 🌸</div>` : ''}
     `;
     tile.addEventListener('click', ()=>{
-      if(unlocked) startMatchSession(theme.id);
+      if(accessible) startMatchSession(theme.id);
+      else if(plusLocked) goTo('plus', {from:'themes'});
       else showToast(`Colete ${theme.unlockFlowers - state.flowers} flores 🌸 a mais para desbloquear ${theme.name}.`);
     });
     grid.appendChild(tile);
@@ -1730,6 +2050,13 @@ const ROUND_SIZE = 20;
 function startMatchSession(themeId){
   const theme = findThemeById(themeId);
   if(!theme) return;
+
+  // Camada central de proteção: mesmo que algum botão futuro chame startMatchSession
+  // direto, conteúdo Plus nunca inicia sessão sem state.isPlus.
+  if(isPlusLocked(theme)){
+    goTo('plus', {from: window.__route || 'train'});
+    return;
+  }
 
   const pool = shuffleArray(theme.words);
   const roundWords = pool.slice(0, Math.min(ROUND_SIZE, theme.words.length));
@@ -1766,7 +2093,8 @@ function makeMatchKrCard(kr){
   const card = document.createElement('button');
   card.className = 'match-card kr fade-in ' + krSizeClass(kr);
   card.dataset.kr = kr;
-  card.innerHTML = `<span>${escapeHtml(kr)}</span><span class="match-card-audio">▶</span>`;
+  const audioIcon = state.soundOn ? `<span class="match-card-audio">▶</span>` : '';
+  card.innerHTML = `<span>${escapeHtml(kr)}</span>${audioIcon}`;
   card.addEventListener('click', ()=> onSelectKr(kr, card));
   return card;
 }
@@ -1797,15 +2125,48 @@ function addNextMatchPair(krCard, ptCard, resolvedKr){
   const [newKr, newPt] = nextPair;
   session.pairs.push([newKr, newPt]);
 
-  setTimeout(()=>{
-    if(krCard) krCard.classList.add('fade-out');
-    if(ptCard) ptCard.classList.add('fade-out');
+  // Os dois cards novos (coreano e português) NUNCA devem entrar no mesmo instante visual.
+  // Se entrarem juntos, dá pra "ver" qual par é o novo só pelo sincronismo, sem precisar
+  // ler nada — então cada lado recebe seu próprio atraso aleatório e independente,
+  // com uma diferença mínima forçada entre os dois. A janela é curta de propósito:
+  // o objetivo é um fluxo rápido e contínuo (estilo Match Madness do Duolingo), não uma pausa.
+  const baseDelay = 40 + Math.floor(Math.random()*60); // 40–100ms
+  const minGap = 35; // garante que os dois lados nunca entrem juntos, mesmo por coincidência
+  const krFirst = Math.random() < 0.5; // varia quem entra primeiro a cada rodada
+  const krDelay = krFirst ? baseDelay : baseDelay + minGap;
+  const ptDelay = krFirst ? baseDelay + minGap : baseDelay;
 
+  if(krCard){
+    krCard.classList.add('fade-out');
     setTimeout(()=>{
-      if(krCard) krCard.replaceWith(makeMatchKrCard(newKr));
-      if(ptCard) ptCard.replaceWith(makeMatchPtCard(newKr, newPt));
-    }, 180);
-  }, 130);
+      const newKrCard = makeMatchKrCard(newKr);
+      krCard.replaceWith(newKrCard);
+      randomizeCardPosition(newKrCard);
+    }, krDelay);
+  }
+  if(ptCard){
+    ptCard.classList.add('fade-out');
+    setTimeout(()=>{
+      const newPtCard = makeMatchPtCard(newKr, newPt);
+      ptCard.replaceWith(newPtCard);
+      randomizeCardPosition(newPtCard);
+    }, ptDelay);
+  }
+}
+
+// Move um card recém-inserido para uma posição aleatória dentro da sua própria coluna,
+// quebrando a correlação posicional entre o lado coreano e o lado português.
+function randomizeCardPosition(cardEl){
+  const col = cardEl.parentElement;
+  if(!col) return;
+  const siblings = Array.from(col.children).filter(c => c !== cardEl);
+  if(siblings.length === 0) return;
+  const targetIndex = Math.floor(Math.random() * (siblings.length + 1));
+  if(targetIndex >= siblings.length){
+    col.appendChild(cardEl);
+  } else {
+    col.insertBefore(cardEl, siblings[targetIndex]);
+  }
 }
 
 
@@ -1862,6 +2223,9 @@ function shuffleDomChildren(container){
 function onSelectKr(kr, cardEl){
   const session = currentMatchSession;
   if(!session) return;
+  // Blindagem: ignora cliques em um card que já está saindo da tela ou que não
+  // está mais conectado ao DOM (pode acontecer numa janela muito curta durante a troca rápida de pares).
+  if(!cardEl.isConnected || cardEl.classList.contains('fade-out')) return;
   document.querySelectorAll('.match-card.kr.selected').forEach(c=>c.classList.remove('selected'));
   cardEl.classList.add('selected');
   session.selectedKr = kr;
@@ -1872,6 +2236,7 @@ function onSelectKr(kr, cardEl){
 function onSelectPt(pt, forKr, cardEl){
   const session = currentMatchSession;
   if(!session) return;
+  if(!cardEl.isConnected || cardEl.classList.contains('fade-out')) return;
   document.querySelectorAll('.match-card.pt.selected').forEach(c=>c.classList.remove('selected'));
   cardEl.classList.add('selected');
   session.selectedPt = pt;
@@ -2033,7 +2398,7 @@ function nextQuickQuestion(){
 
   const pool = allWordsFlat();
   const current = pool[Math.floor(Math.random()*pool.length)];
-  const wrongs = shuffleArray(pool.filter(item => item.pt !== current.pt)).slice(0,5);
+  const wrongs = shuffleArray(pool.filter(item => item.pt !== current.pt)).slice(0,3);
   const options = shuffleArray([current, ...wrongs]);
 
   quickGame.current = current;
@@ -2115,13 +2480,13 @@ function renderQuickGame(){
     el.innerHTML = `
       <div class="home-greet">
         <div class="home-greet-text">Jogo rápido ⚡</div>
-        <div class="home-greet-sub">10 segundos. Só você, o coreano e seis opções.</div>
+        <div class="home-greet-sub">10 segundos. Só você, o coreano e quatro opções.</div>
       </div>
 
       <div class="quick-start-card">
         <div class="quick-start-emoji">🎮</div>
         <div class="quick-start-title">Quanto tempo você aguenta?</div>
-        <div class="quick-start-text">Uma palavra em coreano aparece. Escolha a tradução certa entre 6 opções em até 10 segundos.</div>
+        <div class="quick-start-text">Uma palavra em coreano aparece. Escolha a tradução certa entre 4 opções em até 10 segundos.</div>
         <button class="btn btn-primary btn-block" id="quickStartBtn">Começar rodada</button>
       </div>
 
@@ -2131,7 +2496,7 @@ function renderQuickGame(){
           <div class="quick-stat-label">Recorde</div>
         </div>
         <div class="quick-stat">
-          <div class="quick-stat-value">6</div>
+          <div class="quick-stat-value">4</div>
           <div class="quick-stat-label">Opções</div>
         </div>
         <div class="quick-stat">
@@ -2149,6 +2514,7 @@ function renderQuickGame(){
   }
 
   if(!quickGame.active){
+    const isNewRecord = quickGame.score > 0 && quickGame.score > quickGame.best;
     el.innerHTML = `
       <div class="home-greet">
         <div class="home-greet-text">Fim da rodada 🌸</div>
@@ -2156,8 +2522,8 @@ function renderQuickGame(){
       </div>
 
       <div class="quick-gameover">
-        <div class="quick-gameover-emoji">${quickGame.score >= quickGame.best ? '🏆' : '✨'}</div>
-        <div class="quick-gameover-title">${quickGame.score >= quickGame.best ? 'Novo recorde!' : 'Rodada encerrada'}</div>
+        <div class="quick-gameover-emoji">${isNewRecord ? '🏆' : '✨'}</div>
+        <div class="quick-gameover-title">${isNewRecord ? 'Novo recorde!' : 'Rodada encerrada'}</div>
         <div class="quick-gameover-score">${quickGame.score}</div>
         <div class="quick-gameover-text">Seu melhor resultado: <b>${quickGame.best}</b><br>Quer tentar só mais uma?</div>
         <button class="btn btn-primary btn-block" id="quickAgainBtn">Jogar de novo</button>
@@ -2198,7 +2564,7 @@ function renderQuickGame(){
 
     <div class="quick-question">
       <div class="quick-question-label"></div>
-      <div class="quick-korean">${quickGame.current.kr}</div>
+      <div class="quick-korean ${krSizeClass(quickGame.current.kr)}">${escapeHtml(quickGame.current.kr)}</div>
     </div>
 
     <div class="quick-options">
@@ -2407,9 +2773,9 @@ function renderInfiniteMatch(){
     <div class="infinite-board">
       <div class="infinite-col">
         ${krItems.map(item=>`
-          <button class="infinite-card kr" data-kr="${escapeHtml(item.kr)}">
+          <button class="infinite-card kr ${krSizeClass(item.kr)}" data-kr="${escapeHtml(item.kr)}">
             <span>${escapeHtml(item.kr)}</span>
-            <span class="infinite-small-audio">▶ ouvir</span>
+            ${state.soundOn ? `<span class="infinite-small-audio">▶ ouvir</span>` : ''}
           </button>
         `).join('')}
       </div>
@@ -2486,9 +2852,10 @@ function attachInfiniteCardEvents(root=document){
 
 function makeInfiniteKrCard(item){
   const btn = document.createElement('button');
-  btn.className = 'infinite-card kr fade-in';
+  btn.className = 'infinite-card kr fade-in ' + krSizeClass(item.kr);
   btn.dataset.kr = item.kr;
-  btn.innerHTML = `<span>${escapeHtml(item.kr)}</span><span class="infinite-small-audio">▶ ouvir</span>`;
+  const audioLabel = state.soundOn ? `<span class="infinite-small-audio">▶ ouvir</span>` : '';
+  btn.innerHTML = `<span>${escapeHtml(item.kr)}</span>${audioLabel}`;
   btn.onclick = ()=> selectInfiniteKr(btn.dataset.kr, btn);
   return btn;
 }
@@ -2536,21 +2903,31 @@ function resolveInfinite(){
     infiniteGame.selectedKr = null;
     infiniteGame.selectedPt = null;
 
-    setTimeout(()=>{
-      if(krCard) krCard.classList.add('fade-out');
-      if(ptCard) ptCard.classList.add('fade-out');
+    // Mesmo princípio do Match normal: fluxo rápido e contínuo, com os dois lados
+    // entrando em instantes levemente diferentes pra não criar uma "dica" visual de sincronismo.
+    if(krCard) krCard.classList.add('fade-out');
+    if(ptCard) ptCard.classList.add('fade-out');
 
+    const infBase = 40 + Math.floor(Math.random()*60); // 40–100ms
+    const infGap = 35;
+    const infKrFirst = Math.random() < 0.5;
+    const infKrDelay = infKrFirst ? infBase : infBase + infGap;
+    const infPtDelay = infKrFirst ? infBase + infGap : infBase;
+
+    if(krCard && newPair){
       setTimeout(()=>{
-        if(krCard && newPair){
-          const newKr = makeInfiniteKrCard(newPair);
-          krCard.replaceWith(newKr);
-        }
-        if(ptCard && newPair){
-          const newPt = makeInfinitePtCard(newPair);
-          ptCard.replaceWith(newPt);
-        }
-      }, 180);
-    }, 140);
+        const newKr = makeInfiniteKrCard(newPair);
+        krCard.replaceWith(newKr);
+        randomizeCardPosition(newKr);
+      }, infKrDelay);
+    }
+    if(ptCard && newPair){
+      setTimeout(()=>{
+        const newPt = makeInfinitePtCard(newPair);
+        ptCard.replaceWith(newPt);
+        randomizeCardPosition(newPt);
+      }, infPtDelay);
+    }
 
   } else {
     infiniteGame.misses += 1;
@@ -2634,7 +3011,8 @@ function renderProfile(){
   el.className = 'screen profile';
 
   const learned = totalWordsLearned();
-  const unlockedThemes = THEMES.filter(isThemeUnlocked).length;
+  const unlockedThemes = THEMES.filter(t => isThemeAccessible(t)).length;
+  const accessibleTotal = THEMES.filter(t => !isPlusLocked(t)).length;
   const sinceDate = new Date(state.createdAt);
   const sinceStr = sinceDate.toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
 
@@ -2643,12 +3021,13 @@ function renderProfile(){
       <div class="profile-avatar">🌷</div>
       <div class="profile-name">${escapeHtml(state.name)}</div>
       <div class="profile-since">Aprendendo coreano desde ${sinceStr}</div>
+      ${state.isPlus ? `<div class="plus-badge" style="margin-top:10px;">✨ Plus</div>` : ''}
     </div>
 
     <div class="profile-stats">
       <div class="profile-stat"><div class="profile-stat-value">${learned}</div><div class="profile-stat-label">Palavras<br>aprendidas</div></div>
       <div class="profile-stat"><div class="profile-stat-value">${state.flowers}</div><div class="profile-stat-label">Flores<br>coletadas</div></div>
-      <div class="profile-stat"><div class="profile-stat-value">${unlockedThemes}/${THEMES.length}</div><div class="profile-stat-label">Destinos<br>abertos</div></div>
+      <div class="profile-stat"><div class="profile-stat-value">${unlockedThemes}/${accessibleTotal}</div><div class="profile-stat-label">Destinos<br>abertos</div></div>
     </div>
 
     <div class="section-label">Suas coleções</div>
@@ -2660,19 +3039,22 @@ function renderProfile(){
 
   const list = el.querySelector('#collectionList');
   THEMES.forEach(theme=>{
-    const unlocked = isThemeUnlocked(theme);
+    const flowerLocked = !isThemeUnlocked(theme);
+    const plusLocked = isPlusLocked(theme);
+    const accessible = !flowerLocked && !plusLocked;
     const count = themeLearnedCount(theme.id);
     const pct = Math.round((count/theme.words.length)*100);
     const row = document.createElement('div');
-    row.className = 'collection-row' + (unlocked ? '' : ' locked');
+    row.className = 'collection-row' + (accessible ? '' : ' locked');
     row.innerHTML = `
       <div class="collection-emoji">${theme.emoji}</div>
       <div class="collection-info">
-        <div class="collection-name">${theme.name}</div>
-        <div class="collection-progress-text">${unlocked ? count+'/'+theme.words.length+' palavras' : 'Bloqueado · '+theme.unlockFlowers+' 🌸'}</div>
+        <div class="collection-name">${theme.name} ${plusLocked ? '<span class=\"plus-badge\">✨ Plus</span>' : ''}</div>
+        <div class="collection-progress-text">${accessible ? count+'/'+theme.words.length+' palavras' : (plusLocked ? 'Conteúdo Plus' : 'Bloqueado · '+theme.unlockFlowers+' 🌸')}</div>
       </div>
-      <div class="collection-bar"><div class="collection-bar-fill" style="width:${unlocked ? pct : 0}%"></div></div>
+      <div class="collection-bar"><div class="collection-bar-fill" style="width:${accessible ? pct : 0}%"></div></div>
     `;
+    if(plusLocked) row.addEventListener('click', ()=> goTo('plus', {from:'profile'}));
     list.appendChild(row);
   });
 
@@ -2707,6 +3089,16 @@ function renderSettings(){
           <div class="settings-row-desc">Atualmente: ${escapeHtml(state.name)}</div>
         </div>
         <span>✏️</span>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-row" id="rowPlusStatus" style="cursor:pointer;">
+        <div>
+          <div class="settings-row-label">${state.isPlus ? '✨ Oi Coreia Plus' : 'Oi Coreia Plus'}</div>
+          <div class="settings-row-desc">${state.isPlus ? 'Pagamento único realizado · acesso vitalício' : 'Mais doramas, frases reais e vocabulário'}</div>
+        </div>
+        <span>${state.isPlus ? '✓' : '›'}</span>
       </div>
     </div>
 
@@ -2746,6 +3138,7 @@ function renderSettings(){
   });
 
   el.querySelector('#rowChangeName').addEventListener('click', ()=> openRenameModal());
+  el.querySelector('#rowPlusStatus').addEventListener('click', ()=> goTo('plus', {from:'settings'}));
   el.querySelector('#rowReset').addEventListener('click', ()=> openResetModal());
 
   attachBottomNav(el);
