@@ -364,11 +364,11 @@ img,svg{display:block;}
   justify-content:center;
   text-align:center;
   min-height:112px;
-  height:112px;
   position:relative;
   transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s ease, background 0.2s ease, opacity 0.3s ease;
   border:2px solid transparent;
   overflow:hidden;
+  box-sizing:border-box;
 }
 
 .match-card.kr{
@@ -398,9 +398,13 @@ img,svg{display:block;}
   line-height:1.22;
   padding-left:10px;
   padding-right:10px;
-  word-break:keep-all;
+  word-break:normal;
   overflow-wrap:break-word;
 }
+/* Tipografia adaptativa PT: reduz fonte quando tradução é longa, evitando overflow */
+.match-card.pt.pt-medium{font-size:15px;}
+.match-card.pt.pt-long{font-size:13px; line-height:1.28;}
+.match-card.pt.pt-xlong{font-size:12px; line-height:1.3;}
 
 .match-card.kr:nth-child(1){background:#FFF0F4;}
 .match-card.kr:nth-child(2){background:#FFF7D8;}
@@ -414,16 +418,23 @@ img,svg{display:block;}
   box-shadow:var(--shadow-float);
   background:#FFF7F9;
 }
+/* Acerto: flash verde e depois some */
 .match-card.matched{
-  background:var(--sage);
-  border-color:var(--sage-deep);
+  background:#4CAF50;
+  border-color:#388E3C;
   color:var(--white);
+  transition: background 0.08s ease, transform 0.25s ease, opacity 0.25s ease;
   opacity:0;
   pointer-events:none;
-  transform:scale(0.85);
+  transform:scale(0.88);
 }
-.match-card.wrong{animation:shakeCard 0.4s ease;}
-@keyframes shakeCard{0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);}}
+/* Erro: fundo vermelho + shake */
+.match-card.wrong{
+  background:#FFEBEE !important;
+  border-color:#E57373 !important;
+  animation:shakeCard 0.38s ease;
+}
+@keyframes shakeCard{0%,100%{transform:translateX(0);} 22%{transform:translateX(-7px);} 55%{transform:translateX(7px);} 78%{transform:translateX(-4px);}}
 
 .match-card-audio{
   width:34px;
@@ -442,38 +453,18 @@ img,svg{display:block;}
   flex-shrink:0;
 }
 
-.match-feedback{
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%) scale(0.8);
-  background:var(--white);
-  padding:16px 22px;
-  border-radius:24px;
-  box-shadow:var(--shadow-float);
-  font-size:16px;
-  font-weight:700;
-  color:var(--ink);
-  opacity:0;
-  pointer-events:none;
-  z-index:50;
-  transition:opacity 0.25s ease, transform 0.25s ease;
-  max-width:calc(100vw - 40px);
-  width:auto;
-  white-space:normal;
-  text-align:center;
-  line-height:1.35;
-}
-.match-feedback.show{opacity:1; transform:translate(-50%,-50%) scale(1);}
+/* match-feedback removido: feedback é agora por cor (verde/vermelho) e som, não por texto a cada acerto */
 
 .burst-petal{
   position:fixed;
-  font-size:20px;
   pointer-events:none;
-  z-index:49;
-  animation:burstOut 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+  z-index:99;
+  animation:burstOut 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
 }
-@keyframes burstOut{0%{transform:translate(0,0) scale(0.6) rotate(0deg); opacity:1;} 100%{transform:translate(var(--bx,0px), var(--by,-80px)) scale(1.1) rotate(180deg); opacity:0;}}
+@keyframes burstOut{
+  0%  {transform:translate(0,0) scale(0.5) rotate(0deg); opacity:1;}
+  100%{transform:translate(var(--bx,0px), var(--by,-120px)) scale(1.3) rotate(var(--br,200deg)); opacity:0;}
+}
 
 .complete-screen{
   align-items:center;
@@ -1079,16 +1070,48 @@ img,svg{display:block;}
   white-space:nowrap;
 }
 
-/* Flor de cerejeira dourada — toque especial discreto pra quem já é Plus,
-   visível ao lado do nome na Home. Mesmo emoji de sempre, só com um brilho dourado sutil. */
-.plus-flower{
-  display:inline-block;
-  filter: sepia(0.55) saturate(2.4) hue-rotate(2deg) brightness(1.08);
-  animation: plusFlowerGlow 3s ease-in-out infinite;
+/* Selo dourado metálico — identifica quem já é Plus, ao lado do nome na Home.
+   Contraste forte de propósito (fundo escuro + brilho), pra não se perder no creme do app. */
+.plus-seal{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  vertical-align:middle;
+  background:linear-gradient(160deg, #FFE9A8 0%, #E8B23C 35%, #B5791A 70%, #8C5A0F 100%);
+  border:1px solid #6E430A;
+  border-radius:999px;
+  padding:3px 10px 3px 7px;
+  box-shadow:
+    0 2px 5px rgba(110, 67, 10, 0.55),
+    inset 0 1px 1px rgba(255,255,255,0.65),
+    inset 0 -2px 2px rgba(110, 67, 10, 0.35);
+  animation: plusSealGlow 2.6s ease-in-out infinite;
 }
-@keyframes plusFlowerGlow{
-  0%, 100%{ filter: sepia(0.55) saturate(2.4) hue-rotate(2deg) brightness(1.08); }
-  50%{ filter: sepia(0.7) saturate(2.8) hue-rotate(2deg) brightness(1.18); }
+.plus-seal-flower{
+  font-size:0.85em;
+  filter: drop-shadow(0 1px 1px rgba(110,67,10,0.4));
+}
+.plus-seal-text{
+  font-family:var(--font-body);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:0.03em;
+  color:#4A2C06;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+}
+@keyframes plusSealGlow{
+  0%, 100%{
+    box-shadow:
+      0 2px 5px rgba(110, 67, 10, 0.55),
+      inset 0 1px 1px rgba(255,255,255,0.65),
+      inset 0 -2px 2px rgba(110, 67, 10, 0.35);
+  }
+  50%{
+    box-shadow:
+      0 2px 9px rgba(184, 132, 26, 0.85),
+      inset 0 1px 1px rgba(255,255,255,0.85),
+      inset 0 -2px 2px rgba(110, 67, 10, 0.35);
+  }
 }
 
 .theme-card .plus-badge, .theme-tile .plus-badge{
@@ -1243,109 +1266,56 @@ img,svg{display:block;}
 // ============================================
 const THEMES = [
   { id:'cafe', emoji:'☕', name:'Café em Seul', unlockFlowers:0,
-    words:[['커피','Café'],['우유','Leite'],['물','Água'],['차','Chá'],['빵','Pão'],['설탕','Açúcar'],['얼음','Gelo'],['컵','Copo'],['케이크','Bolo'],['디저트','Sobremesa'],['따뜻해요','Está quente'],['차가워요','Está frio'],['카페','Cafeteria'],['메뉴','Cardápio'],['주문할게요','Vou pedir'],['포장이요','Para levar'],['여기서 먹을게요','Vou comer aqui'],['얼마예요?','Quanto custa?'],['카드','Cartão'],['현금','Dinheiro'],['영수증','Recibo'],['빨대','Canudo'],['휴지','Guardanapo'],['자리','Lugar/Mesa'],['창가','Perto da janela'],['콘센트','Tomada elétrica'],['와이파이','Wi-fi'],['비밀번호','Senha'],['샌드위치','Sanduíche'],['크루아상','Croissant'],['머핀','Muffin'],['쿠키','Cookie'],['시럽','Calda/Xarope'],['휘핑크림','Chantilly'],['아이스','Gelado'],['뜨거운 것','Quente (coisa)'],['한 잔 더 주세요','Mais uma xícara, por favor'],['맛있어요','Está gostoso'],['달아요','É doce'],['써요','É amargo'],['진해요','É forte (sabor)'],['연해요','É suave/fraco'],['리필','Refil'],['테이크아웃','Para viagem'],['앉아도 돼요?','Posso me sentar?']] },
+    words:[['아메리카노','Café americano'],['라떼','Café com leite'],['카푸치노','Cappuccino'],['에스프레소','Espresso'],['녹차 라떼','Latte de chá verde'],['홍차','Chá preto'],['허브차','Chá de ervas'],['생강차','Chá de gengibre'],['유자차','Chá de yuzu'],['커피','Café'],['우유','Leite'],['물','Água'],['차','Chá'],['얼음','Gelo'],['아이스','Gelado'],['따뜻해요','Está quente'],['차가워요','Está frio'],['탄산수','Água com gás'],['주스','Suco'],['스무디','Smoothie'],['빵','Pão'],['케이크','Bolo'],['디저트','Sobremesa'],['샌드위치','Sanduíche'],['크루아상','Croissant'],['머핀','Muffin'],['쿠키','Cookie'],['마카롱','Macaron'],['치즈케이크','Cheesecake'],['와플','Waffle'],['타르트','Torta/Tart'],['팥빙수','Patbingsu (sobremesa de gelo)'],['토스트','Torrada'],['샐러드','Salada'],['브런치','Brunch'],['설탕','Açúcar'],['시럽','Calda/Xarope'],['휘핑크림','Chantilly'],['계피','Canela'],['바닐라','Baunilha'],['초콜릿','Chocolate'],['맛있어요','Está gostoso'],['달아요','É doce'],['써요','É amargo'],['진해요','É forte (sabor)'],['연해요','É suave/fraco'],['메뉴','Cardápio'],['주문할게요','Vou pedir'],['포장이요','Para levar'],['여기서 먹을게요','Vou comer aqui'],['얼마예요?','Quanto custa?'],['카드','Cartão'],['현금','Dinheiro'],['영수증','Recibo'],['영수증 주세요','Me dê o recibo, por favor'],['리필','Refil'],['테이크아웃','Para viagem'],['한 잔 더 주세요','Mais uma xícara, por favor'],['따로 포장해 주세요','Embale separado, por favor'],['오늘의 메뉴','Menu do dia'],['계절 음료','Bebida sazonal'],['한정판','Edição limitada'],['카페','Cafeteria'],['자리','Lugar/Mesa'],['창가','Perto da janela'],['콘센트','Tomada elétrica'],['와이파이','Wi-fi'],['비밀번호','Senha'],['빨대','Canudo'],['휴지','Guardanapo'],['컵','Copo'],['카운터','Balcão'],['앉아도 돼요?','Posso me sentar?'],['콘센트 있어요?','Tem tomada?'],['충전기','Carregador'],['주차장','Estacionamento'],['금연석','Área para não fumantes'],['화장실은 어디예요?','Onde fica o banheiro?'],['혼자예요','Estou sozinho(a)'],['두 명이요','Somos dois'],['예약했어요','Fiz uma reserva'],['기다려야 해요?','Preciso esperar?'],['몇 분 정도요?','Quanto tempo mais ou menos?'],['음식은 언제 나와요?','Quando sai a comida?'],['창문 옆에 앉을게요','Vou sentar perto da janela'],['분위기가 좋아요','O ambiente é ótimo'],['인테리어가 예뻐요','A decoração é linda'],['포토존','Espaço para fotos'],['인스타그램에서 봤어요','Vi no Instagram'],['너무 맛있어서 또 올게요','Estava tão gostoso que vou voltar'],['재방문 의사 있어요','Tenho vontade de voltar'],['별로예요','Não gostei muito'],['브랜드','Marca']] },
   { id:'faith', emoji:'✝️', name:'Fé', unlockFlowers:0,
-    words:[['하나님','Deus'],['예수님','Jesus'],['성경','Bíblia'],['교회','Igreja'],['목사님','Pastor'],['전도사님','Evangelista/Obreiro'],['집사님','Diácono(a)'],['장로님','Presbítero/Ancião'],['성도','Membro da igreja/Fiel'],['예배','Culto'],['찬양','Louvor'],['기도','Oração'],['기도해요','Vou orar'],['아멘','Amém'],['할렐루야','Aleluia'],['축복','Bênção'],['은혜','Graça'],['믿음','Fé'],['소망','Esperança'],['사랑','Amor'],['십자가','Cruz'],['천국','Céu/Reino dos céus'],['죄','Pecado'],['용서','Perdão'],['구원','Salvação'],['부활','Ressurreição'],['성령','Espírito Santo'],['천사','Anjo'],['말씀','Palavra (de Deus)'],['설교','Sermão/Prédica'],['주일','Domingo (dia do Senhor)'],['주일학교','Escola dominical'],['헌금','Oferta/Dízimo'],['찬송가','Hino'],['성가대','Coral da igreja'],['세례','Batismo'],['목장','Pequeno grupo/Célula'],['셀모임','Reunião de célula'],['새벽기도','Oração da madrugada'],['금식','Jejum'],['전도','Evangelismo'],['선교','Missão'],['선교사','Missionário(a)'],['하나님 감사합니다','Graças a Deus'],['하나님이 사랑하세요','Deus te ama'],['함께 기도해요','Vamos orar juntos'],['주님','Senhor (referindo-se a Deus)'],['평화','Paz'],['형제','Irmão (na fé)'],['자매','Irmã (na fé)']] },
+    words:[['하나님','Deus'],['예수님','Jesus'],['주님','Senhor (referindo-se a Deus)'],['성령','Espírito Santo'],['성삼위','Santíssima Trindade'],['창조주','Criador'],['구세주','Salvador'],['보혜사','Consolador (Espírito Santo)'],['천사','Anjo'],['성경','Bíblia'],['구약','Antigo Testamento'],['신약','Novo Testamento'],['복음','Evangelho'],['말씀','Palavra (de Deus)'],['성경 공부','Estudo bíblico'],['주석','Comentário bíblico'],['묵상','Meditação/Devocional'],['큐티','Devocional diário (QT)'],['교회','Igreja'],['목사님','Pastor'],['전도사님','Evangelista/Obreiro'],['집사님','Diácono(a)'],['장로님','Presbítero/Ancião'],['성도','Membro da igreja/Fiel'],['제자','Discípulo(a)'],['사도','Apóstolo'],['선교사','Missionário(a)'],['예배','Culto'],['찬양','Louvor'],['찬송가','Hino'],['성가대','Coral da igreja'],['찬양 팀','Equipe de louvor'],['기타','Violão'],['드럼','Bateria'],['키보드','Teclado'],['기도','Oração'],['기도해요','Vou orar'],['새벽기도','Oração da madrugada'],['금식','Jejum'],['중보기도','Intercessão'],['통성기도','Oração em alta voz'],['아멘','Amém'],['할렐루야','Aleluia'],['함께 기도해요','Vamos orar juntos'],['구원','Salvação'],['죄','Pecado'],['죄 사함','Perdão dos pecados'],['용서','Perdão'],['회개','Arrependimento'],['거듭남','Novo nascimento'],['부활','Ressurreição'],['십자가','Cruz'],['천국','Céu/Reino dos céus'],['기적','Milagre'],['치유','Cura'],['은혜','Graça'],['축복','Bênção'],['믿음','Fé'],['소망','Esperança'],['사랑','Amor'],['평화','Paz'],['은사','Dom espiritual'],['방언','Línguas (dom espiritual)'],['열매','Fruto (do Espírito)'],['온유','Mansidão'],['인내','Perseverança'],['감사','Gratidão'],['겸손','Humildade'],['순종','Obediência'],['전도','Evangelismo'],['선교','Missão'],['간증','Testemunho'],['헌금','Oferta/Dízimo'],['세례','Batismo'],['교제','Comunhão/Fellowship'],['목장','Pequeno grupo/Célula'],['셀모임','Reunião de célula'],['주일','Domingo (dia do Senhor)'],['주일학교','Escola dominical'],['설교','Sermão/Prédica'],['심방','Visita pastoral'],['봉사','Serviço/Voluntariado'],['헌신','Dedicação'],['형제','Irmão (na fé)'],['자매','Irmã (na fé)'],['회복','Restauração'],['부흥','Avivamento'],['하나님 감사합니다','Graças a Deus'],['하나님이 사랑하세요','Deus te ama'],['같이 예배해요','Vamos adorar juntos'],['환영해요','Bem-vindo(a)'],['처음 오셨어요?','É sua primeira vez aqui?'],['축복합니다','Que Deus te abençoe'],['평안하세요','Que você tenha paz'],['하나님의 뜻','A vontade de Deus'],['인도해 주세요','Guia-me, Senhor'],['나누다','Partilhar'],['사랑을 나눠요','Vamos partilhar o amor']] },
   { id:'doramas', emoji:'🎬', name:'Doramas', unlockFlowers:50,
     words:[['사랑','Amor'],['친구','Amigo'],['진짜','Sério'],['괜찮아요','Tudo bem'],['미안해요','Desculpa'],['보고싶어요','Estou com saudade'],['행복해요','Estou feliz'],['슬퍼요','Estou triste'],['기다려요','Espere'],['거짓말','Mentira'],['비밀','Segredo'],['약속','Promessa']] },
   { id:'kakao', emoji:'📱', name:'KakaoTalk', unlockFlowers:100,
-    words:[['안녕하세요','Olá'],['감사합니다','Obrigado'],['네','Sim'],['아니요','Não'],['잘 지내요?','Tudo bem?'],['뭐해요?','O que está fazendo?'],['알겠어요','Entendi'],['잠깐만요','Só um momento'],['전화해요','Ligue para mim'],['답장해요','Responda'],['사진','Foto'],['이모티콘','Emoji'],['읽씹','Visto e ignorado'],['카톡','Mensagem do KakaoTalk'],['프로필','Perfil'],['상태메시지','Mensagem de status'],['단톡방','Grupo de conversa'],['통화','Chamada'],['영상통화','Chamada de vídeo'],['답장 늦어서 미안해요','Desculpe a demora pra responder'],['지금 바빠요','Estou ocupado(a) agora'],['이따 봐요','Te vejo mais tarde'],['나중에 얘기해요','Falamos depois'],['보낼게요','Vou enviar'],['받았어요','Recebi'],['확인했어요','Já verifiquei'],['궁금해요','Estou curioso(a)'],['진짜요?','É sério?'],['대박','Incrível/Demais'],['헐','Eita/Nem acredito'],['ㅋㅋㅋ','Risada (kkk)'],['ㅠㅠ','Choro (emoticon)'],['공유해요','Vou compartilhar'],['링크','Link'],['파일','Arquivo'],['저장했어요','Salvei'],['삭제했어요','Deletei'],['차단','Bloquear'],['친구 추가','Adicionar amigo'],['생일 축하해요','Feliz aniversário'],['축하해요','Parabéns'],['힘내요','Força/Ânimo']] },
+    words:[['안녕하세요','Olá'],['안녕','Oi (informal)'],['잘 지내요?','Tudo bem?'],['잘 지내','Tudo bem? (informal)'],['오랜만이에요','Faz tempo que não falamos'],['반가워요','Prazer em falar contigo'],['어떻게 지냈어요?','Como você tem estado?'],['네','Sim'],['아니요','Não'],['알겠어요','Entendi'],['알겠어','Entendi (informal)'],['맞아요','Exato / É isso'],['그렇죠','É verdade, né?'],['아, 그래요?','Ah, é mesmo?'],['진짜요?','É sério?'],['정말요?','De verdade?'],['감사합니다','Obrigado(a)'],['고마워','Valeu (bem informal)'],['죄송합니다','Sinto muito (formal)'],['뭐해요?','O que está fazendo?'],['뭐 해?','O que você tá fazendo? (informal)'],['어디야?','Onde você está? (informal)'],['잠깐만요','Só um momento'],['잠깐만','Um segundo (informal)'],['전화해요','Ligue para mim'],['답장해요','Responda'],['받았어요','Recebi'],['확인했어요','Já verifiquei'],['저장했어요','Salvei'],['보낼게요','Vou enviar'],['삭제했어요','Deletei'],['공유해요','Vou compartilhar'],['링크','Link'],['파일','Arquivo'],['사진','Foto'],['이모티콘','Emoji'],['ㅋㅋㅋ','Risada (kkk)'],['ㅠㅠ','Choro (emoticon)'],['ㅎㅎ','Rindo levemente (hh)'],['헐','Eita / Nem acredito'],['대박','Incrível / Demais'],['완전','Totalmente'],['아 맞다','Ah, lembrei!'],['어머','Nossa! (surpresa)'],['아이고','Ai meu Deus / Que saco'],['읽씹','Visto e ignorado'],['카톡','Mensagem do KakaoTalk'],['프로필','Perfil'],['상태메시지','Mensagem de status'],['단톡방','Grupo de conversa'],['통화','Chamada'],['영상통화','Chamada de vídeo'],['차단','Bloquear'],['친구 추가','Adicionar amigo'],['지금 바빠요','Estou ocupado(a) agora'],['이따 봐요','Te vejo mais tarde'],['나중에 얘기해요','Falamos depois'],['답장 늦어서 미안해요','Desculpe a demora pra responder'],['오늘은 안 돼요','Hoje não dá'],['내일 어때요?','E amanhã, como fica?'],['언제 시간 있어요?','Quando você tem tempo?'],['집에 잘 들어갔어요?','Chegou bem em casa?'],['보고 싶어요','Estou com saudade'],['힘내요','Força / Ânimo'],['생일 축하해요','Feliz aniversário'],['축하해요','Parabéns'],['잘했어요','Você se saiu bem'],['응원해요','Estou torcendo por você'],['괜찮아요','Tudo bem / Tô bem'],['걱정 마세요','Não se preocupe'],['밥 먹었어요?','Você já comeu?'],['오늘 하루 어땠어요?','Como foi seu dia?'],['몇 시야?','Que horas são? (informal)'],['궁금해요','Estou curioso(a)'],['어디서 만날까요?','Onde nos encontramos?'],['몇 시에 만날까요?','A que horas nos encontramos?'],['같이 가요','Vamos juntos'],['예약했어요','Fiz uma reserva'],['취소했어요','Cancelei'],['늦을 것 같아요','Acho que vou me atrasar'],['곧 도착해요','Chego em breve'],['다음에 만나요','Nos vemos na próxima'],['잘됐다','Que bom! / Que ótimo!'],['안됐어요','Que pena / Que situação'],['힘들었겠어요','Deve ter sido difícil'],['부러워요','Tenho inveja / Que sorte'],['설마','Impossível / Não acredito'],['어떡해요','O que fazer? / Que situação']] },
   { id:'viagem', emoji:'✈️', name:'Viagem', unlockFlowers:0,
-    words:[['공항','Aeroporto'],['비행기','Avião'],['호텔','Hotel'],['화장실','Banheiro'],['지하철','Metrô'],['택시','Táxi'],['여권','Passaporte'],['지도','Mapa'],['길','Caminho'],['표','Bilhete'],['버스','Ônibus'],['역','Estação'],['출구','Saída'],['입구','Entrada'],['환전','Câmbio de moeda'],['짐','Bagagem'],['캐리어','Mala de viagem'],['예약','Reserva'],['체크인','Check-in'],['체크아웃','Check-out'],['관광','Turismo'],['안내소','Centro de informações'],['길을 잃었어요','Estou perdido(a)'],['여기가 어디예요?','Onde é aqui?'],['얼마나 걸려요?','Quanto tempo demora?'],['몇 시예요?','Que horas são?'],['표를 사고 싶어요','Quero comprar um bilhete'],['이 버스가 맞아요?','Esse é o ônibus certo?'],['내려야 해요','Preciso descer'],['다음 정류장','Próxima parada'],['편도','Somente ida'],['왕복','Ida e volta'],['환승','Transferência/Conexão'],['렌터카','Carro de aluguel'],['운전면허증','Carteira de motorista'],['주유소','Posto de gasolina'],['교통카드','Cartão de transporte'],['관광지','Ponto turístico'],['사진 찍어 주세요','Tire uma foto, por favor'],['기념품','Lembrancinha'],['짐을 맡길 수 있어요?','Posso guardar a bagagem?'],['시차','Diferença de horário'],['숙소','Acomodação'],['민박','Pousada local']] },
+    words:[['공항','Aeroporto'],['비행기','Avião'],['탑승구','Portão de embarque'],['탑승권','Cartão de embarque'],['여권','Passaporte'],['짐','Bagagem'],['캐리어','Mala de viagem'],['수화물','Bagagem despachada'],['수화물 찾는 곳','Esteira de bagagens'],['입국 심사','Imigração / Controle de passaporte'],['세관','Alfândega'],['출발','Partida'],['도착','Chegada'],['연착','Atraso (de voo)'],['환승','Transferência/Conexão'],['편도','Somente ida'],['왕복','Ida e volta'],['지하철','Metrô'],['버스','Ônibus'],['택시','Táxi'],['역','Estação'],['정류장','Ponto de ônibus'],['다음 정류장','Próxima parada'],['교통카드','Cartão de transporte'],['환전','Câmbio de moeda'],['내려야 해요','Preciso descer'],['이 버스가 맞아요?','Esse é o ônibus certo?'],['지하철 몇 호선이에요?','Qual linha do metrô é essa?'],['렌터카','Carro de aluguel'],['운전면허증','Carteira de motorista'],['주유소','Posto de gasolina'],['지도','Mapa'],['길','Caminho'],['표','Bilhete'],['입구','Entrada'],['출구','Saída'],['여기가 어디예요?','Onde é aqui?'],['길을 잃었어요','Estou perdido(a)'],['얼마나 걸려요?','Quanto tempo demora?'],['몇 시예요?','Que horas são?'],['표를 사고 싶어요','Quero comprar um bilhete'],['어떻게 가요?','Como chego lá?'],['왼쪽','Esquerda'],['오른쪽','Direita'],['직진','Em frente'],['가까워요','É perto'],['멀어요','É longe'],['호텔','Hotel'],['숙소','Acomodação'],['민박','Pousada local'],['체크인','Check-in'],['체크아웃','Check-out'],['예약','Reserva'],['방','Quarto'],['조식','Café da manhã incluído'],['싱글룸','Quarto individual'],['더블룸','Quarto duplo'],['금고','Cofre (do quarto)'],['수건','Toalha'],['짐을 맡길 수 있어요?','Posso guardar a bagagem?'],['체크아웃은 몇 시예요?','A que horas é o check-out?'],['관광','Turismo'],['관광지','Ponto turístico'],['안내소','Centro de informações'],['기념품','Lembrancinha'],['사진 찍어 주세요','Tire uma foto, por favor'],['시차','Diferença de horário'],['티켓','Ingresso / Bilhete'],['입장료','Taxa de entrada'],['무료입장','Entrada gratuita'],['개장 시간','Horário de funcionamento'],['휴관일','Dia de fechamento'],['도와주세요','Me ajude, por favor'],['경찰서','Delegacia'],['병원','Hospital'],['약국','Farmácia'],['응급실','Pronto-socorro'],['보험','Seguro'],['영어 할 수 있어요?','Você fala inglês?'],['한국어를 못해요','Não falo coreano'],['천천히 말해 주세요','Fale mais devagar, por favor'],['여기에 써 주세요','Escreva aqui, por favor'],['얼마예요?','Quanto custa?'],['비싸요','É caro'],['싸요','É barato'],['깎아 주세요','Dá um desconto, por favor'],['현금','Dinheiro'],['카드','Cartão'],['영수증','Recibo'],['교환','Troca'],['환불','Reembolso'],['세금 환급','Reembolso de imposto (Tax Free)']] },
   { id:'comida', emoji:'🍜', name:'Comida Coreana', unlockFlowers:0,
-    words:[['김치','Kimchi'],['밥','Arroz'],['라면','Lámen'],['고기','Carne'],['치킨','Frango'],['떡볶이','Tteokbokki'],['맛있어요','Está gostoso'],['배고파요','Estou com fome'],['배불러요','Estou cheio'],['맵다','Picante'],['달다','Doce'],['짜다','Salgado'],['삼겹살','Barriga de porco grelhada'],['불고기','Bulgogi'],['비빔밥','Bibimbap'],['김밥','Kimbap'],['순두부','Sundubu (tofu macio)'],['된장찌개','Sopa de pasta de soja'],['찌개','Sopa/Ensopado'],['반찬','Acompanhamentos'],['젓가락','Hashi/Pauzinhos'],['숟가락','Colher'],['그릇','Tigela'],['식당','Restaurante'],['메뉴판','Cardápio'],['주문','Pedido'],['포장','Para levar'],['배달','Entrega'],['음료','Bebida'],['소주','Soju'],['맥주','Cerveja'],['건배','Saúde! (brinde)'],['더 주세요','Mais, por favor'],['이거 뭐예요?','O que é isso?'],['추천해 주세요','Recomende algo, por favor'],['맛이 어때요?','Como está o sabor?'],['싱겁다','Sem sal/Sem gosto'],['느끼하다','Gorduroso/Pesado'],['신선해요','É fresco'],['배달 왔어요','A entrega chegou'],['계산할게요','Vou pagar a conta'],['잘 먹었습니다','Comi muito bem (agradecimento)']] },
+    words:[['김치','Kimchi'],['밥','Arroz'],['라면','Lámen'],['고기','Carne'],['치킨','Frango'],['떡볶이','Tteokbokki'],['삼겹살','Barriga de porco grelhada'],['불고기','Bulgogi'],['비빔밥','Bibimbap'],['김밥','Kimbap'],['순두부','Sundubu (tofu macio)'],['된장찌개','Sopa de pasta de soja'],['찌개','Sopa/Ensopado'],['국밥','Arroz com sopa'],['갈비','Costela'],['갈비탕','Sopa de costela'],['삼계탕','Caldo de galinha com ginseng'],['냉면','Macarrão frio'],['잡채','Japchae (macarrão de batata-doce)'],['순대','Morcela coreana (Sundae)'],['보쌈','Barriga de porco cozida com folhas'],['쌈','Folha de alface/repolho para embrulhar carne'],['해물파전','Panqueca de frutos do mar e cebolinha'],['두부','Tofu'],['탕수육','Carne agridoce (estilo coreano)'],['족발','Joelho de porco cozido'],['해장국','Sopa para ressaca'],['김치찌개','Sopa de kimchi'],['부대찌개','Sopa estilo budae (com linguiça e ramen)'],['핫도그','Cachorro-quente coreano (milho empanado)'],['오뎅','Bolinho de peixe no espeto'],['붕어빵','Pastel de peixe com feijão doce'],['호떡','Panqueca recheada com mel e nozes'],['군고구마','Batata-doce assada'],['떡','Tteok (bolo de arroz)'],['만두','Bolinho recheado (dumpling)'],['튀김','Fritura / Tempura coreana'],['맛있어요','Está gostoso'],['맵다','Picante'],['달다','Doce'],['짜다','Salgado'],['싱겁다','Sem sal/Sem gosto'],['느끼하다','Gorduroso/Pesado'],['신선해요','É fresco'],['바삭해요','Está crocante'],['부드러워요','Está macio'],['담백해요','É leve / Sem excesso de gordura'],['쫄깃해요','É elástico/mastigável'],['소주','Soju'],['맥주','Cerveja'],['막걸리','Makgeolli (bebida de arroz fermentada)'],['보리차','Chá de cevada (servido de graça nos restaurantes)'],['음료','Bebida'],['건배','Saúde! (brinde)'],['반찬','Acompanhamentos'],['젓가락','Hashi/Pauzinhos'],['숟가락','Colher'],['그릇','Tigela'],['식당','Restaurante'],['메뉴판','Cardápio'],['주문','Pedido'],['더 주세요','Mais, por favor'],['이거 뭐예요?','O que é isso?'],['추천해 주세요','Recomende algo, por favor'],['배달','Entrega'],['포장','Para levar'],['배달 왔어요','A entrega chegou'],['계산할게요','Vou pagar a conta'],['잘 먹었습니다','Comi muito bem (agradecimento)'],['배고파요','Estou com fome'],['배불러요','Estou cheio'],['가위','Tesoura (usada para cortar carne no restaurante)'],['집게','Pegador de carne'],['불판','Grelha de mesa'],['마늘','Alho'],['파','Cebolinha'],['고추','Pimenta'],['된장','Pasta de soja'],['고추장','Pasta de pimenta vermelha'],['간장','Molho de soja'],['참기름','Óleo de gergelim'],['깨','Gergelim'],['계란','Ovo'],['버섯','Cogumelo']] },
   { id:'romance', emoji:'💌', name:'Romance', unlockFlowers:0,
-    words:[['좋아해요','Eu gosto de você'],['예뻐요','Você é bonita'],['귀여워요','É fofo(a)'],['데이트','Encontro romântico'],['손','Mão'],['마음','Coração/sentimento'],['보고 싶다','Tenho saudade'],['항상','Sempre'],['영원히','Para sempre'],['선물','Presente'],['편지','Carta'],['포옹','Abraço'],['사랑해요','Eu te amo'],['짝사랑','Amor não correspondido'],['첫사랑','Primeiro amor'],['소개팅','Encontro às cegas'],['남자친구','Namorado'],['여자친구','Namorada'],['사귀어요','Estamos namorando'],['헤어졌어요','Terminamos'],['그리워요','Sinto sua falta'],['설레요','Estou ansioso(a)/com borboletas no estômago'],['키스','Beijo'],['손잡아요','Vamos de mãos dadas'],['웨딩','Casamento'],['프로포즈','Pedido de casamento'],['반지','Anel'],['기념일','Aniversário (de namoro)'],['고백','Declaração de amor'],['짝꿍','Parceiro(a)/Cupido'],['운명','Destino'],['소울메이트','Alma gêmea'],['질투','Ciúmes'],['믿음','Confiança'],['거리','Distância'],['장거리 연애','Namoro a distância'],['행복해요','Estou feliz'],['설레는 마음','Coração ansioso'],['평생','A vida toda'],['당신만 보여요','Só vejo você'],['함께 있고 싶어요','Quero estar com você'],['보고 있어도 보고 싶어요','Mesmo te vendo, sinto saudade']] },
+    words:[['좋아해요','Eu gosto de você'],['사랑해요','Eu te amo'],['예뻐요','Você é bonita'],['잘생겼어요','Você é bonito'],['귀여워요','É fofo(a)'],['매력적이에요','É charmoso(a)'],['설레요','Estou ansioso(a)/com borboletas no estômago'],['행복해요','Estou feliz'],['그리워요','Sinto sua falta'],['많이 보고 싶어요','Sinto muita sua falta'],['보고 싶다','Tenho saudade'],['당신만 보여요','Só vejo você'],['당신 생각만 해요','Só penso em você'],['보고 있어도 보고 싶어요','Mesmo te vendo, sinto saudade'],['데이트','Encontro romântico'],['소개팅','Encontro às cegas'],['남자친구','Namorado'],['여자친구','Namorada'],['사귀어요','Estamos namorando'],['헤어졌어요','Terminamos'],['짝사랑','Amor não correspondido'],['첫사랑','Primeiro amor'],['우리 사이가 뭐예요?','O que somos um do outro?'],['진지하게 만나고 싶어요','Quero namorar com seriedade'],['고백','Declaração de amor'],['사귀자','Vamos namorar (proposta informal)'],['손','Mão'],['포옹','Abraço'],['키스','Beijo'],['손잡아요','Vamos de mãos dadas'],['마음','Coração/sentimento'],['설레는 마음','Coração ansioso'],['안아주고 싶어요','Quero te abraçar'],['목소리 듣고 싶어요','Quero ouvir sua voz'],['잘 자요, 내 꿈 꿔요','Durma bem, sonhe comigo'],['좋은 아침이에요, 사랑해요','Bom dia, eu te amo'],['오늘도 보고 싶었어요','Hoje também senti sua falta'],['밥 먹었어요?','Você já comeu?'],['오늘 하루 어땠어요?','Como foi seu dia hoje?'],['집에 잘 들어갔어요?','Você chegou bem em casa?'],['언제 만날 수 있어요?','Quando podemos nos encontrar?'],['빨리 만나고 싶어요','Quero te encontrar rápido'],['선물','Presente'],['편지','Carta'],['기념일','Aniversário (de namoro)'],['꽃','Flor'],['반지','Anel'],['초콜릿','Chocolate'],['깜짝 선물이에요','É uma surpresa'],['질투','Ciúmes'],['오해가 있었어요','Houve um mal-entendido'],['화났어요?','Você está com raiva?'],['삐졌어요?','Você ficou de mau humor?'],['미안해요, 내가 잘못했어요','Desculpa, eu errei'],['화해해요','Vamos fazer as pazes'],['다시 잘 지내요','Vamos nos dar bem de novo'],['믿어 주세요','Por favor, confie em mim'],['솔직하게 말할게요','Vou falar com sinceridade'],['우리 얘기 좀 해요','Vamos conversar um pouco'],['더 노력할게요','Vou me esforçar mais'],['운명','Destino'],['소울메이트','Alma gêmea'],['짝꿍','Parceiro(a)/Cupido'],['평생','A vida toda'],['항상','Sempre'],['영원히','Para sempre'],['믿음','Confiança'],['거리','Distância'],['장거리 연애','Namoro a distância'],['함께 있고 싶어요','Quero estar com você'],['시간이 안 가요','O tempo não passa (de saudade)'],['당신 없이 못 살아요','Não consigo viver sem você'],['하루가 너무 길어요','O dia está demorando demais'],['영상 통화 해요','Vamos fazer videochamada'],['매일 연락해요','Nos comunicamos todo dia'],['어디 갈까요?','Onde vamos?'],['뭐 먹을까요?','O que vamos comer?'],['영화 보러 가요','Vamos ao cinema'],['산책해요','Vamos dar uma caminhada'],['드라이브 해요','Vamos dar uma volta de carro'],['같이 있어서 행복해요','Sou feliz quando estou com você']] },
   { id:'romanceplus', emoji:'💕', name:'Romance Plus', unlockFlowers:0, plus:true,
-    words:[['자기야','Querido(a) (chamando o parceiro)'],['여보','Querido(a) (entre casados)'],['내 사랑','Meu amor'],['잘 자요, 내 꿈 꿔요','Durma bem, sonhe comigo'],['좋은 아침이에요, 사랑해요','Bom dia, eu te amo'],['오늘도 보고 싶었어요','Hoje também senti sua falta'],['당신 생각만 해요','Só penso em você'],['목소리 듣고 싶어요','Quero ouvir sua voz'],['안아주고 싶어요','Quero te abraçar'],['집에 잘 들어갔어요?','Você chegou bem em casa?'],['밥 먹었어요?','Você já comeu?'],['오늘 하루 어땠어요?','Como foi seu dia hoje?'],['많이 보고 싶어요','Sinto muita sua falta'],['언제 만날 수 있어요?','Quando podemos nos encontrar?'],['시간이 안 가요','O tempo não passa (de saudade)'],['당신 없이 못 살아요','Não consigo viver sem você'],['빨리 만나고 싶어요','Quero te encontrar rápido'],['하루가 너무 길어요','O dia está demorando demais'],['우리 사이가 뭐예요?','O que somos um do outro?'],['진지하게 만나고 싶어요','Quero namorar com seriedade'],['오해가 있었어요','Houve um mal-entendido'],['화났어요?','Você está com raiva?'],['삐졌어요?','Você ficou de mau humor?'],['미안해요, 내가 잘못했어요','Desculpa, eu errei'],['우리 얘기 좀 해요','Vamos conversar um pouco'],['다시 잘 지내요','Vamos nos dar bem de novo'],['화해해요','Vamos fazer as pazes'],['더 노력할게요','Vou me esforçar mais'],['솔직하게 말할게요','Vou falar com sinceridade'],['믿어 주세요','Por favor, confie em mim'],['결혼하자','Vamos nos casar'],['평생 함께해요','Vamos ficar juntos para a vida toda'],['신혼여행','Lua de mel'],['청첩장','Convite de casamento'],['혼인신고','Registro de casamento'],['신랑','Noivo'],['신부','Noiva'],['주례','Celebrante do casamento'],['예식장','Salão de cerimônias'],['아이를 갖고 싶어요','Quero ter filhos'],['시댁','Família do marido'],['처가','Família da esposa'],['장인어른','Pai da esposa (sogro)'],['장모님','Mãe da esposa (sogra)'],['시아버지','Pai do marido (sogro)'],['시어머니','Mãe do marido (sogra)'],['며느리','Nora'],['사위','Genro'],['인사드릴게요','Vou me apresentar (à família)'],['허락해 주세요','Por favor, dê sua permissão/bênção']] },
+    words:[['자기야','Querido(a) (chamando o parceiro)'],['여보','Querido(a) (entre casados)'],['내 사랑','Meu amor'],['우리 아가','Meu bem (literalmente "meu bebê")'],['자기','Querido(a) (curto)'],['오빠','Irmão mais velho / forma de chamar namorado'],['언니','Irmã mais velha / forma de chamar namorada'],['결혼하자','Vamos nos casar'],['결혼','Casamento'],['프로포즈','Pedido de casamento'],['웨딩','Cerimônia de casamento'],['청첩장','Convite de casamento'],['신혼여행','Lua de mel'],['혼인신고','Registro de casamento'],['신랑','Noivo'],['신부','Noiva'],['주례','Celebrante do casamento'],['예식장','Salão de cerimônias'],['드레스','Vestido de noiva'],['부케','Buquê'],['반지 끼워 줄게요','Vou te colocar o anel'],['평생 함께해요','Vamos ficar juntos para a vida toda'],['아이를 갖고 싶어요','Quero ter filhos'],['우리 함께 늙어가요','Vamos envelhecer juntos'],['시댁','Família do marido'],['처가','Família da esposa'],['장인어른','Pai da esposa (sogro)'],['장모님','Mãe da esposa (sogra)'],['시아버지','Pai do marido (sogro)'],['시어머니','Mãe do marido (sogra)'],['며느리','Nora'],['사위','Genro'],['인사드릴게요','Vou me apresentar (à família)'],['허락해 주세요','Por favor, dê sua permissão/bênção'],['처음 뵙겠습니다','Muito prazer (primeira vez conhecendo)'],['같이 살아요','Vamos morar juntos'],['우리 집','Nossa casa'],['요리해 줄게요','Vou cozinhar pra você'],['청소해요','Vou limpar'],['설거지','Lavar a louça'],['빨래','Lavar roupa'],['같이 장 봐요','Vamos fazer compras juntos'],['오늘 뭐 먹을까요?','O que vamos comer hoje?'],['집에 일찍 와요','Chega cedo em casa'],['손을 잡아요','Vamos andar de mãos dadas'],['어깨에 기댈게요','Vou me apoiar no seu ombro'],['볼에 뽀뽀해요','Vou te dar um beijinho no rosto'],['이마에 뽀뽀해요','Vou te dar um beijinho na testa'],['꼭 안아 줘요','Me abraça com força'],['그냥 있어 줘요','Só fica do meu lado'],['말없이 있어도 좋아요','Fico bem só te tendo por perto'],['화풀어요','Solta a raiva'],['용서해요','Eu te perdoo'],['내가 부족했어요','Eu fui insuficiente / errei'],['이해해 주세요','Por favor, me entenda'],['한 번만 봐줘요','Me dá uma chance'],['처음 봤을 때부터 좋았어요','Já gostei de você na primeira vez que te vi'],['당신이 제 전부예요','Você é tudo pra mim'],['당신 덕분에 행복해요','Sou feliz por sua causa'],['앞으로도 잘 부탁해요','Continuemos juntos (expressão de compromisso)'],['우리, 잘 될 거예요','A gente vai dar certo'],['죽을 때까지 사랑할게요','Vou te amar até o fim da vida'],['함께라면 뭐든 할 수 있어요','Juntos podemos fazer qualquer coisa'],['당신 없는 삶은 상상도 못해요','Não consigo imaginar a vida sem você'],['잘 잤어요?','Dormiu bem?'],['오늘도 수고했어요','Você trabalhou duro hoje também'],['집에 왔어요','Cheguei em casa'],['보고 싶었어요','Eu senti sua falta'],['사랑해, 자기야','Te amo, querido(a)']] },
   { id:'kpop', emoji:'🎵', name:'K-pop', unlockFlowers:0,
-    words:[['노래','Música'],['춤','Dança'],['가수','Cantor(a)'],['무대','Palco'],['팬','Fã'],['콘서트','Show'],['앨범','Álbum'],['멤버','Membro'],['최고예요','É o melhor'],['응원해요','Estou apoiando'],['데뷔','Debute'],['연습생','Trainee'],['아이돌','Idol'],['그룹','Grupo'],['솔로','Solo'],['리더','Líder'],['메인보컬','Vocalista principal'],['래퍼','Rapper'],['댄서','Dançarino(a)'],['비주얼','Visual/Rosto do grupo'],['뮤직비디오','Videoclipe'],['타이틀곡','Faixa-título'],['후렴','Refrão'],['안무','Coreografia'],['팬미팅','Encontro com fãs'],['팬싸','Fan sign (autógrafo)'],['응원봉','Lightstick'],['굿즈','Produtos oficiais (goods)'],['음원','Faixa digital/Streaming'],['차트','Paradas musicais'],['1위','Primeiro lugar'],['컴백','Retorno (comeback)'],['활동','Atividades promocionais'],['스케줄','Agenda/Cronograma'],['공항패션','Moda de aeroporto'],['소속사','Agência/Gravadora'],['오디션','Audição'],['연습실','Sala de prática'],['무대 매너','Postura no palco'],['떼창','Cantar junto (fãs)']] },
+    words:[['아이돌','Idol'],['그룹','Grupo'],['솔로','Solo'],['유닛','Subunidade (unit)'],['소속사','Agência/Gravadora'],['연습생','Trainee'],['오디션','Audição'],['연습실','Sala de prática'],['데뷔','Debute'],['컴백','Retorno (comeback)'],['활동','Atividades promocionais'],['스케줄','Agenda/Cronograma'],['은퇴','Aposentadoria'],['재계약','Renovação de contrato'],['리더','Líder'],['멤버','Membro'],['메인보컬','Vocalista principal'],['보컬','Vocalista'],['래퍼','Rapper'],['댄서','Dançarino(a)'],['비주얼','Visual/Rosto do grupo'],['포지션','Posição no grupo'],['막내','Membro mais novo'],['맏이','Membro mais velho'],['노래','Música'],['앨범','Álbum'],['타이틀곡','Faixa-título'],['수록곡','Faixa do álbum'],['후렴','Refrão'],['브릿지','Ponte musical'],['가사','Letra da música'],['작사','Escrever a letra'],['작곡','Compor a música'],['프로듀서','Produtor'],['뮤직비디오','Videoclipe'],['음원','Faixa digital/Streaming'],['차트','Paradas musicais'],['1위','Primeiro lugar'],['음방','Programa musical de TV'],['트로피','Troféu'],['수상','Prêmio/Premiação'],['무대','Palco'],['안무','Coreografia'],['퍼포먼스','Performance'],['립싱크','Lip sync'],['라이브','Ao vivo'],['콘서트','Show/Concerto'],['팬미팅','Encontro com fãs'],['무대 매너','Postura no palco'],['인사','Reverência/Saudação no palco'],['엔딩 요정','Destaque final (ending fairy)'],['팬','Fã'],['팬덤','Fandom'],['팬싸','Fan sign (autógrafo)'],['응원봉','Lightstick'],['굿즈','Produtos oficiais (goods)'],['포토카드','Foto-card colecionável'],['떼창','Cantar junto (fãs)'],['응원가','Música de torcer'],['직캠','Fancam (vídeo focado num membro)'],['최애','Bias (membro favorito)'],['부최애','Bias wrecker (membro que quase rouba o posto)'],['최고예요','É o melhor'],['응원해요','Estou apoiando'],['보고 싶었어요','Eu senti sua falta'],['수고했어요','Você trabalhou duro / Obrigado pelo esforço'],['완벽해요','É perfeito(a)'],['빛나요','Você brilha'],['공항패션','Moda de aeroporto'],['셀카','Selfie'],['인스타','Instagram (abrev.)'],['브이로그','Vlog'],['사인','Autógrafo'],['악수','Aperto de mão (no fan sign)'],['예능','Programa de variedades'],['토크쇼','Talk show'],['리얼리티','Reality show'],['V라이브','V Live (plataforma de streaming)'],['위버스','Weverse (plataforma de fãs)']] },
   { id:'busan', emoji:'🏖️', name:'Busan', unlockFlowers:150,
-    words:[['바다','Mar'],['해변','Praia'],['모래','Areia'],['파도','Onda'],['시장','Mercado'],['생선','Peixe'],['등대','Farol'],['배','Navio'],['수영','Natação'],['더워요','Está calor'],['경치','Paisagem'],['축제','Festival']] },
+    words:[['바다','Mar'],['해변','Praia'],['모래','Areia'],['파도','Onda'],['등대','Farol'],['배','Navio'],['수영','Natação'],['일몰','Pôr do sol'],['일출','Nascer do sol'],['갈매기','Gaivota'],['조개','Concha / Marisco'],['낚시','Pesca'],['방파제','Molhe / Quebra-mar'],['모래사장','Praia de areia'],['해운대','Haeundae (praia famosa de Busan)'],['광안리','Gwangalli (praia)'],['광안대교','Ponte Gwangan (visão famosa)'],['밀면','Milmyeon (macarrão frio típico de Busan)'],['어묵','Bolinho de peixe (Odeng)'],['돼지국밥','Sopa de porco com arroz (prato típico)'],['씨앗호떡','Hotteok de sementes'],['회','Sashimi / Peixe cru'],['꽃게탕','Sopa de caranguejo'],['생선구이','Peixe grelhado'],['조개구이','Mariscos grelhados'],['낙지볶음','Polvo salteado apimentado'],['시장','Mercado'],['국제시장','Mercado Internacional de Busan'],['자갈치시장','Mercado de Peixe Jagalchi'],['해동용궁사','Templo Haedong Yonggung'],['감천문화마을','Vila cultural de Gamcheon'],['부산타워','Torre de Busan'],['경치','Paisagem'],['축제','Festival'],['항구','Porto'],['부두','Cais'],['부산영화제','Festival de Cinema de Busan (BIFF)'],['더워요','Está calor'],['바람이 세요','O vento está forte'],['파도가 높아요','As ondas estão altas'],['햇볕이 강해요','O sol está forte'],['선크림','Protetor solar'],['시원해요','Está fresco / Que alívio'],['습해요','Está úmido'],['부산역','Estação de Busan'],['지하철','Metrô'],['버스','Ônibus'],['KTX','Trem de alta velocidade KTX'],['서울까지 얼마나 걸려요?','Quanto tempo até Seul?'],['배로 가요','Vamos de barco'],['해수욕장','Balneário / Praia pública'],['서핑','Surfe'],['다이빙','Mergulho'],['카약','Caiaque'],['조개를 주워요','Vamos coletar conchas'],['바비큐','Churrasco'],['캠핑','Camping'],['불꽃놀이','Fogos de artifício'],['야경','Vista noturna'],['야시장','Feira noturna'],['해수욕','Banho de mar'],['자전거 타요','Vamos andar de bicicleta'],['부산에 처음 왔어요','É minha primeira vez em Busan'],['어느 해수욕장이 제일 좋아요?','Qual praia é a melhor?'],['회 한 접시 주세요','Uma porção de sashimi, por favor'],['바다 보러 왔어요','Vim ver o mar'],['부산 사람이에요?','Você é de Busan?'],['부산 사투리가 있어요','O dialeto de Busan é diferente']] },
   { id:'jeju', emoji:'🍊', name:'Jeju', unlockFlowers:200,
-    words:[['섬','Ilha'],['꽃','Flor'],['벚꽃','Flor de cerejeira'],['산','Montanha'],['하늘','Céu'],['바람','Vento'],['자연','Natureza'],['귤','Tangerina'],['돌','Pedra'],['평화로워요','É tranquilo'],['아름다워요','É lindo'],['휴가','Férias']] },
+    words:[['섬','Ilha'],['화산','Vulcão'],['현무암','Basalto (pedra vulcânica de Jeju)'],['돌하르방','Estatua de pedra (símbolo de Jeju)'],['용암','Lava'],['한라산','Monte Hallasan'],['오름','Oreum (colina vulcânica pequena)'],['동굴','Caverna'],['만장굴','Caverna Manjanggul'],['성산일출봉','Seongsan Ilchulbong (pico vulcânico)'],['폭포','Cachoeira'],['천지연폭포','Cachoeira Cheonjiyeon'],['바람','Vento'],['비','Chuva'],['구름','Nuvem'],['안개','Névoa'],['꽃','Flor'],['유채꽃','Flor de colza (flor amarela típica de Jeju)'],['벚꽃','Flor de cerejeira'],['하늘','Céu'],['바다','Mar'],['귤','Tangerina'],['한라봉','Hallabong (tangerina grande de Jeju)'],['감귤','Cítrico / Tangerina (geral)'],['흑돼지','Porco preto de Jeju'],['고기국수','Macarrão com carne de porco'],['전복','Abalone / Orelha-de-mar'],['해녀','Haenyeo (mergulhadoras tradicionais)'],['옥돔','Peixe branco típico de Jeju'],['빙떡','Panqueca de trigo-sarraceno recheada'],['녹차','Chá verde'],['오설록','Osulloc (famosa marca de chá verde de Jeju)'],['관광','Turismo'],['자연','Natureza'],['휴가','Férias'],['렌터카','Carro de aluguel (essencial em Jeju)'],['자전거','Bicicleta'],['말','Cavalo'],['승마','Equitação'],['사진 찍어요','Vamos tirar foto'],['평화로워요','É tranquilo'],['아름다워요','É lindo'],['신선해요','É fresco'],['공기가 좋아요','O ar é puro'],['경치가 좋아요','A paisagem é bonita'],['하이킹','Caminhada / Trilha'],['산책로','Trilha / Caminho para caminhada'],['비행기','Avião'],['제주공항','Aeroporto de Jeju'],['페리','Ferry'],['숙소','Acomodação'],['펜션','Pensão / Chalé'],['게스트하우스','Hostel'],['바다 근처에 있어요','Fica perto do mar'],['동쪽','Leste (da ilha)'],['서쪽','Oeste (da ilha)'],['일주도로','Estrada circular da ilha'],['바람이 많이 불어요','Venta muito aqui'],['비가 자주 와요','Chove bastante aqui'],['날씨가 좋아요','O tempo está ótimo'],['흐려요','Está nublado'],['제주도에 처음 왔어요','É minha primeira vez em Jeju'],['또 오고 싶어요','Quero voltar aqui'],['힐링이 돼요','Me sinto renovado(a)'],['너무 예뻐요','É muito lindo'],['여기서 살고 싶어요','Quero morar aqui'],['내년에 또 올게요','Volto ano que vem']] },
 ];
-
-
-
-// ============================================
-// MODO DORAMEIRO — pacotes inspirados em doramas favoritos
-// Conteúdo educativo: frases comuns e vocabulário inspirado no clima dos doramas,
-// sem copiar diálogos longos, legendas oficiais ou roteiro.
-// ============================================
 const DORAMA_PACKS = [
-  { id:'cloy', emoji:'🕯️', name:'Pousando no Amor', unlockFlowers:0, dorama:true,
-    words:[
-      ['괜찮아요','Está tudo bem'],['걱정하지 마세요','Não se preocupe'],['조심하세요','Tome cuidado'],['보고 싶었어요','Eu senti sua falta'],
-      ['기다리고 있었어요','Eu estava esperando'],['어디예요?','Onde você está?'],['길을 잃었어요','Me perdi'],['따라오세요','Me siga'],
-      ['제가 갈게요','Eu vou até você'],['무서워하지 마세요','Não tenha medo'],['혼자 아니에요','Você não está sozinho(a)'],['제가 지켜줄게요','Eu vou te proteger'],
-      ['믿어도 돼요','Você pode confiar'],['가지 마세요','Não vá embora'],['다시 만나요','Vamos nos encontrar de novo'],['약속해요','Prometa'],
-      ['기억할게요','Eu vou lembrar'],['기다릴게요','Eu vou esperar'],['정말 고마워요','Muito obrigado(a) de verdade'],['마음이 아파요','Meu coração dói'],
-      ['괜찮을 거예요','Vai ficar tudo bem'],['집에 가고 싶어요','Quero ir para casa'],['여기가 어디예요?','Onde é aqui?'],['도와주세요','Por favor, me ajude'],
-      ['불을 켜요','Acenda a luz'],['촛불','Vela'],['길','Caminho'],['밤','Noite'],['눈','Neve'],['군인','Soldado'],
-      ['국경','Fronteira'],['마을','Vila'],['기차','Trem'],['사랑','Amor'],['운명','Destino'],['우연','Coincidência'],
-      ['선물','Presente'],['작별','Despedida'],['재회','Reencontro'],['비밀','Segredo']
-    ]},
+  { id:'cloy', emoji:'🪖', name:'Pousando no Amor', unlockFlowers:0, dorama:true,
+    words:[['비무장지대','Zona Desmilitarizada (DMZ)'],['철조망','Arame farpado'],['국경','Fronteira'],['군복','Uniforme militar'],['계급','Patente / Posto militar'],['대위','Capitão'],['소령','Major'],['중령','Tenente-coronel'],['장교','Oficial'],['사병','Soldado de baixa patente'],['부대','Unidade militar'],['막사','Quartel'],['훈련','Treinamento'],['작전','Missão / Operação'],['임무','Dever / Missão'],['경계','Guarda / Vigilância'],['탈출','Fuga'],['은신','Esconderijo / Esconder-se'],['변장','Disfarce'],['신분증','Carteira de identidade'],['위장','Camuflagem'],['추격','Perseguição'],['암호','Código secreto'],['스파이','Espião'],['위험에 처해 있어요','Estou em perigo'],['도망가야 해요','Preciso fugir'],['숨어야 해요','Preciso me esconder'],['조용히 해요','Fique em silêncio'],['들키면 안 돼요','Não podemos ser descobertos'],['믿어도 돼요','Pode confiar em mim'],['제가 지킬게요','Vou te proteger'],['포기 못 해요','Não consigo desistir'],['당신 때문에 못 떠나요','Não consigo ir embora por sua causa'],['돌아와요','Volte'],['기다릴게요','Vou esperar por você'],['남쪽','Sul'],['북쪽','Norte'],['고향','Terra natal'],['가족이 보고 싶어요','Estou com saudade da família'],['이산가족','Famílias separadas'],['평화','Paz'],['통일','Reunificação'],['꿈 같아요','Parece um sonho'],['이게 진짜예요?','Isso é real?'],['말도 안 돼요','Não é possível / É impossível'],['기적이에요','É um milagre'],['운명이에요','É destino'],['당신을 만난 건 기적이에요','Te encontrar foi um milagre'],['나를 잊지 말아요','Não me esqueça'],['다시 만날 거예요','Vamos nos encontrar de novo']] },
   { id:'vincenzo', emoji:'⚖️', name:'Vincenzo', unlockFlowers:0, dorama:true, plus:true,
-    words:[
-      ['변호사','Advogado(a)'],['재판','Julgamento'],['증거','Evidência'],['복수','Vingança'],['계획','Plano'],['비밀','Segredo'],
-      ['돈','Dinheiro'],['회사','Empresa'],['대표','Diretor(a)'],['계약','Contrato'],['위험해요','É perigoso'],['조심해요','Tome cuidado'],
-      ['믿지 마세요','Não confie'],['거짓말이에요','É mentira'],['제가 처리할게요','Eu vou resolver'],['기다려요','Espere'],
-      ['문제가 생겼어요','Aconteceu um problema'],['증인이 있어요','Há uma testemunha'],['도망가요','Fuja'],['경찰','Polícia'],
-      ['검사','Promotor(a)'],['판사','Juiz/Juíza'],['법','Lei'],['정의','Justiça'],['악당','Vilão'],['협박','Ameaça'],
-      ['거래','Negócio/Acordo'],['배신','Traição'],['동료','Colega'],['작전','Operação']
-    ]},
+    words:[['변호사','Advogado(a)'],['마피아','Máfia'],['비리','Corrupção'],['증거','Evidência'],['재판','Julgamento'],['판사','Juiz(a)'],['검사','Promotor(a)'],['법원','Tribunal'],['계획','Plano'],['복수','Vingança'],['배신','Traição'],['비밀','Segredo'],['거짓말','Mentira'],['조심해요','Tome cuidado'],['위험해요','É perigoso'],['도망가요','Fuja'],['따라오세요','Me siga'],['잡혔어요','Fui pego(a)'],['탈출해요','Vamos escapar'],['증거 있어요','Tenho evidências'],['믿을 수 없어요','Não acredito'],['끝났어요','Acabou'],['이길 거예요','Vamos vencer'],['포기 안 해요','Não desisto'],['지켜볼게요','Vou ficar de olho'],['악당','Vilão'],['변호사 선임','Contratar um advogado'],['불법','Ilegal'],['합법','Legal / Lícito'],['계약','Contrato'],['서류','Documentos'],['조직','Organização'],['두목','Chefe / Capo'],['부하','Subordinado'],['동생처럼 봐요','Te vejo como meu irmão(ã)'],['실망하지 마요','Não se decepcione'],['진실은 언젠가 밝혀져요','A verdade vem à tona'],['포기는 없어요','Desistência não é opção'],['함께 싸워요','Vamos lutar juntos'],['정의','Justiça']] },
   { id:'alchemy', emoji:'✨', name:'Alquimia das Almas', unlockFlowers:0, dorama:true, plus:true,
-    words:[
-      ['영혼','Alma'],['마법','Magia'],['운명','Destino'],['스승','Mestre'],['제자','Discípulo(a)'],['힘','Força/Poder'],
-      ['검','Espada'],['전투','Batalha'],['약속','Promessa'],['기억','Memória'],['비밀','Segredo'],['왕국','Reino'],
-      ['살아있어요','Está vivo(a)'],['돌아왔어요','Voltou'],['믿어요','Eu acredito'],['포기하지 마세요','Não desista'],
-      ['위험합니다','É perigoso'],['도와줄게요','Vou te ajudar'],['지켜야 해요','Preciso proteger'],['마음을 숨겨요','Esconda o coração'],
-      ['진실','Verdade'],['거짓','Mentira'],['그림자','Sombra'],['빛','Luz'],['하늘','Céu'],['물','Água'],
-      ['불','Fogo'],['바람','Vento'],['검술','Esgrima'],['궁궐','Palácio']
-    ]},
+    words:[['영혼','Alma / Espírito'],['주술','Feitiço / Magia'],['검','Espada'],['전투','Batalha'],['금기','Tabu / Proibido'],['희생','Sacrifício'],['운명','Destino'],['예언','Profecia'],['마법사','Mago / Bruxo'],['제자','Discípulo(a)'],['스승','Mestre'],['사랑','Amor'],['배신','Traição'],['빛','Luz'],['어둠','Trevas'],['물','Água'],['불','Fogo'],['비밀','Segredo'],['거짓','Mentira'],['진실','Verdade'],['왕','Rei'],['귀족','Nobre'],['신분','Identidade / Status social'],['위험합니다','É perigoso'],['도망가세요','Fuja'],['죽을 수 없어요','Não posso morrer'],['기억이 없어요','Não tenho memória'],['사실은 저예요','Na verdade sou eu'],['영혼이 바뀌었어요','As almas foram trocadas'],['대가를 치러야 해요','Há um preço a pagar'],['포기할 수 없어요','Não consigo desistir'],['같이 살아요','Vamos viver juntos'],['지켜줄게요','Vou te proteger'],['돌아와요','Volte'],['마음이 아파요','Meu coração dói'],['기적이에요','É um milagre'],['시간이 없어요','Não temos tempo'],['함께 싸워요','Vamos lutar juntos'],['이 운명을 바꿀 수 없어요','Não posso mudar esse destino'],['당신 없이는 살 수 없어요','Não consigo viver sem você']] },
   { id:'woowoo', emoji:'🐳', name:'Advogada Extraordinária', unlockFlowers:0, dorama:true,
-    words:[
-      ['변호사','Advogada(o)'],['사건','Caso'],['의뢰인','Cliente'],['회사','Empresa'],['회의','Reunião'],['동료','Colega'],
-      ['법원','Tribunal'],['판결','Sentença'],['질문','Pergunta'],['대답','Resposta'],['고래','Baleia'],['친구','Amigo(a)'],
-      ['괜찮아요','Tudo bem'],['천천히 말해 주세요','Fale devagar, por favor'],['이해했어요','Entendi'],['다시 말해 주세요','Repita, por favor'],
-      ['도와드릴게요','Vou ajudar'],['걱정하지 마세요','Não se preocupe'],['증거가 필요해요','Precisamos de evidência'],['사실입니다','É verdade'],
-      ['규칙','Regra'],['존중','Respeito'],['용기','Coragem'],['마음','Coração/Sentimento'],['점심','Almoço'],['김밥','Kimbap'],
-      ['출근','Ir ao trabalho'],['퇴근','Sair do trabalho'],['상사','Chefe'],['문서','Documento']
-    ]},
+    words:[['자폐','Autismo'],['변호사','Advogado(a)'],['재판','Julgamento'],['의뢰인','Cliente'],['증거','Evidência'],['고소','Processo / Denúncia'],['피해자','Vítima'],['피고','Réu / Acusado'],['원고','Autor / Demandante'],['판결','Sentença'],['무죄','Inocente'],['유죄','Culpado'],['항소','Recurso (judicial)'],['천재','Gênio'],['고래','Baleia'],['특별해요','Você é especial'],['포기하지 마요','Não desista'],['잘 할 수 있어요','Você consegue'],['다를 수 있어요','Está tudo bem ser diferente'],['저도 할 수 있어요','Eu também consigo'],['정의를 지켜요','Defendo a justiça'],['진심으로 말해요','Falo de coração'],['감사합니다, 선생님','Obrigado(a), professor(a)'],['어렵지만 해낼게요','É difícil, mas vou conseguir'],['혼자가 아니에요','Você não está sozinho(a)'],['법은 모두를 위해 있어요','A lei existe para todos'],['당당하게 살아요','Viva com dignidade'],['공감해요','Tenho empatia'],['차별','Discriminação'],['편견','Preconceito'],['평등','Igualdade']] },
   { id:'kingland', emoji:'👑', name:'Sorriso Real', unlockFlowers:0, dorama:true, plus:true,
-    words:[
-      ['호텔','Hotel'],['손님','Hóspede'],['직원','Funcionário(a)'],['서비스','Serviço'],['미소','Sorriso'],['예약','Reserva'],
-      ['방','Quarto'],['열쇠','Chave'],['대표님','Diretor(a)'],['회의','Reunião'],['근무','Trabalho/Turno'],['휴가','Férias'],
-      ['어서 오세요','Bem-vindo(a)'],['도와드릴까요?','Posso ajudar?'],['감사합니다','Obrigado(a)'],['죄송합니다','Desculpe'],
-      ['괜찮으세요?','Você está bem?'],['오늘 예뻐요','Você está bonita hoje'],['같이 갈까요?','Vamos juntos?'],['기다릴게요','Vou esperar'],
-      ['고급','Luxo'],['친절','Gentileza'],['선물','Presente'],['데이트','Encontro'],['사장','Presidente/Chefe'],['팀장','Líder de equipe'],
-      ['엘리베이터','Elevador'],['로비','Lobby'],['아침 식사','Café da manhã'],['커피','Café']
-    ]},
+    words:[['왕','Rei'],['왕자','Príncipe'],['공주','Princesa'],['왕비','Rainha'],['귀족','Nobre / Aristocrata'],['궁전','Palácio'],['왕실','Família real'],['시중','Serviçal / Assistente real'],['예의','Etiqueta / Educação'],['격식','Formalidade'],['품위','Dignidade / Elegância'],['사랑에 빠졌어요','Me apaixonei'],['신분 차이','Diferença de classe social'],['비밀이에요','É segredo'],['들키지 마세요','Não nos deixe ser descobertos'],['함께 도망가요','Vamos fugir juntos'],['제 곁에 있어줘요','Fique ao meu lado'],['당신이 필요해요','Preciso de você'],['마음을 숨길 수 없어요','Não consigo esconder meus sentimentos'],['왕답게 해요','Aja como um rei'],['스마일','Sorriso'],['자유','Liberdade'],['의무','Dever / Obrigação'],['백성','Povo / Súditos'],['나라','País / Nação'],['충성','Lealdade'],['협박','Ameaça / Chantagem'],['음모','Conspiração'],['배신','Traição'],['반란','Rebelião'],['호위','Guarda-costas'],['호텔','Hotel'],['예약','Reserva'],['서비스','Serviço'],['직원','Funcionário(a)'],['손님','Hóspede'],['규칙','Regra'],['따를게요','Vou obedecer / Vou seguir'],['왕도 외로워요','Até o rei sente solidão'],['진심이에요','É sincero']] },
   { id:'business', emoji:'💍', name:'Pretendente Surpresa', unlockFlowers:0, dorama:true, plus:true,
-    words:[
-      ['소개팅','Encontro às cegas'],['회사','Empresa'],['사장님','Chefe/Presidente'],['직원','Funcionário(a)'],['비밀','Segredo'],['계약','Contrato'],
-      ['데이트','Encontro'],['거짓말','Mentira'],['친구','Amigo(a)'],['음식','Comida'],['라면','Lámen'],['치킨','Frango'],
-      ['놀랐어요','Fiquei surpreso(a)'],['정말요?','Sério?'],['어떡해요?','O que eu faço?'],['들켰어요','Fui descoberto(a)'],
-      ['미안해요','Desculpa'],['좋아해요','Eu gosto de você'],['사귀어요','Estamos namorando'],['결혼','Casamento'],
-      ['전화','Telefone'],['문자','Mensagem'],['사진','Foto'],['가족','Família'],['할아버지','Avô'],['식당','Restaurante'],
-      ['요리','Culinária'],['회의','Reunião'],['출근','Ir ao trabalho'],['퇴근','Sair do trabalho']
-    ]}
+    words:[['계약','Contrato'],['사업','Negócios'],['회사','Empresa'],['직원','Funcionário(a)'],['사장','Chefe / Presidente'],['비서','Secretário(a)'],['회의','Reunião'],['프로젝트','Projeto'],['기한','Prazo'],['성과','Resultado / Desempenho'],['오해','Mal-entendido'],['실수','Erro / Equívoco'],['사과해요','Peço desculpas'],['사실은요','Na verdade...'],['착각했어요','Me enganei'],['알고 보니','Quando percebi / Ao descobrir'],['처음 보는 사람이에요','Você é um estranho(a) para mim'],['어떻게 된 거예요?','Como isso aconteceu?'],['왜 저예요?','Por que eu?'],['다른 사람 찾아요','Procure outra pessoa'],['어쩔 수 없어요','Não tenho escolha'],['마음이 바뀌었어요','Mudei de ideia'],['점점 좋아지고 있어요','Estou gostando cada vez mais'],['처음엔 몰랐어요','No começo não sabia'],['이미 늦었어요','Já é tarde demais'],['솔직하게 말해요','Vou ser honesto(a)'],['마음이 생겼어요','Comecei a ter sentimentos'],['거절 못 해요','Não consigo recusar'],['도망칠 수 없어요','Não consigo fugir'],['당신만 생각해요','Só penso em você'],['운명적인 만남','Encontro do destino'],['연기예요, 연기','É só atuação, só atuação'],['진짜 좋아하게 됐어요','Passei a gostar de verdade'],['계약 결혼','Casamento contratual'],['사랑이 어려워요','O amor é difícil']] },
 ];
-
-function activeDoramaPacks(){
-  const favs = state.doramaFavorites || {};
-  return DORAMA_PACKS.filter(pack => favs[pack.id] !== false);
-}
-
-function visibleThemeList(){
-  return state.doramaMode ? THEMES.concat(activeDoramaPacks()) : THEMES;
-}
-
 function findThemeById(themeId){
   return THEMES.concat(DORAMA_PACKS).find(t => t.id === themeId);
 }
 
+// Retorna os doramas que o usuário marcou como favoritos no Modo Dorameiro.
+function activeDoramaPacks(){
+  return DORAMA_PACKS.filter(p => state.doramaFavorites && state.doramaFavorites[p.id]);
+}
+
+// Lista de temas visíveis na Home e na tela de seleção.
+// Em Modo Dorameiro, inclui também os pacotes de dorama ativos.
+function visibleThemeList(){
+  return state.doramaMode ? THEMES.concat(activeDoramaPacks()) : THEMES;
+}
 
 // Frases de feedback — organizadas por tema, pra reforçar a identidade de cada destino/dorama.
 // Sempre que possível, escolha uma frase relacionada ao tema que a pessoa está jogando.
@@ -1399,8 +1369,8 @@ const PHRASES_BY_THEME = {
     'Mais uma palavra pra sua viagem a Jeju. 🍊',
   ],
   cloy: [
-    'Mais uma frase pra sobreviver a Pousando no Amor. 🕯️',
-    'Essa cena de fronteira ficou mais clara. 🕯️',
+    'Mais uma frase pra sobreviver a Pousando no Amor. 🪖',
+    'Essa cena de fronteira ficou mais clara. 🪖',
   ],
   vincenzo: [
     'Mais uma palavra pra entender o plano do Vincenzo. ⚖️',
@@ -1744,7 +1714,7 @@ function renderHome(){
 
   el.innerHTML = `
     <div class="home-greet">
-      <div class="home-greet-text">안녕하세요, ${escapeHtml(state.name)} <span class="${state.isPlus ? 'plus-flower' : ''}">🌸</span></div>
+      <div class="home-greet-text">안녕하세요, ${escapeHtml(state.name)} ${state.isPlus ? `<span class="plus-seal"><span class="plus-seal-flower">🌸</span><span class="plus-seal-text">PLUS</span></span>` : '🌸'}</div>
       <div class="home-greet-sub">Continue sua jornada pela Coreia.</div>
     </div>
 
@@ -2099,9 +2069,18 @@ function makeMatchKrCard(kr){
   return card;
 }
 
+// Escolhe a classe de tamanho de fonte para o lado PT com base no comprimento da tradução.
+function ptSizeClass(pt){
+  const len = pt.length;
+  if(len <= 18) return '';          // curto: 17px padrão
+  if(len <= 28) return 'pt-medium'; // médio: 15px
+  if(len <= 38) return 'pt-long';   // longo: 13px
+  return 'pt-xlong';                // muito longo: 12px
+}
+
 function makeMatchPtCard(kr, pt){
   const card = document.createElement('button');
-  card.className = 'match-card pt fade-in';
+  card.className = 'match-card pt fade-in ' + ptSizeClass(pt);
   card.dataset.pt = pt;
   card.dataset.forKr = kr;
   card.textContent = pt;
@@ -2152,6 +2131,12 @@ function addNextMatchPair(krCard, ptCard, resolvedKr){
       randomizeCardPosition(newPtCard);
     }, ptDelay);
   }
+  const maxDelay = Math.max(krDelay, ptDelay) + 80;
+  setTimeout(()=>{
+    const colKr = document.querySelector('#colKr');
+    const colPt = document.querySelector('#colPt');
+    if(colKr && colPt) syncMatchCardHeights(colKr, colPt);
+  }, maxDelay);
 }
 
 // Move um card recém-inserido para uma posição aleatória dentro da sua própria coluna,
@@ -2213,6 +2198,31 @@ function renderMatchScreen(){
   });
 
   shuffleDomChildren(colPt);
+
+  // Sincroniza altura entre cards da mesma posição nas duas colunas.
+  // Sem isso, um card PT com texto longo fica maior que o KR na mesma linha — desalinhado.
+  requestAnimationFrame(()=>{
+    syncMatchCardHeights(colKr, colPt);
+  });
+}
+
+function syncMatchCardHeights(colKr, colPt){
+  const krCards = Array.from(colKr.children);
+  const ptCards = Array.from(colPt.children);
+  // Reseta alturas primeiro para medir o natural
+  [...krCards, ...ptCards].forEach(c => c.style.minHeight = '');
+  // Mapa de data-kr para index na coluna KR
+  const krIndexMap = {};
+  krCards.forEach((c, i) => { krIndexMap[c.dataset.kr] = i; });
+  // Para cada card PT, encontra o KR correspondente por data-for-kr e equaliza
+  ptCards.forEach(ptCard => {
+    const forKr = ptCard.dataset.forKr;
+    const krCard = krCards.find(c => c.dataset.kr === forKr);
+    if(!krCard) return;
+    const maxH = Math.max(krCard.offsetHeight, ptCard.offsetHeight);
+    krCard.style.minHeight = maxH + 'px';
+    ptCard.style.minHeight = maxH + 'px';
+  });
 }
 
 function shuffleDomChildren(container){
@@ -2272,8 +2282,8 @@ function handleCorrectMatch(session, krCard, ptCard){
   markWordLearned(session.themeId, kr);
   if(!session.wordsLearnedThisRound.includes(kr)) session.wordsLearnedThisRound.push(kr);
 
+  playMatchSound('correct');
   burstPetalsFrom(krCard);
-  showMatchFeedback(randomPhrase(themedCorrectPhrase(session.themeId)));
 
   if(krCard) krCard.classList.add('matched');
   if(ptCard) ptCard.classList.add('matched');
@@ -2289,8 +2299,6 @@ function handleCorrectMatch(session, krCard, ptCard){
     } else if(session.queue && session.queue.length > 0){
       addNextMatchPair(krCard, ptCard, kr);
     } else {
-      // não há mais palavras na fila: apenas remove o par resolvido da lista,
-      // o card já está com opacity 0 (.matched) e some visualmente.
       const idx = session.pairs.findIndex(p => p[0] === kr);
       if(idx !== -1) session.pairs.splice(idx, 1);
     }
@@ -2298,7 +2306,7 @@ function handleCorrectMatch(session, krCard, ptCard){
 }
 
 function handleWrongMatch(krCard, ptCard){
-  showMatchFeedback(PHRASE_WRONG);
+  playMatchSound('wrong');
   [krCard, ptCard].forEach(c=>{
     if(!c) return;
     c.classList.remove('selected');
@@ -2317,38 +2325,73 @@ function updateMatchProgressBar(){
 
 function randomPhrase(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-let feedbackTimer = null;
-function showMatchFeedback(text){
-  let fb = document.querySelector('.match-feedback');
-  if(!fb){
-    fb = document.createElement('div');
-    fb.className = 'match-feedback';
-    document.body.appendChild(fb);
-  }
-  fb.textContent = text;
-  fb.classList.add('show');
-  clearTimeout(feedbackTimer);
-  feedbackTimer = setTimeout(()=> fb.classList.remove('show'), 1300);
+// ============================================
+// SONS via Web Audio API — sem arquivos externos
+// Gera tons sintéticos leves: acerto = arpejo suave, erro = tom descendente curto.
+// ============================================
+let audioCtx = null;
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
 }
 
+function playMatchSound(type){
+  if(!state.soundOn) return;
+  try {
+    const ctx = getAudioCtx();
+    if(type === 'correct'){
+      // Arpejo suave ascendente: duas notas rápidas (estilo "ding-ding!")
+      [[0, 880, 0.12], [0.1, 1108, 0.10]].forEach(([when, freq, gain])=>{
+        const osc = ctx.createOscillator();
+        const env = ctx.createGain();
+        osc.connect(env); env.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        env.gain.setValueAtTime(gain, ctx.currentTime + when);
+        env.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + when + 0.22);
+        osc.start(ctx.currentTime + when);
+        osc.stop(ctx.currentTime + when + 0.25);
+      });
+    } else {
+      // Tom descendente curto: "bom-bom" grave
+      const osc = ctx.createOscillator();
+      const env = ctx.createGain();
+      osc.connect(env); env.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.18);
+      env.gain.setValueAtTime(0.13, ctx.currentTime);
+      env.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.25);
+    }
+  } catch(e){ /* contexto de áudio bloqueado, ignora silenciosamente */ }
+}
+
+// Pétalas de cerejeira explodindo do card acertado — mais quantidade e variedade
 function burstPetalsFrom(el){
   if(!el) return;
   const rect = el.getBoundingClientRect();
   const cx = rect.left + rect.width/2;
   const cy = rect.top + rect.height/2;
-  const emojis = ['🌸','✨','🌷'];
-  for(let i=0;i<6;i++){
+  const emojis = ['🌸','🌸','🌸','✨','🌷','🌸'];
+  const sizes  = ['18px','20px','22px','16px','20px','22px'];
+  for(let i = 0; i < 9; i++){
     const p = document.createElement('div');
     p.className = 'burst-petal';
-    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-    p.style.left = cx+'px';
-    p.style.top = cy+'px';
-    const angle = (Math.random()*Math.PI*2);
-    const dist = 50 + Math.random()*50;
+    const emoji = emojis[i % emojis.length];
+    p.textContent = emoji;
+    p.style.fontSize = sizes[i % sizes.length];
+    p.style.left = (cx + (Math.random()-0.5)*20)+'px';
+    p.style.top  = (cy + (Math.random()-0.5)*10)+'px';
+    const angle = (i / 9) * Math.PI * 2 + (Math.random()-0.5)*0.7;
+    const dist  = 55 + Math.random()*70;
     p.style.setProperty('--bx', (Math.cos(angle)*dist)+'px');
-    p.style.setProperty('--by', (Math.sin(angle)*dist - 40)+'px');
+    p.style.setProperty('--by', (Math.sin(angle)*dist - 60)+'px');
+    p.style.setProperty('--br', (Math.random()*300 - 150)+'deg');
+    p.style.animationDelay = (i * 28)+'ms';
     document.body.appendChild(p);
-    setTimeout(()=> p.remove(), 750);
+    setTimeout(()=> p.remove(), 900 + i*28);
   }
 }
 
@@ -2446,11 +2489,13 @@ function chooseQuickOption(pt, btn){
   const correct = quickGame.current && pt === quickGame.current.pt;
 
   if(correct){
+    playMatchSound('correct');
     if(btn) btn.classList.add('correct');
     quickGame.score += 1;
     speakKorean(quickGame.current.kr);
     setTimeout(()=> nextQuickQuestion(), 180);
   } else {
+    playMatchSound('wrong');
     if(btn) btn.classList.add('wrong');
     document.querySelectorAll('.quick-option').forEach(option=>{
       if(option.dataset.pt === quickGame.current.pt) option.classList.add('correct');
@@ -2880,6 +2925,8 @@ function resolveInfinite(){
   const ptCard = document.querySelector(`.infinite-card.pt[data-pt="${cssEscape(pt)}"]`);
 
   if(isCorrect){
+    playMatchSound('correct');
+    burstPetalsFrom(krCard);
     if(krCard) krCard.classList.add('correct');
     if(ptCard) ptCard.classList.add('correct');
 
@@ -2935,6 +2982,7 @@ function resolveInfinite(){
     infiniteGame.lives = Math.max(0, (infiniteGame.lives || 0) - 1);
     updateInfiniteStats();
 
+    playMatchSound('wrong');
     showInfiniteErrorToast(infiniteGame.lives > 0 ? `Ops! ${infiniteGame.lives} vida(s) restantes` : 'Fim de jogo!');
 
     const livesPill = document.getElementById('infLivesPill');
