@@ -233,6 +233,34 @@ img,svg{display:block;}
   display:block;
   max-width:300px;
   width:100%;
+  animation: sakuraSway 6s ease-in-out infinite;
+  transform-origin:50% 100%;
+}
+@keyframes sakuraSway{
+  0%, 100%{ transform:rotate(-0.6deg); }
+  50%{ transform:rotate(0.6deg); }
+}
+/* Cada flor pulsa bem de leve, de forma independente (delay via --d definido inline) */
+.sakura-bloom{
+  animation: sakuraPulse 3.2s ease-in-out infinite;
+  animation-delay:var(--d, 0s);
+  transform-box:fill-box;
+  transform-origin:center;
+}
+@keyframes sakuraPulse{
+  0%, 100%{ transform:scale(1); }
+  50%{ transform:scale(1.06); }
+}
+/* Pétala caindo: desce e oscila lateralmente, num loop contínuo */
+.sakura-falling{
+  animation: sakuraFall var(--fdur, 7s) linear infinite;
+  animation-delay:var(--fdelay, 0s);
+}
+@keyframes sakuraFall{
+  0%{ transform:translate(0,0) rotate(0deg); opacity:0; }
+  8%{ opacity:var(--fop, 0.5); }
+  92%{ opacity:var(--fop, 0.5); }
+  100%{ transform:translate(var(--fx, 12px), var(--fy, 60px)) rotate(140deg); opacity:0; }
 }
 .sakura-phrase{
   font-size:13px;
@@ -1562,8 +1590,10 @@ function renderSakuraTree(wrap, phraseEl, flowers, name){
   // Cor dos galhos — vai de marrom seco (sem flores) a marrom caloroso (florido)
   const branchColor = `hsl(${25 + ratio*8}, ${35 + ratio*15}%, ${30 + ratio*8}%)`;
 
-  // Monta o SVG
-  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  // Monta o SVG — viewBox com margem extra em volta pra nada cortar
+  // (flores no topo dos galhos mais altos podem ultrapassar y=0 levemente).
+  const MARGIN = 26;
+  let svg = `<svg viewBox="-${MARGIN} -${MARGIN} ${W + MARGIN*2} ${H + MARGIN*2}" xmlns="http://www.w3.org/2000/svg">`;
 
   // Galhos
   branches.forEach(b => {
@@ -1586,8 +1616,12 @@ function renderSakuraTree(wrap, phraseEl, flowers, name){
     const hue = 340 + seededRand(seed, i*17) * 20; // rosa ligeiramente variado
     const petalColor = `hsl(${hue.toFixed(0)}, 65%, 80%)`;
     const centerColor = `hsl(${(hue+10).toFixed(0)}, 50%, 95%)`;
+    const pulseDelay = (seededRand(seed, i*31+5) * 3.2).toFixed(2);
 
+    // <g> externo cuida de posição+fade (translate/opacity, calculados em JS);
+    // <g> interno cuida da pulsação animada via CSS (scale) — não conflitam entre si.
     svg += `<g opacity="${opacity}" transform="translate(${cx},${cy}) scale(${scale})">`;
+    svg += `<g class="sakura-bloom" style="--d:${pulseDelay}s">`;
     for(let p = 0; p < 5; p++){
       const angle = (p / 5) * 360;
       svg += `<ellipse cx="0" cy="-${pr}" rx="${pw}" ry="${ph}"
@@ -1596,19 +1630,26 @@ function renderSakuraTree(wrap, phraseEl, flowers, name){
     }
     // Miolo
     svg += `<circle cx="0" cy="0" r="${(r*0.28).toFixed(1)}" fill="${centerColor}"/>`;
-    svg += `</g>`;
+    svg += `</g>`; // fecha .sakura-bloom (pulsação)
+    svg += `</g>`; // fecha posicionamento/fade
   });
 
-  // Pétalas caindo (quando ratio > 0.4) — efeito de movimento sutil via CSS
+  // Pétalas caindo (quando ratio > 0.4) — agora com queda contínua e sutil via CSS,
+  // em vez de pétalas estáticas. Cada uma cai num ritmo e atraso levemente diferente.
   if(ratio > 0.4){
     const fallingCount = Math.floor(ratio * 8);
     for(let f = 0; f < fallingCount; f++){
       const fx = (seededRand(seed, f*23+7) * W * 0.8 + W*0.1).toFixed(1);
-      const fy = (seededRand(seed, f*23+8) * H * 0.6 + H*0.15).toFixed(1);
+      const fy = (seededRand(seed, f*23+8) * H * 0.5 + H*0.05).toFixed(1);
       const fr = (3 + seededRand(seed, f*23+9) * 3).toFixed(1);
       const fop = (0.3 + seededRand(seed, f*23+10) * 0.4).toFixed(2);
-      svg += `<ellipse cx="${fx}" cy="${fy}" rx="${fr}" ry="${(fr*0.6).toFixed(1)}"
-        fill="hsl(345,65%,82%)" opacity="${fop}"
+      const fdur = (6 + seededRand(seed, f*23+12) * 5).toFixed(1);
+      const fdelay = (seededRand(seed, f*23+13) * 8).toFixed(1);
+      const fdriftX = (seededRand(seed, f*23+14) * 30 - 15).toFixed(0);
+      const fdriftY = (50 + seededRand(seed, f*23+15) * 50).toFixed(0);
+      svg += `<ellipse class="sakura-falling" cx="${fx}" cy="${fy}" rx="${fr}" ry="${(fr*0.6).toFixed(1)}"
+        fill="hsl(345,65%,82%)"
+        style="--fdur:${fdur}s; --fdelay:${fdelay}s; --fop:${fop}; --fx:${fdriftX}px; --fy:${fdriftY}px;"
         transform="rotate(${(seededRand(seed,f*23+11)*60-30).toFixed(0)},${fx},${fy})"/>`;
     }
   }
@@ -2678,7 +2719,17 @@ function nextQuickQuestion(){
 
   const pool = allWordsFlat();
   const current = pool[Math.floor(Math.random()*pool.length)];
-  const wrongs = shuffleArray(pool.filter(item => item.pt !== current.pt)).slice(0,3);
+
+  // Escolhe distratores com comprimento de texto PARECIDO com a resposta certa.
+  // Sem isso, uma resposta longa ("Estou ansioso(a)/com borboletas no estômago")
+  // ao lado de distratores curtos ("Água", "Pão") fica óbvia só pelo tamanho do texto,
+  // sem precisar ler nada — o que destrói o propósito do jogo.
+  const candidates = pool.filter(item => item.pt !== current.pt);
+  const targetLen = current.pt.length;
+  const byCloseness = shuffleArray(candidates).sort((a, b) => {
+    return Math.abs(a.pt.length - targetLen) - Math.abs(b.pt.length - targetLen);
+  });
+  const wrongs = byCloseness.slice(0, 3);
   const options = shuffleArray([current, ...wrongs]);
 
   quickGame.current = current;
