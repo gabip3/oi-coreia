@@ -461,7 +461,8 @@ img,svg{display:block;}
   padding-left:10px;
   padding-right:10px;
   word-break:normal;
-  overflow-wrap:break-word;
+  overflow-wrap:anywhere;
+  hyphens:auto;
 }
 /* Tipografia adaptativa PT: reduz fonte quando tradução é longa, evitando overflow */
 .match-card.pt.pt-medium{font-size:15px;}
@@ -1352,8 +1353,10 @@ img,svg{display:block;}
 const THEMES = [
   { id:'cafe', emoji:'☕', name:'Café em Seul', unlockFlowers:0,
     words:[['아메리카노','Café americano'],['라떼','Café com leite'],['카푸치노','Cappuccino'],['에스프레소','Espresso'],['녹차 라떼','Latte de chá verde'],['홍차','Chá preto'],['허브차','Chá de ervas'],['생강차','Chá de gengibre'],['유자차','Chá de yuzu'],['커피','Café'],['우유','Leite'],['물','Água'],['차','Chá'],['얼음','Gelo'],['아이스','Gelado'],['따뜻해요','Está quente'],['차가워요','Está frio'],['탄산수','Água com gás'],['주스','Suco'],['스무디','Smoothie'],['빵','Pão'],['케이크','Bolo'],['디저트','Sobremesa'],['샌드위치','Sanduíche'],['크루아상','Croissant'],['머핀','Muffin'],['쿠키','Cookie'],['마카롱','Macaron'],['치즈케이크','Cheesecake'],['와플','Waffle'],['타르트','Torta/Tart'],['팥빙수','Patbingsu (sobremesa de gelo)'],['토스트','Torrada'],['샐러드','Salada'],['브런치','Brunch'],['설탕','Açúcar'],['시럽','Calda/Xarope'],['휘핑크림','Chantilly'],['계피','Canela'],['바닐라','Baunilha'],['초콜릿','Chocolate'],['맛있어요','Está gostoso'],['달아요','É doce'],['써요','É amargo'],['진해요','É forte (sabor)'],['연해요','É suave/fraco'],['메뉴','Cardápio'],['주문할게요','Vou pedir'],['포장이요','Para levar'],['여기서 먹을게요','Vou comer aqui'],['얼마예요?','Quanto custa?'],['카드','Cartão'],['현금','Dinheiro'],['영수증','Recibo'],['영수증 주세요','Me dê o recibo, por favor'],['리필','Refil'],['테이크아웃','Para viagem'],['한 잔 더 주세요','Mais uma xícara, por favor'],['따로 포장해 주세요','Embale separado, por favor'],['오늘의 메뉴','Menu do dia'],['계절 음료','Bebida sazonal'],['한정판','Edição limitada'],['카페','Cafeteria'],['자리','Lugar/Mesa'],['창가','Perto da janela'],['콘센트','Tomada elétrica'],['와이파이','Wi-fi'],['비밀번호','Senha'],['빨대','Canudo'],['휴지','Guardanapo'],['컵','Copo'],['카운터','Balcão'],['앉아도 돼요?','Posso me sentar?'],['콘센트 있어요?','Tem tomada?'],['충전기','Carregador'],['주차장','Estacionamento'],['금연석','Área para não fumantes'],['화장실은 어디예요?','Onde fica o banheiro?'],['혼자예요','Estou sozinho(a)'],['두 명이요','Somos dois'],['예약했어요','Fiz uma reserva'],['기다려야 해요?','Preciso esperar?'],['몇 분 정도요?','Quanto tempo mais ou menos?'],['음식은 언제 나와요?','Quando sai a comida?'],['창문 옆에 앉을게요','Vou sentar perto da janela'],['분위기가 좋아요','O ambiente é ótimo'],['인테리어가 예뻐요','A decoração é linda'],['포토존','Espaço para fotos'],['인스타그램에서 봤어요','Vi no Instagram'],['너무 맛있어서 또 올게요','Estava tão gostoso que vou voltar'],['재방문 의사 있어요','Tenho vontade de voltar'],['별로예요','Não gostei muito'],['브랜드','Marca']] },
-  { id:'faith', emoji:'✝️', name:'Fé', unlockFlowers:0,
-    words:[['하나님','Deus'],['예수님','Jesus'],['주님','Senhor (referindo-se a Deus)'],['성령','Espírito Santo'],['성삼위','Santíssima Trindade'],['창조주','Criador'],['구세주','Salvador'],['보혜사','Consolador (Espírito Santo)'],['천사','Anjo'],['성경','Bíblia'],['구약','Antigo Testamento'],['신약','Novo Testamento'],['복음','Evangelho'],['말씀','Palavra (de Deus)'],['성경 공부','Estudo bíblico'],['주석','Comentário bíblico'],['묵상','Meditação/Devocional'],['큐티','Devocional diário (QT)'],['교회','Igreja'],['목사님','Pastor'],['전도사님','Evangelista/Obreiro'],['집사님','Diácono(a)'],['장로님','Presbítero/Ancião'],['성도','Membro da igreja/Fiel'],['제자','Discípulo(a)'],['사도','Apóstolo'],['선교사','Missionário(a)'],['예배','Culto'],['찬양','Louvor'],['찬송가','Hino'],['성가대','Coral da igreja'],['찬양 팀','Equipe de louvor'],['기타','Violão'],['드럼','Bateria'],['키보드','Teclado'],['기도','Oração'],['기도해요','Vou orar'],['새벽기도','Oração da madrugada'],['금식','Jejum'],['중보기도','Intercessão'],['통성기도','Oração em alta voz'],['아멘','Amém'],['할렐루야','Aleluia'],['함께 기도해요','Vamos orar juntos'],['구원','Salvação'],['죄','Pecado'],['죄 사함','Perdão dos pecados'],['용서','Perdão'],['회개','Arrependimento'],['거듭남','Novo nascimento'],['부활','Ressurreição'],['십자가','Cruz'],['천국','Céu/Reino dos céus'],['기적','Milagre'],['치유','Cura'],['은혜','Graça'],['축복','Bênção'],['믿음','Fé'],['소망','Esperança'],['사랑','Amor'],['평화','Paz'],['은사','Dom espiritual'],['방언','Línguas (dom espiritual)'],['열매','Fruto (do Espírito)'],['온유','Mansidão'],['인내','Perseverança'],['감사','Gratidão'],['겸손','Humildade'],['순종','Obediência'],['전도','Evangelismo'],['선교','Missão'],['간증','Testemunho'],['헌금','Oferta/Dízimo'],['세례','Batismo'],['교제','Comunhão/Fellowship'],['목장','Pequeno grupo/Célula'],['셀모임','Reunião de célula'],['주일','Domingo (dia do Senhor)'],['주일학교','Escola dominical'],['설교','Sermão/Prédica'],['심방','Visita pastoral'],['봉사','Serviço/Voluntariado'],['헌신','Dedicação'],['형제','Irmão (na fé)'],['자매','Irmã (na fé)'],['회복','Restauração'],['부흥','Avivamento'],['하나님 감사합니다','Graças a Deus'],['하나님이 사랑하세요','Deus te ama'],['같이 예배해요','Vamos adorar juntos'],['환영해요','Bem-vindo(a)'],['처음 오셨어요?','É sua primeira vez aqui?'],['축복합니다','Que Deus te abençoe'],['평안하세요','Que você tenha paz'],['하나님의 뜻','A vontade de Deus'],['인도해 주세요','Guia-me, Senhor'],['나누다','Partilhar'],['사랑을 나눠요','Vamos partilhar o amor']] },
+  { id:'faith', emoji:'✝️', name:'Fé', unlockFlowers:0, excludeFromGeneric:true,
+    words:[['하나님','Deus'],['예수님','Jesus'],['주님','Senhor (referindo-se a Deus)'],['성령','Espírito Santo'],['삼위일체','Trindade'],['창조주','Criador'],['구세주','Salvador'],['보혜사','Consolador (Espírito Santo)'],['천사','Anjo'],['성경','Bíblia'],['구약','Antigo Testamento'],['신약','Novo Testamento'],['복음','Evangelho'],['말씀','Palavra (de Deus)'],['성경 공부','Estudo bíblico'],['주석','Comentário bíblico'],['묵상','Meditação/Devocional'],['큐티','Devocional diário (QT)'],['교회','Igreja'],['목사님','Pastor'],['전도사님','Evangelista/Obreiro'],['집사님','Diácono(a)'],['장로님','Presbítero/Ancião'],['성도','Membro da igreja/Fiel'],['제자','Discípulo(a)'],['사도','Apóstolo'],['선교사','Missionário(a)'],['예배','Culto'],['찬양','Louvor'],['찬송가','Hino'],['성가대','Coral da igreja'],['찬양 팀','Equipe de louvor'],['기도','Oração'],['새벽기도','Oração da madrugada'],['금식','Jejum'],['중보기도','Intercessão'],['통성기도','Oração em alta voz'],['아멘','Amém'],['할렐루야','Aleluia'],['구원','Salvação'],['죄','Pecado'],['죄 사함','Perdão dos pecados'],['용서','Perdão'],['회개','Arrependimento'],['거듭남','Novo nascimento'],['부활','Ressurreição'],['십자가','Cruz'],['천국','Céu/Reino dos céus'],['기적','Milagre'],['치유','Cura'],['은혜','Graça'],['축복','Bênção'],['믿음','Fé'],['소망','Esperança'],['사랑','Amor'],['평화','Paz'],['은사','Dom espiritual'],['방언','Línguas (dom espiritual)'],['열매','Fruto (do Espírito)'],['온유','Mansidão'],['인내','Perseverança'],['감사','Gratidão'],['겸손','Humildade'],['순종','Obediência'],['전도','Evangelismo'],['선교','Missão'],['간증','Testemunho'],['헌금','Oferta/Dízimo'],['세례','Batismo'],['교제','Comunhão/Fellowship'],['목장','Pequeno grupo/Célula'],['셀모임','Reunião de célula'],['주일','Domingo (dia do Senhor)'],['주일학교','Escola dominical'],['설교','Sermão/Prédica'],['심방','Visita pastoral'],['봉사','Serviço/Voluntariado'],['헌신','Dedicação'],['형제','Irmão (na fé)'],['자매','Irmã (na fé)'],['회복','Restauração'],['부흥','Avivamento']] },
+  { id:'bible', emoji:'📖', name:'Bíblia', unlockFlowers:0, excludeFromGeneric:true,
+    words:[['창세기','Gênesis'],['출애굽기','Êxodo'],['레위기','Levítico'],['민수기','Números'],['신명기','Deuteronômio'],['여호수아','Josué'],['사사기','Juízes'],['룻기','Rute'],['사무엘상','1 Samuel'],['사무엘하','2 Samuel'],['열왕기상','1 Reis'],['열왕기하','2 Reis'],['역대상','1 Crônicas'],['역대하','2 Crônicas'],['에스라','Esdras'],['느헤미야','Neemias'],['에스더','Ester'],['욥기','Jó'],['시편','Salmos'],['잠언','Provérbios'],['전도서','Eclesiastes'],['아가','Cânticos'],['이사야','Isaías'],['예레미야','Jeremias'],['예레미야애가','Lamentações'],['에스겔','Ezequiel'],['다니엘','Daniel'],['호세아','Oseias'],['요엘','Joel'],['아모스','Amós'],['오바댜','Obadias'],['요나','Jonas'],['미가','Miqueias'],['나훔','Naum'],['하박국','Habacuque'],['스바냐','Sofonias'],['학개','Ageu'],['스가랴','Zacarias'],['말라기','Malaquias'],['마태복음','Mateus'],['마가복음','Marcos'],['누가복음','Lucas'],['요한복음','João'],['사도행전','Atos'],['로마서','Romanos'],['고린도전서','1 Coríntios'],['고린도후서','2 Coríntios'],['갈라디아서','Gálatas'],['에베소서','Efésios'],['빌립보서','Filipenses'],['골로새서','Colossenses'],['데살로니가전서','1 Tessalonicenses'],['데살로니가후서','2 Tessalonicenses'],['디모데전서','1 Timóteo'],['디모데후서','2 Timóteo'],['디도서','Tito'],['빌레몬서','Filemom'],['히브리서','Hebreus'],['야고보서','Tiago'],['베드로전서','1 Pedro'],['베드로후서','2 Pedro'],['요한일서','1 João'],['요한이서','2 João'],['요한삼서','3 João'],['유다서','Judas'],['요한계시록','Apocalipse'],['아담','Adão'],['하와','Eva'],['노아','Noé'],['아브라함','Abraão'],['사라','Sara'],['이삭','Isaque'],['야곱','Jacó'],['요셉','José (filho de Jacó)'],['모세','Moisés'],['아론','Arão'],['룻','Rute (pessoa)'],['사무엘','Samuel'],['사울','Saul'],['다윗','Davi'],['솔로몬','Salomão'],['엘리야','Elias'],['엘리사','Eliseu'],['마리아','Maria (mãe de Jesus)'],['요셉(마리아의 남편)','José (marido de Maria)'],['세례 요한','João Batista'],['바울','Paulo'],['베드로','Pedro'],['안드레','André'],['야고보','Tiago'],['요한','João (apóstolo)'],['빌립','Filipe'],['바돌로매','Bartolomeu'],['도마','Tomé'],['마태','Mateus (apóstolo)'],['작은 야고보','Tiago, filho de Alfeu'],['다대오','Tadeu'],['시몬','Simão Zelote'],['가룟 유다','Judas Iscariotes']] },
   { id:'doramas', emoji:'🎬', name:'Doramas', unlockFlowers:50,
     words:[['사랑','Amor'],['친구','Amigo'],['진짜','Sério'],['괜찮아요','Tudo bem'],['미안해요','Desculpa'],['보고싶어요','Estou com saudade'],['행복해요','Estou feliz'],['슬퍼요','Estou triste'],['기다려요','Espere'],['거짓말','Mentira'],['비밀','Segredo'],['약속','Promessa']] },
   { id:'kakao', emoji:'📱', name:'KakaoTalk', unlockFlowers:100,
@@ -1481,6 +1484,11 @@ const PHRASES_BY_THEME = {
     'Mais uma palavra pra entender o culto em coreano. ✝️',
     'Isso vai ajudar na próxima reunião de célula. ✝️',
     'Seu coreano de igreja está cada vez mais forte. ✝️',
+  ],
+  bible: [
+    'Mais um livro da Bíblia em coreano dominado. 📖',
+    'Sua leitura bíblica em coreano está avançando. 📖',
+    'Mais um nome bíblico que você já reconhece. 📖',
   ],
 };
 const PHRASES_GENERIC = [
@@ -2344,10 +2352,14 @@ function makeMatchKrCard(kr){
 // Escolhe a classe de tamanho de fonte para o lado PT com base no comprimento da tradução.
 function ptSizeClass(pt){
   const len = pt.length;
-  if(len <= 18) return '';          // curto: 17px padrão
-  if(len <= 28) return 'pt-medium'; // médio: 15px
-  if(len <= 38) return 'pt-long';   // longo: 13px
-  return 'pt-xlong';                // muito longo: 12px
+  // Considera também a maior "palavra" sem espaço (ex: "Tessalonicenses" sozinha
+  // já é larga demais pro card, mesmo que o texto total "1 Tessalonicenses" seja curto).
+  const longestWord = pt.split(/[\s/]+/).reduce((a,b) => b.length > a.length ? b : a, '');
+  const effectiveLen = Math.max(len, longestWord.length * 1.7);
+  if(effectiveLen <= 18) return '';          // curto: 17px padrão
+  if(effectiveLen <= 28) return 'pt-medium'; // médio: 15px
+  if(effectiveLen <= 38) return 'pt-long';   // longo: 13px
+  return 'pt-xlong';                         // muito longo: 12px
 }
 
 function makeMatchPtCard(kr, pt){
@@ -2577,8 +2589,20 @@ function handleCorrectMatch(session, krCard, ptCard){
     } else if(session.queue && session.queue.length > 0){
       addNextMatchPair(krCard, ptCard, kr);
     } else {
+      // Fila vazia (faltam menos de 5 palavras pra terminar a rodada): em vez de
+      // deixar o card "preso" verde esperando o resto da rodada, ele some da tela
+      // com a mesma transição suave de sempre — o board vai encolhendo aos poucos
+      // até a tela final aparecer, em vez de acumular cards verdes parados.
       const idx = session.pairs.findIndex(p => p[0] === kr);
       if(idx !== -1) session.pairs.splice(idx, 1);
+      if(krCard){
+        krCard.classList.add('fade-out');
+        setTimeout(()=> krCard.remove(), 200);
+      }
+      if(ptCard){
+        ptCard.classList.add('fade-out');
+        setTimeout(()=> ptCard.remove(), 200);
+      }
     }
   }, 260);
 }
@@ -2684,7 +2708,12 @@ let quickTimer = null;
 
 function allWordsFlat(){
   const items = [];
+  // Temas marcados com excludeFromGeneric (ex: Fé, Bíblia) não entram no pool
+  // genérico do Jogo Rápido / Match Infinito — só aparecem se a pessoa escolher
+  // o tema diretamente no Match normal. Conteúdo religioso não deve "surpreender"
+  // quem está jogando um modo aleatório sem ter escolhido esse tema.
   visibleThemeList().forEach(theme=>{
+    if(theme.excludeFromGeneric) return;
     theme.words.forEach(([kr, pt])=>{
       items.push({kr, pt, themeId:theme.id, themeName:theme.name, emoji:theme.emoji, dorama:!!theme.dorama});
     });
