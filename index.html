@@ -9,6 +9,14 @@
 <meta name="description" content="Aprenda coreano brincando. Um jogo casual e acolhedor para brasileiros que amam a cultura coreana.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
 
+<!-- PWA: necessário para empacotar como app na Play Store via TWA -->
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Oi Coreia">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
@@ -208,6 +216,58 @@ img,svg{display:block;}
 .home-greet{margin:18px 0 6px;}
 .home-greet-text{font-family:var(--font-display); font-size:26px; font-weight:700; line-height:1.3;}
 .home-greet-sub{font-size:15px; color:var(--ink-soft); margin-top:4px; font-weight:500;}
+
+/* Botão de entrada instantânea — "sentei no sofá, já quero treinar, sem escolher nada" */
+.quick-train-cta{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:linear-gradient(135deg, var(--sakura-deep), var(--peach));
+  border:none;
+  border-radius:var(--r-lg);
+  padding:18px 18px;
+  margin:16px 0 4px;
+  box-shadow:0 6px 18px rgba(232,136,154,0.35);
+  cursor:pointer;
+  text-align:left;
+  font-family:inherit;
+  transition:transform 0.15s ease, box-shadow 0.15s ease;
+}
+.quick-train-cta:active{
+  transform:scale(0.98);
+  box-shadow:0 3px 10px rgba(232,136,154,0.3);
+}
+.quick-train-cta-icon{
+  font-size:26px;
+  width:48px;
+  height:48px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,0.3);
+  border-radius:50%;
+}
+.quick-train-cta-text{flex:1;}
+.quick-train-cta-title{
+  font-family:var(--font-display);
+  font-size:18px;
+  font-weight:700;
+  color:var(--white);
+}
+.quick-train-cta-sub{
+  font-size:12.5px;
+  font-weight:600;
+  color:rgba(255,255,255,0.92);
+  margin-top:2px;
+  line-height:1.3;
+}
+.quick-train-cta-arrow{
+  font-size:24px;
+  color:rgba(255,255,255,0.85);
+  flex-shrink:0;
+}
 .stats-row{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:22px 0;}
 
 /* ===== CEREJEIRA ===== */
@@ -541,6 +601,29 @@ img,svg{display:block;}
 @keyframes completePop{0%{transform:scale(0); opacity:0;} 60%{transform:scale(1.15);} 100%{transform:scale(1); opacity:1;}}
 .complete-title{font-family:var(--font-display); font-size:26px; font-weight:700; margin-bottom:10px;}
 .complete-desc{font-size:16px; color:var(--ink-soft); margin-bottom:28px; line-height:1.5;}
+
+.complete-accuracy{
+  display:inline-flex;
+  align-items:baseline;
+  gap:8px;
+  background:var(--white);
+  border:1.5px solid var(--cream-deep);
+  border-radius:999px;
+  padding:8px 18px;
+  margin-bottom:18px;
+}
+.complete-accuracy-pct{
+  font-family:var(--font-display);
+  font-size:19px;
+  font-weight:700;
+  color:var(--sage-deep);
+}
+.complete-accuracy-label{
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--ink-soft);
+}
+
 .complete-flowers{
   display:flex;
   align-items:center;
@@ -795,9 +878,70 @@ img,svg{display:block;}
   display:flex;
   gap:14px;
   align-items:center;
+  border:2px solid transparent;
+}
+.level-card-active{
+  border-color:var(--sage);
+  background:linear-gradient(135deg, #F4FAF2, var(--white));
+}
+
+/* Indicador discreto de nível ativo, na tela Treinar */
+.level-indicator{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:transparent;
+  border:1.5px dashed var(--cream-deep);
+  border-radius:999px;
+  padding:10px 16px;
+  margin:2px 0 4px;
+  cursor:pointer;
+  font-family:inherit;
+}
+.level-indicator-emoji{font-size:16px;}
+.level-indicator-text{
+  flex:1;
+  text-align:left;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--ink-soft);
+}
+.level-indicator-edit{
+  font-size:11px;
+  font-weight:700;
+  color:var(--sakura-deep);
+  text-decoration:underline;
+}
+
+.level-picker-options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin:18px 0;
+}
+.level-picker-opt{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--cream);
+  border:2px solid transparent;
+  border-radius:var(--r-md);
+  padding:14px 16px;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:700;
+  color:var(--ink);
+  text-align:left;
+}
+.level-picker-opt span{font-size:18px;}
+.level-picker-opt.active{
+  border-color:var(--sage);
+  background:#F4FAF2;
 }
 .level-emoji{font-size:34px; width:44px; text-align:center;}
 .level-name{font-family:var(--font-display); font-size:22px; font-weight:700;}
+.level-card-active .level-name{font-size:18px;}
 .level-desc{font-size:13px; color:var(--ink-soft); font-weight:600; margin-top:3px; line-height:1.35;}
 .infinite-top{
   display:flex;
@@ -1697,6 +1841,11 @@ function defaultState(){
       business:true
     },
     isPlus: false, // Oi Coreia Plus — pagamento único, sem assinatura. Ver PLUS_INFO mais abaixo.
+    // Nível preferido para os modos que misturam palavras (Match Infinito, Treino
+    // instantâneo, Sessão). Nunca é perguntado no onboarding — só existe pra quem
+    // já está dentro do app e quer ajustar. null = "todos os níveis misturados",
+    // que é o padrão até a pessoa escolher algo diferente.
+    preferredLevel: null,
     createdAt: Date.now(),
     lastSession: null,
   };
@@ -1847,6 +1996,7 @@ function render(){
     case 'themes': renderThemesScreen(); break;
     case 'quickgame': renderQuickGame(); break;
     case 'infinite': renderInfiniteMatch(); break;
+    case 'session': renderSessionMode(); break;
     case 'match': renderMatchScreen(); break;
     case 'complete': renderCompleteScreen(); break;
     case 'profile': renderProfile(); break;
@@ -1985,6 +2135,15 @@ function renderHome(){
       <div class="home-greet-sub">Continue sua jornada pela Coreia.</div>
     </div>
 
+    <button class="quick-train-cta" id="quickTrainCta">
+      <div class="quick-train-cta-icon">⚡</div>
+      <div class="quick-train-cta-text">
+        <div class="quick-train-cta-title">Treinar agora</div>
+        <div class="quick-train-cta-sub">Sem escolher nada. Só testar o que você já sabe.</div>
+      </div>
+      <div class="quick-train-cta-arrow">›</div>
+    </button>
+
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-emoji">📚</div>
@@ -2060,6 +2219,8 @@ function renderHome(){
   if(dest) el.querySelector('#nextDestCard').addEventListener('click', ()=> goTo('themes'));
   const goTrainCard = el.querySelector('#goTrainCard');
   if(goTrainCard) goTrainCard.addEventListener('click', ()=> goTo('train'));
+  const quickTrainCta = el.querySelector('#quickTrainCta');
+  if(quickTrainCta) quickTrainCta.addEventListener('click', startQuickTrain);
   attachBottomNav(el);
 }
 
@@ -2101,6 +2262,12 @@ function renderTrainScreen(){
       <div class="train-card-arrow">›</div>
     </button>
 
+    <button class="level-indicator" id="levelIndicator">
+      <span class="level-indicator-emoji">${LEVEL_META[state.preferredLevel]?.emoji || '🎚️'}</span>
+      <span class="level-indicator-text">${LEVEL_META[state.preferredLevel]?.label || 'Todos os níveis misturados'}</span>
+      <span class="level-indicator-edit">trocar</span>
+    </button>
+
     <button class="train-card" id="trainQuick">
       <div class="train-card-icon">⚡</div>
       <div>
@@ -2115,6 +2282,15 @@ function renderTrainScreen(){
       <div>
         <div class="train-card-title">Match Infinito</div>
         <div class="train-card-desc">5 pares na tela, 3 vidas e recorde.</div>
+      </div>
+      <div class="train-card-arrow">›</div>
+    </button>
+
+    <button class="train-card" id="trainSession">
+      <div class="train-card-icon">⏱️</div>
+      <div>
+        <div class="train-card-title">Sessão</div>
+        <div class="train-card-desc">Escolha o tempo e treine sem se preocupar com mais nada.</div>
       </div>
       <div class="train-card-arrow">›</div>
     </button>
@@ -2151,6 +2327,9 @@ function renderTrainScreen(){
   el.querySelector('#trainTrip').addEventListener('click', ()=> goTo('themes'));
   el.querySelector('#trainQuick').addEventListener('click', ()=> goTo('quickgame'));
   el.querySelector('#trainInfinite').addEventListener('click', ()=> goTo('infinite'));
+  el.querySelector('#trainSession').addEventListener('click', ()=> goTo('session'));
+  const levelIndicator = el.querySelector('#levelIndicator');
+  if(levelIndicator) levelIndicator.addEventListener('click', openLevelPicker);
   const goPlusBanner = el.querySelector('#goPlusBanner');
   if(goPlusBanner) goPlusBanner.addEventListener('click', ()=> goTo('plus'));
   el.querySelectorAll('[data-dorama]').forEach(btn=>{
@@ -2232,16 +2411,117 @@ function renderPlusScreen(){
   `;
   app.appendChild(el);
   el.querySelector('#backBtn').addEventListener('click', ()=> goTo(backRoute));
-  el.querySelector('#btnUnlockPlus').addEventListener('click', ()=> activatePlusMock(backRoute));
+  el.querySelector('#btnUnlockPlus').addEventListener('click', ()=> purchasePlus(backRoute));
+}
+
+// ============================================================
+// GOOGLE PLAY BILLING — integração real
+// ============================================================
+// Como funciona: quando o app roda empacotado como TWA (Trusted Web Activity)
+// dentro do Android, o sistema injeta uma ponte JavaScript chamada
+// `window.PaymentRequest` com o Google Play Billing como método de pagamento
+// (via Digital Goods API: https://github.com/WICG/digital-goods).
+// Fora do TWA (testando num navegador comum), essa API não existe — então
+// caímos automaticamente no modo demonstração, sem quebrar o app.
+//
+// ID do produto: precisa ser cadastrado primeiro no Google Play Console em
+// Monetização > Produtos > Produtos integrados ao app, como produto
+// NÃO-CONSUMÍVEL (compra única, fica vinculada à conta Google para sempre).
+const PLUS_PRODUCT_ID = 'oi_coreia_plus_vitalicio';
+
+// Verifica se a Digital Goods API (Play Billing real) está disponível neste ambiente.
+function hasRealBilling(){
+  return typeof window.getDigitalGoodsService === 'function';
+}
+
+async function purchasePlus(backRoute){
+  if(!hasRealBilling()){
+    // Fora do app instalado via TWA: não há como cobrar de verdade.
+    // Mantemos o modo demonstração pra continuar testável no navegador.
+    activatePlusMock(backRoute);
+    return;
+  }
+
+  const btn = document.getElementById('btnUnlockPlus');
+  if(btn){ btn.disabled = true; btn.textContent = 'Processando...'; }
+
+  try {
+    // 1. Conecta ao serviço de Digital Goods do Google Play
+    const service = await window.getDigitalGoodsService('https://play.google.com/billing');
+
+    // 2. Inicia o fluxo de pagamento nativo do Android (mostra a tela do Google Play)
+    const request = new PaymentRequest(
+      [{ supportedMethods:'https://play.google.com/billing',
+         data:{ sku: PLUS_PRODUCT_ID } }],
+      { total:{ label:'Oi Coreia Plus', amount:{ currency:'BRL', value:'9.99' } } }
+    );
+    const paymentResponse = await request.show();
+    const purchaseToken = paymentResponse.details.purchaseToken;
+    await paymentResponse.complete('success');
+
+    // 3. CRÍTICO: o token precisa ser validado num servidor seu antes de liberar
+    // o Plus — confiar só no que voltou pro navegador é inseguro (qualquer pessoa
+    // com conhecimento técnico poderia forjar essa resposta no DevTools).
+    // Ver verifyPurchaseOnServer() logo abaixo para a explicação completa.
+    const verified = await verifyPurchaseOnServer(purchaseToken);
+
+    if(verified){
+      state.isPlus = true;
+      state.plusPurchaseToken = purchaseToken; // guardado para possível restauração futura
+      saveState();
+      showToast('✨ Plus desbloqueado! Obrigada por apoiar o Oi Coreia 🌸');
+      render();
+    } else {
+      showToast('Não conseguimos confirmar sua compra. Tente novamente ou fale com o suporte.');
+    }
+  } catch(err){
+    // Cancelamento do usuário (fechou a tela de pagamento) cai aqui também —
+    // não é um erro real, só não mostramos nada de assustador.
+    if(err && err.name !== 'AbortError'){
+      showToast('Algo deu errado ao processar o pagamento. Tente novamente.');
+    }
+  } finally {
+    if(btn){ btn.disabled = false; btn.textContent = 'Desbloquear Plus'; }
+  }
+}
+
+// Valida o token de compra contra um endpoint seu (não embutido aqui de propósito).
+// PRECISA rodar num servidor — nunca confie em validação feita só no navegador.
+//
+// Arquitetura recomendada (gratuita, sem manter servidor ligado o tempo todo):
+//   1. Crie uma Cloud Function (Google Cloud) ou Edge Function (Vercel/Netlify).
+//   2. Ela recebe { purchaseToken, productId } do app.
+//   3. Ela chama a Google Play Developer API (purchases.products.get) usando
+//      uma Service Account com permissão de "Ver dados financeiros" no Play Console.
+//   4. Se a API confirmar que a compra é válida e não foi reembolsada, retorna
+//      { valid: true } — só então o app libera o Plus.
+//   5. Opcional: salve o purchaseToken + um ID anônimo do dispositivo num banco
+//      (ex: Firestore) para permitir "restaurar compra" em outro aparelho depois.
+//
+// Troque a URL abaixo pelo endereço real da sua function quando estiver pronta.
+async function verifyPurchaseOnServer(purchaseToken){
+  const ENDPOINT = 'https://SUBSTITUA-PELA-SUA-CLOUD-FUNCTION/verify-purchase';
+  try {
+    const res = await fetch(ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ purchaseToken, productId: PLUS_PRODUCT_ID }),
+    });
+    if(!res.ok) return false;
+    const data = await res.json();
+    return data.valid === true;
+  } catch(err){
+    return false;
+  }
 }
 
 // Ativa o Plus localmente, sem nenhuma transação financeira real.
-// Ponto de troca: substitua esta função pela confirmação de compra real
-// (Google Play Billing / App Store / Stripe) antes de gravar state.isPlus = true.
+// Usado como fallback quando o app não está rodando dentro do TWA com
+// Billing disponível (ex: testando no navegador do computador).
 function activatePlusMock(backRoute){
   state.isPlus = true;
   saveState();
-  showToast('✨ Plus desbloqueado! (modo de demonstração)');
+  showToast('✨ Plus desbloqueado! (modo de demonstração — sem Billing real disponível aqui)');
   render();
 }
 
@@ -2311,6 +2591,13 @@ function startMatchSession(themeId){
   const pool = shuffleArray(theme.words);
   const roundWords = pool.slice(0, Math.min(ROUND_SIZE, theme.words.length));
 
+  // ptMap guarda kr->pt de TODA a rodada, fixo do início ao fim — diferente de
+  // session.pairs, que só reflete o que está visível no board agora (pares já
+  // resolvidos saem dali pra sumir da tela). A tela final usa o ptMap pra montar
+  // os chips de revisão corretamente, mesmo para palavras já removidas do board.
+  const ptMap = {};
+  roundWords.forEach(([kr, pt]) => { ptMap[kr] = pt; });
+
   currentMatchSession = {
     themeId,
     themeName: theme.name,
@@ -2323,6 +2610,67 @@ function startMatchSession(themeId){
     selectedPt: null,
     flowersEarned: 0,
     wordsLearnedThisRound: [],
+    ptMap,
+  };
+
+  goTo('match');
+}
+
+// "Treinar agora" — entrada instantânea sem escolher tema, pro uso de "sentei
+// no sofá, quero só testar o que já sei por 15 minutinhos". Mistura palavras
+// de todos os temas que a pessoa já tem acesso (respeitando flores e Plus),
+// e usa o vocabulário aprendido com mais frequência só se já existir progresso —
+// senão mistura tudo igual, sem fazer suposição nenhuma sobre nível.
+function startQuickTrain(){
+  // Mesma regra do Jogo Rápido e Match Infinito: conteúdo marcado como
+  // excludeFromGeneric (Fé, Bíblia) não entra na mistura — só aparece se a
+  // pessoa escolher esse tema diretamente.
+  const accessibleThemes = THEMES.filter(t => isThemeAccessible(t) && !t.excludeFromGeneric);
+  let pool = [];
+  accessibleThemes.forEach(theme=>{
+    theme.words.forEach(([kr, pt])=> pool.push([kr, pt, theme.id]));
+  });
+
+  // Se a pessoa já tem um nível preferido (escolhido alguma vez no Match
+  // Infinito ou na Sessão), aplica o mesmo filtro de dificuldade aqui — sem
+  // nunca ter perguntado nada, só respeitando o que ela já indicou querer.
+  if(state.preferredLevel === 'beginner'){
+    pool = pool.filter(([kr, pt]) => kr.length <= 5 && pt.length <= 18);
+  } else if(state.preferredLevel === 'intermediate'){
+    pool = pool.filter(([kr]) => kr.length <= 9);
+  }
+
+  if(pool.length === 0){
+    // Ainda não há nenhum tema desbloqueado (caso raríssimo, só se Café também
+    // estivesse bloqueado) — cai no Café como garantia de sempre ter conteúdo.
+    startMatchSession('cafe');
+    return;
+  }
+
+  const shuffled = shuffleArray(pool);
+  const roundWords = shuffled.slice(0, Math.min(ROUND_SIZE, shuffled.length));
+  // Mapa kr -> tema de origem, pra registrar o progresso no tema certo
+  // (e não tudo sob um tema fake "quicktrain" que perderia a continuidade).
+  const originMap = {};
+  roundWords.forEach(([kr, , originThemeId]) => { originMap[kr] = originThemeId; });
+  const ptMap = {};
+  roundWords.forEach(([kr, pt]) => { ptMap[kr] = pt; });
+
+  currentMatchSession = {
+    themeId: 'quicktrain',
+    themeName: 'Treino rápido',
+    themeEmoji: '⚡',
+    totalGoal: roundWords.length,
+    queue: roundWords.slice(5).map(([kr,pt])=>[kr,pt]),
+    pairs: roundWords.slice(0, 5).map(([kr,pt])=>[kr,pt]),
+    matchedKr: [],
+    selectedKr: null,
+    selectedPt: null,
+    flowersEarned: 0,
+    wordsLearnedThisRound: [],
+    isQuickTrain: true,
+    originMap, // kr -> themeId real, usado por markWordLearned
+    ptMap,
   };
 
   goTo('match');
@@ -2549,7 +2897,7 @@ function tryResolveMatch(){
   const ptCard = document.querySelector(`.match-card.pt.selected`);
 
   if(isCorrect) handleCorrectMatch(session, krCard, ptCard);
-  else handleWrongMatch(krCard, ptCard);
+  else handleWrongMatch(session, krCard, ptCard);
 
   session.selectedKr = null;
   session.selectedPt = null;
@@ -2563,7 +2911,10 @@ function cssEscape(str){
 function handleCorrectMatch(session, krCard, ptCard){
   const kr = session.selectedKr;
   session.matchedKr.push(kr);
-  markWordLearned(session.themeId, kr);
+  // No treino instantâneo, cada palavra "pertence" a um tema real diferente —
+  // o progresso precisa contar lá, não embaixo de um tema fake "quicktrain".
+  const realThemeId = (session.originMap && session.originMap[kr]) || session.themeId;
+  markWordLearned(realThemeId, kr);
   if(!session.wordsLearnedThisRound.includes(kr)) session.wordsLearnedThisRound.push(kr);
 
   playMatchSound('correct');
@@ -2579,7 +2930,7 @@ function handleCorrectMatch(session, krCard, ptCard){
   // Mensagem de incentivo a cada 3 acertos — não toda hora pra não virar ruído,
   // mas frequente o suficiente pra dar aquela sensação de "estou indo bem".
   if(session.matchedKr.length % 3 === 0){
-    showEncouragement(randomPhrase(themedCorrectPhrase(session.themeId)));
+    showEncouragement(randomPhrase(themedCorrectPhrase(session.isQuickTrain ? realThemeId : session.themeId)));
   }
 
   setTimeout(()=>{
@@ -2607,7 +2958,8 @@ function handleCorrectMatch(session, krCard, ptCard){
   }, 260);
 }
 
-function handleWrongMatch(krCard, ptCard){
+function handleWrongMatch(session, krCard, ptCard){
+  if(session) session.misses = (session.misses || 0) + 1;
   playMatchSound('wrong');
   [krCard, ptCard].forEach(c=>{
     if(!c) return;
@@ -2952,6 +3304,15 @@ function renderQuickGame(){
 // ============================================
 let infiniteGame = null;
 
+// Fonte central de emoji/label por nível — usada no indicador da tela Treinar,
+// no modal de troca rápida, e em qualquer outro lugar que precise mostrar o
+// nível de forma consistente.
+const LEVEL_META = {
+  beginner: { emoji:'🌱', label:'Iniciante' },
+  intermediate: { emoji:'🌿', label:'Intermediário' },
+  advanced: { emoji:'🌳', label:'Avançado' },
+};
+
 function getWordsByLevel(level){
   const all = allWordsFlat();
   if(level === 'beginner'){
@@ -2964,6 +3325,11 @@ function getWordsByLevel(level){
 }
 
 function startInfiniteMatch(level){
+  // Guarda como preferência — assim a próxima vez (em qualquer modo que use
+  // nível) já vem calibrada, sem precisar perguntar de novo.
+  state.preferredLevel = level || 'beginner';
+  saveState();
+
   const pool = shuffleArray(getWordsByLevel(level || 'beginner'));
   infiniteGame = {
     active:true,
@@ -2986,10 +3352,87 @@ function startInfiniteMatch(level){
   goTo('infinite');
 }
 
+// Modo Sessão: mesma engine do Match Infinito (board de 5, reposição contínua),
+// mas sem vidas — a sessão só termina quando o tempo escolhido acaba. Pensado
+// pro uso casual de "tenho 15 minutinhos, quero só treinar sem me preocupar
+// com errar". Misturamos todos os temas acessíveis, exceto Fé/Bíblia (mesma
+// regra do treino instantâneo — conteúdo sensível só entra se escolhido direto).
+let sessionTimer = null;
+
+function startSessionMode(minutes){
+  const accessibleThemes = THEMES.filter(t => isThemeAccessible(t) && !t.excludeFromGeneric);
+  let pool = [];
+  accessibleThemes.forEach(theme=>{
+    theme.words.forEach(([kr, pt])=> pool.push({kr, pt, themeId:theme.id}));
+  });
+
+  // Mesmo filtro de nível preferido do Match Infinito e do Treino instantâneo —
+  // sempre opcional, nunca perguntado, só aplicado se a pessoa já indicou antes.
+  if(state.preferredLevel === 'beginner'){
+    pool = pool.filter(w => w.kr.length <= 5 && w.pt.length <= 18);
+  } else if(state.preferredLevel === 'intermediate'){
+    pool = pool.filter(w => w.kr.length <= 9);
+  }
+
+  if(pool.length === 0){
+    THEMES.find(t=>t.id==='cafe').words.forEach(([kr,pt])=> pool.push({kr,pt,themeId:'cafe'}));
+  }
+
+  infiniteGame = {
+    active:true,
+    sessionMode:true,
+    sessionMinutes:minutes,
+    sessionSecondsLeft: minutes * 60,
+    pool: shuffleArray(pool),
+    index:0,
+    pairs:[],
+    selectedKr:null,
+    selectedPt:null,
+    hits:0,
+    misses:0,
+    combo:0,
+    maxCombo:0,
+    lives:null, // sessão não usa vidas — errar não termina a sessão
+    gameOver:false,
+    best:0,
+    bestCombo:0,
+  };
+  for(let i=0;i<5;i++) addInfinitePair();
+
+  clearInterval(sessionTimer);
+  sessionTimer = setInterval(()=>{
+    if(!infiniteGame || !infiniteGame.active || !infiniteGame.sessionMode){
+      clearInterval(sessionTimer);
+      return;
+    }
+    infiniteGame.sessionSecondsLeft -= 1;
+    updateSessionTimerDisplay();
+    if(infiniteGame.sessionSecondsLeft <= 0){
+      clearInterval(sessionTimer);
+      finishInfiniteGame();
+    }
+  }, 1000);
+
+  goTo('infinite');
+}
+
+function updateSessionTimerDisplay(){
+  const el = document.getElementById('infSessionTime');
+  if(!el || !infiniteGame) return;
+  const s = Math.max(0, infiniteGame.sessionSecondsLeft);
+  const mm = Math.floor(s/60).toString().padStart(2,'0');
+  const ss = (s%60).toString().padStart(2,'0');
+  el.textContent = `${mm}:${ss}`;
+}
+
 function addInfinitePair(){
   if(!infiniteGame) return;
   if(infiniteGame.index >= infiniteGame.pool.length){
-    infiniteGame.pool = shuffleArray(getWordsByLevel(infiniteGame.level));
+    // Modo sessão usa o pool misturado já montado em startSessionMode;
+    // modo normal (níveis) recalcula a partir de getWordsByLevel.
+    infiniteGame.pool = infiniteGame.sessionMode
+      ? shuffleArray(infiniteGame.pool)
+      : shuffleArray(getWordsByLevel(infiniteGame.level));
     infiniteGame.index = 0;
   }
   const next = infiniteGame.pool[infiniteGame.index++];
@@ -3022,15 +3465,76 @@ function showInfiniteErrorToast(text){
 
 function finishInfiniteGame(){
   if(!infiniteGame) return;
+  clearInterval(sessionTimer);
   infiniteGame.active = false;
   infiniteGame.gameOver = true;
-  if(infiniteGame.hits > Number(localStorage.getItem('oicoreia_infinite_best') || 0)){
-    localStorage.setItem('oicoreia_infinite_best', String(infiniteGame.hits));
-  }
-  if((infiniteGame.maxCombo || 0) > Number(localStorage.getItem('oicoreia_infinite_best_combo') || 0)){
-    localStorage.setItem('oicoreia_infinite_best_combo', String(infiniteGame.maxCombo || 0));
+  // Recordes de "acertos" e "combo" são específicos do Match Infinito (modo
+  // performance) — não fazem sentido pro modo Sessão, que é sobre tempo livre,
+  // não sobre bater placar.
+  if(!infiniteGame.sessionMode){
+    if(infiniteGame.hits > Number(localStorage.getItem('oicoreia_infinite_best') || 0)){
+      localStorage.setItem('oicoreia_infinite_best', String(infiniteGame.hits));
+    }
+    if((infiniteGame.maxCombo || 0) > Number(localStorage.getItem('oicoreia_infinite_best_combo') || 0)){
+      localStorage.setItem('oicoreia_infinite_best_combo', String(infiniteGame.maxCombo || 0));
+    }
   }
   render();
+}
+
+
+// Tela de seleção de duração do modo Sessão — "tenho 15 minutinhos, quero só
+// treinar sem decidir mais nada além do tempo". Reaproveita inteiramente a
+// engine visual do Match Infinito (renderInfiniteMatch cuida do board real).
+function renderSessionMode(){
+  if(infiniteGame && infiniteGame.active && infiniteGame.sessionMode){
+    renderInfiniteMatch();
+    return;
+  }
+  if(infiniteGame && infiniteGame.gameOver && infiniteGame.sessionMode){
+    renderInfiniteMatch();
+    return;
+  }
+
+  const el = document.createElement('div');
+  el.className = 'screen infinite-screen';
+  el.innerHTML = `
+    <div class="infinite-hero">
+      <div class="infinite-title">Sessão ⏱️</div>
+      <div class="infinite-sub">Escolha quanto tempo quer treinar agora. O resto a gente cuida.</div>
+    </div>
+
+    <div class="level-grid">
+      <button class="level-card" data-minutes="5">
+        <div class="level-emoji">🌱</div>
+        <div>
+          <div class="level-name">5 minutos</div>
+          <div class="level-desc">Só pra espantar a preguiça.</div>
+        </div>
+      </button>
+      <button class="level-card" data-minutes="10">
+        <div class="level-emoji">🌿</div>
+        <div>
+          <div class="level-name">10 minutos</div>
+          <div class="level-desc">Um cafezinho de treino.</div>
+        </div>
+      </button>
+      <button class="level-card" data-minutes="15">
+        <div class="level-emoji">🌳</div>
+        <div>
+          <div class="level-name">15 minutos</div>
+          <div class="level-desc">Aquele tempinho no sofá, sem pressa.</div>
+        </div>
+      </button>
+    </div>
+
+    ${bottomNavHtml('train')}
+  `;
+  app.appendChild(el);
+  el.querySelectorAll('[data-minutes]').forEach(btn=>{
+    btn.addEventListener('click', ()=> startSessionMode(Number(btn.dataset.minutes)));
+  });
+  attachBottomNav(el);
 }
 
 
@@ -3039,37 +3543,43 @@ function renderInfiniteMatch(){
   el.className = 'screen infinite-screen';
 
   if(infiniteGame && infiniteGame.gameOver){
+    const isSession = infiniteGame.sessionMode;
     const finalScore = infiniteGame.hits || 0;
     const finalCombo = infiniteGame.maxCombo || 0;
     const best = Number(localStorage.getItem('oicoreia_infinite_best') || finalScore);
     const bestCombo = Number(localStorage.getItem('oicoreia_infinite_best_combo') || finalCombo);
     el.innerHTML = `
       <div class="infinite-hero">
-        <div class="infinite-title">Fim de jogo 🌸</div>
-        <div class="infinite-sub">Suas vidas acabaram.</div>
+        <div class="infinite-title">${isSession ? 'Sessão concluída ⏱️' : 'Fim de jogo 🌸'}</div>
+        <div class="infinite-sub">${isSession ? `Seus ${infiniteGame.sessionMinutes} minutinhos de treino acabaram.` : 'Suas vidas acabaram.'}</div>
       </div>
       <div class="infinite-gameover">
-        <div class="infinite-gameover-emoji">🏆</div>
+        <div class="infinite-gameover-emoji">${isSession ? '🌸' : '🏆'}</div>
         <div class="infinite-gameover-title">Você acertou</div>
         <div class="infinite-gameover-score">${finalScore}</div>
         <div class="infinite-gameover-text">
-          Maior combo desta rodada: <b>${finalCombo}</b><br>
-          Recorde: <b>${best}</b> acertos<br>
-          Melhor combo: <b>${bestCombo}</b>
+          ${isSession
+            ? `Maior combo da sessão: <b>${finalCombo}</b><br>Você treinou por <b>${infiniteGame.sessionMinutes} minutos</b>. Foi um ótimo momento de prática! 🌸`
+            : `Maior combo desta rodada: <b>${finalCombo}</b><br>Recorde: <b>${best}</b> acertos<br>Melhor combo: <b>${bestCombo}</b>`
+          }
         </div>
-        <button class="btn btn-primary btn-block" id="playInfiniteAgain">Jogar novamente</button>
+        <button class="btn btn-primary btn-block" id="playInfiniteAgain">${isSession ? 'Treinar de novo' : 'Jogar novamente'}</button>
         <button class="btn btn-ghost" id="backToTrain">Voltar para Treinar</button>
       </div>
       ${bottomNavHtml('train')}
     `;
     app.appendChild(el);
-    el.querySelector('#playInfiniteAgain').addEventListener('click', ()=> startInfiniteMatch(infiniteGame.level || 'beginner'));
+    el.querySelector('#playInfiniteAgain').addEventListener('click', ()=>{
+      if(isSession) startSessionMode(infiniteGame.sessionMinutes);
+      else startInfiniteMatch(infiniteGame.level || 'beginner');
+    });
     el.querySelector('#backToTrain').addEventListener('click', ()=> { infiniteGame = null; goTo('train'); });
     attachBottomNav(el);
     return;
   }
 
   if(!infiniteGame || !infiniteGame.active){
+    const pref = state.preferredLevel;
     el.innerHTML = `
       <div class="infinite-hero">
         <div class="infinite-title">Match Infinito 🎯</div>
@@ -3077,24 +3587,24 @@ function renderInfiniteMatch(){
       </div>
 
       <div class="level-grid">
-        <button class="level-card" data-level="beginner">
+        <button class="level-card ${pref==='beginner' ? 'level-card-active' : ''}" data-level="beginner">
           <div class="level-emoji">🌱</div>
           <div>
-            <div class="level-name">Iniciante</div>
+            <div class="level-name">Iniciante ${pref==='beginner' ? '· seu nível de costume' : ''}</div>
             <div class="level-desc">Palavras curtas e úteis para começar sem sofrer.</div>
           </div>
         </button>
-        <button class="level-card" data-level="intermediate">
+        <button class="level-card ${pref==='intermediate' ? 'level-card-active' : ''}" data-level="intermediate">
           <div class="level-emoji">🌿</div>
           <div>
-            <div class="level-name">Intermediário</div>
+            <div class="level-name">Intermediário ${pref==='intermediate' ? '· seu nível de costume' : ''}</div>
             <div class="level-desc">Palavras maiores e frases comuns de dorama, viagem e KakaoTalk.</div>
           </div>
         </button>
-        <button class="level-card" data-level="advanced">
+        <button class="level-card ${pref==='advanced' ? 'level-card-active' : ''}" data-level="advanced">
           <div class="level-emoji">🌳</div>
           <div>
-            <div class="level-name">Avançado</div>
+            <div class="level-name">Avançado ${pref==='advanced' ? '· seu nível de costume' : ''}</div>
             <div class="level-desc">Tudo misturado. Se vira em Seul, querido(a).</div>
           </div>
         </button>
@@ -3112,6 +3622,7 @@ function renderInfiniteMatch(){
 
   const krItems = shuffleArray(infiniteGame.pairs);
   const ptItems = shuffleArray(infiniteGame.pairs);
+  const isSession = infiniteGame.sessionMode;
 
   el.innerHTML = `
     <div class="infinite-top">
@@ -3125,10 +3636,17 @@ function renderInfiniteMatch(){
           <div class="infinite-pill-value" id="infCombo">${infiniteGame.combo}</div>
           <div class="infinite-pill-label">Combo</div>
         </div>
+        ${isSession ? `
+        <div class="infinite-pill" id="infLivesPill">
+          <div class="infinite-pill-value" id="infSessionTime">${String(Math.floor(infiniteGame.sessionSecondsLeft/60)).padStart(2,'0')}:${String(infiniteGame.sessionSecondsLeft%60).padStart(2,'0')}</div>
+          <div class="infinite-pill-label">Tempo</div>
+        </div>
+        ` : `
         <div class="infinite-pill" id="infLivesPill">
           <div class="infinite-pill-value infinite-lives" id="infLives">${renderLives(infiniteGame.lives)}</div>
           <div class="infinite-pill-label">Vidas</div>
         </div>
+        `}
       </div>
     </div>
 
@@ -3151,7 +3669,10 @@ function renderInfiniteMatch(){
     </div>
 
     <div class="infinite-actions">
-      <button class="btn btn-secondary btn-block" id="changeLevelBtn">Trocar nível</button>
+      ${isSession
+        ? `<button class="btn btn-secondary btn-block" id="changeLevelBtn">Encerrar sessão</button>`
+        : `<button class="btn btn-secondary btn-block" id="changeLevelBtn">Trocar nível</button>`
+      }
     </div>
 
     ${bottomNavHtml('train')}
@@ -3159,10 +3680,12 @@ function renderInfiniteMatch(){
   app.appendChild(el);
 
   el.querySelector('#infiniteClose').addEventListener('click', ()=>{
+    clearInterval(sessionTimer);
     infiniteGame.active = false;
     goTo('home');
   });
   el.querySelector('#changeLevelBtn').addEventListener('click', ()=>{
+    clearInterval(sessionTimer);
     infiniteGame = null;
     render();
   });
@@ -3197,10 +3720,14 @@ function updateInfiniteStats(){
   if(!infiniteGame) return;
   const hits = document.getElementById('infHits');
   const combo = document.getElementById('infCombo');
-  const lives = document.getElementById('infLives');
   if(hits) hits.textContent = infiniteGame.hits;
   if(combo) combo.textContent = infiniteGame.combo;
-  if(lives) lives.textContent = renderLives(infiniteGame.lives);
+  if(infiniteGame.sessionMode){
+    updateSessionTimerDisplay();
+  } else {
+    const lives = document.getElementById('infLives');
+    if(lives) lives.textContent = renderLives(infiniteGame.lives);
+  }
 }
 
 function attachInfiniteCardEvents(root=document){
@@ -3302,23 +3829,29 @@ function resolveInfinite(){
   } else {
     infiniteGame.misses += 1;
     infiniteGame.combo = 0;
-    infiniteGame.lives = Math.max(0, (infiniteGame.lives || 0) - 1);
+
+    // No modo Sessão não há vidas — errar só reseta o combo e mostra o feedback
+    // visual de erro, sem punir além disso. É treino casual, não teste de performance.
+    if(!infiniteGame.sessionMode){
+      infiniteGame.lives = Math.max(0, (infiniteGame.lives || 0) - 1);
+    }
     updateInfiniteStats();
 
     playMatchSound('wrong');
-    showInfiniteErrorToast(infiniteGame.lives > 0 ? `Ops! ${infiniteGame.lives} vida(s) restantes` : 'Fim de jogo!');
-
-    const livesPill = document.getElementById('infLivesPill');
-    if(livesPill){
-      livesPill.classList.remove('infinite-life-lost');
-      void livesPill.offsetWidth;
-      livesPill.classList.add('infinite-life-lost');
+    if(!infiniteGame.sessionMode){
+      showInfiniteErrorToast(infiniteGame.lives > 0 ? `Ops! ${infiniteGame.lives} vida(s) restantes` : 'Fim de jogo!');
+      const livesPill = document.getElementById('infLivesPill');
+      if(livesPill){
+        livesPill.classList.remove('infinite-life-lost');
+        void livesPill.offsetWidth;
+        livesPill.classList.add('infinite-life-lost');
+      }
     }
 
     if(krCard) krCard.classList.add('wrong');
     if(ptCard) ptCard.classList.add('wrong');
 
-    if(infiniteGame.lives <= 0){
+    if(!infiniteGame.sessionMode && infiniteGame.lives <= 0){
       setTimeout(()=> finishInfiniteGame(), 650);
       return;
     }
@@ -3346,14 +3879,29 @@ function renderCompleteScreen(){
   );
 
   const wordsChips = session.wordsLearnedThisRound.map(kr=>{
-    const pair = session.pairs.find(p=>p[0]===kr);
-    return `<div class="complete-word-chip"><span class="kr">${kr}</span><span>${pair ? pair[1] : ''}</span></div>`;
+    const pt = (session.ptMap && session.ptMap[kr]) ||
+      (session.pairs.find(p=>p[0]===kr) || [])[1] || '';
+    return `<div class="complete-word-chip"><span class="kr">${kr}</span><span>${escapeHtml(pt)}</span></div>`;
   }).join('');
+
+  // Indicador leve de aproveitamento — pro uso de "deixa eu testar o que já sei",
+  // não é nota nem avaliação de curso, só um termômetro casual do momento.
+  const totalAttempts = session.matchedKr.length + (session.misses || 0);
+  const accuracyPct = totalAttempts > 0 ? Math.round((session.matchedKr.length/totalAttempts)*100) : null;
+  const accuracyTone = accuracyPct === null ? '' : accuracyPct >= 90 ? 'Mandou muito bem hoje.' :
+    accuracyPct >= 70 ? 'Bom treino!' : 'Valeu por treinar — repetição é assim mesmo.';
 
   el.innerHTML = `
     <div class="complete-emoji">🌸</div>
     <div class="complete-title">Treino concluído ✨</div>
     <div class="complete-desc">${session.themeEmoji} ${escapeHtml(session.themeName)}<br>${session.wordsLearnedThisRound.length} palavras revisadas</div>
+
+    ${accuracyPct !== null ? `
+    <div class="complete-accuracy">
+      <span class="complete-accuracy-pct">${accuracyPct}%</span>
+      <span class="complete-accuracy-label">de acerto hoje · ${accuracyTone}</span>
+    </div>
+    ` : ''}
 
     ${justUnlocked.map(t => `<div class="complete-unlock-banner">${t.name} foi desbloqueada! ${t.emoji}</div>`).join('')}
 
@@ -3572,12 +4120,62 @@ function openResetModal(){
   });
 }
 
+function openLevelPicker(){
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  const current = state.preferredLevel;
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <div class="modal-title">Seu nível</div>
+      <div class="modal-desc">Isso ajusta o Treinar agora, a Sessão e o Match Infinito. Pode trocar quando quiser — nunca é obrigatório.</div>
+      <div class="level-picker-options">
+        <button class="level-picker-opt ${!current ? 'active' : ''}" data-level="">
+          <span>🎚️</span> Misturado (todos os níveis)
+        </button>
+        <button class="level-picker-opt ${current==='beginner' ? 'active' : ''}" data-level="beginner">
+          <span>🌱</span> Iniciante
+        </button>
+        <button class="level-picker-opt ${current==='intermediate' ? 'active' : ''}" data-level="intermediate">
+          <span>🌿</span> Intermediário
+        </button>
+        <button class="level-picker-opt ${current==='advanced' ? 'active' : ''}" data-level="advanced">
+          <span>🌳</span> Avançado
+        </button>
+      </div>
+      <button class="btn btn-ghost" id="closeLevelPicker" style="margin-top:6px;">Fechar</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(()=> overlay.classList.add('show'));
+  const close = ()=>{ overlay.classList.remove('show'); setTimeout(()=>overlay.remove(), 250); };
+  overlay.querySelector('#closeLevelPicker').addEventListener('click', close);
+  overlay.querySelectorAll('[data-level]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.preferredLevel = btn.dataset.level || null;
+      saveState();
+      close();
+      render();
+    });
+  });
+}
+
 function init(){
   spawnPetalsBg();
   render();
 }
 
 init();
+
+// Registra o service worker (necessário pra empacotar como PWA/TWA na Play Store).
+// Roda em segundo plano, sem bloquear o carregamento do app.
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{
+      // Falha silenciosa: se o navegador não suportar ou o arquivo não existir
+      // ainda (ex: testando localmente), o app continua funcionando normalmente.
+    });
+  });
+}
 </script>
 </body>
 </html>
