@@ -3090,12 +3090,15 @@ let quickTimer = null;
 
 function allWordsFlat(){
   const items = [];
-  // Temas marcados com excludeFromGeneric (ex: Fé, Bíblia) não entram no pool
-  // genérico do Jogo Rápido / Match Infinito — só aparecem se a pessoa escolher
-  // o tema diretamente no Match normal. Conteúdo religioso não deve "surpreender"
-  // quem está jogando um modo aleatório sem ter escolhido esse tema.
+  // Temas marcados com excludeFromGeneric (Fé, Bíblia, Doramas genérico, K-pop)
+  // e qualquer pacote de dorama individual (Vincenzo, Alquimia das Almas etc.)
+  // não entram no pool genérico do Jogo Rápido / Match Infinito / Treino
+  // instantâneo / Sessão — só aparecem se a pessoa escolher esse tema
+  // diretamente. São conteúdos de interesse específico (religioso ou de uma
+  // novela/artista puntual), não vocabulário de propósito geral, e não devem
+  // "surpreender" quem está num modo aleatório sem ter pedido por aquilo.
   visibleThemeList().forEach(theme=>{
-    if(theme.excludeFromGeneric) return;
+    if(theme.excludeFromGeneric || theme.dorama) return;
     theme.words.forEach(([kr, pt])=>{
       items.push({kr, pt, themeId:theme.id, themeName:theme.name, emoji:theme.emoji, dorama:!!theme.dorama});
     });
