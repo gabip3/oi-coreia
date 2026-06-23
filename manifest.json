@@ -1,0 +1,33 @@
+{
+  "name": "Oi Coreia — Aprenda coreano brincando",
+  "short_name": "Oi Coreia",
+  "description": "Aprenda coreano brincando. Um jogo casual e acolhedor para brasileiros que amam a cultura coreana.",
+  "start_url": "/oi-coreia/index.html",
+  "scope": "/oi-coreia/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF6EF",
+  "theme_color": "#FBF6EF",
+  "lang": "pt-BR",
+  "permissions": ["payment"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
