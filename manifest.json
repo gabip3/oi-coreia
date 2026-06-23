@@ -1,7 +1,8 @@
 {
-  "name": "Oi Coreia — Aprenda coreano brincando",
+  "id": "/oi-coreia/",
+  "name": "Oi Coreia — Treine coreano brincando",
   "short_name": "Oi Coreia",
-  "description": "Aprenda coreano brincando. Um jogo casual e acolhedor para brasileiros que amam a cultura coreana.",
+  "description": "Treine coreano brincando. Um jogo casual e acolhedor para brasileiros que amam a cultura coreana.",
   "start_url": "/oi-coreia/index.html",
   "scope": "/oi-coreia/",
   "display": "standalone",
@@ -28,6 +29,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/screenshot1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Tela inicial do Oi Coreia"
+    },
+    {
+      "src": "screenshots/screenshot2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Treinando vocabulário coreano"
     }
   ]
 }
